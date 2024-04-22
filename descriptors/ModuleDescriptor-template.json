@@ -1,0 +1,120 @@
+{
+  "id": "@artifactId@-@version@",
+  "name": "Record Specifications",
+  "provides": [
+    {
+      "id": "_tenant",
+      "version": "2.0",
+      "interfaceType": "system",
+      "handlers": [
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/_/tenant"
+        },
+        {
+          "methods": [
+            "GET",
+            "DELETE"
+          ],
+          "pathPattern": "/_/tenant/{id}"
+        }
+      ]
+    }
+  ],
+  "permissionSets": [
+  ],
+  "launchDescriptor": {
+    "dockerImage": "@artifactId@:@version@",
+    "dockerPull": false,
+    "dockerArgs": {
+      "HostConfig": {
+        "Memory": 542293850,
+        "PortBindings": {
+          "8081/tcp": [
+            {
+              "HostPort": "%p"
+            }
+          ]
+        }
+      }
+    },
+    "env": [
+      {
+        "name": "JAVA_OPTIONS",
+        "value": "-XX:MaxRAMPercentage=85.0"
+      },
+      {
+        "name": "DB_HOST",
+        "value": "localhost",
+        "description": "Postgres hostname"
+      },
+      {
+        "name": "DB_PORT",
+        "value": "5432",
+        "description": "Postgres port"
+      },
+      {
+        "name": "DB_USERNAME",
+        "value": "folio_admin",
+        "description": "Postgres username"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "value": "folio_admin",
+        "description": "Postgres username password"
+      },
+      {
+        "name": "DB_DATABASE",
+        "value": "okapi_modules",
+        "description": "Postgres database name"
+      },
+      {
+        "name": "DB_MAXPOOLSIZE",
+        "value": "10",
+        "description": "This property controls the maximum size that the pool is allowed to reach, including both idle and in-use connections"
+      },
+      {
+        "name": "DB_MINIMUM_IDLE",
+        "value": "10",
+        "description": "This property controls the minimum number of idle connections that HikariCP tries to maintain in the pool"
+      },
+      {
+        "name": "DB_CONNECTION_TIMEOUT",
+        "value": "30000",
+        "description": "This property controls the maximum number of milliseconds that a client will wait for a connection from the pool"
+      },
+      {
+        "name": "DB_IDLE_TIMEOUT",
+        "value": "600000",
+        "description": "This property controls the maximum amount of time that a connection is allowed to sit idle in the pool. This setting only applies when `DB_MINIMUM_IDLE` is defined to be less than `DB_MAXPOOLSIZE`"
+      },
+      {
+        "name": "DB_KEEPALIVE_TIME",
+        "value": "0",
+        "description": "This property controls how frequently HikariCP will attempt to keep a connection alive, in order to prevent it from being timed out by the database or network infrastructure (0 - disabled)"
+      },
+      {
+        "name": "DB_MAX_LIFETIME",
+        "value": "1800000",
+        "description": "This property controls the maximum lifetime of a connection in the pool"
+      },
+      {
+        "name": "DB_VALIDATION_TIMEOUT",
+        "value": "5000",
+        "description": "This property controls the maximum amount of time that a connection will be tested for aliveness. This value must be less than the `DB_CONNECTION_TIMEOUT`"
+      },
+      {
+        "name": "DB_INITIALIZATION_FAIL_TIMEOUT",
+        "value": "30000",
+        "description": "This property controls whether the pool will \"fail fast\" if the pool cannot be seeded with an initial connection successfully"
+      },
+      {
+        "name": "DB_LEAK_DETECTION_THRESHOLD",
+        "value": "30000",
+        "description": "This property controls the amount of time that a connection can be out of the pool before a message is logged indicating a possible connection leak (0 - disabled)"
+      }
+    ]
+  }
+}

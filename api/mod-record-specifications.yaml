@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Record Specifications API
+  description: API for managing record specifications and validating records against them
+  contact:
+    name: Spitfire team
+
+servers:
+  - url: https://{environment}-okapi.ci.folio.org
+    description: Development environments.
+    variables:
+      environment:
+        default: folio-dev-spitfire
+        enum:
+          - folio-dev-spitfire
+          - folio-perf-spitfire
+  - url: https://folio-{environment}-okapi.dev.folio.org
+    description: Reference environments.
+    variables:
+      environment:
+        default: snapshot
+        enum:
+          - snapshot
+          - snapshot-2
+
+tags:
+  - name: tag
+    description: Tag description
+
+
+paths:
+  /stub:
+    get:
+      summary: Stub
+      description: New endpoint
+      tags:
+        - tag
+      operationId: stub
+      responses:
+        '200':
+          description: New response
+          content:
+            application/json:
+              schema:
+                title: StubObject
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+

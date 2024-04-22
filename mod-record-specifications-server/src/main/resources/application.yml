@@ -1,0 +1,43 @@
+spring:
+  application:
+    name:
+      mod-record-specifications
+  datasource:
+    hikari:
+      connectionTimeout: ${DB_CONNECTION_TIMEOUT:30000}
+      idleTimeout: ${DB_IDLE_TIMEOUT:600000}
+      keepaliveTime: ${DB_KEEPALIVE_TIME:0}
+      maxLifetime: ${DB_MAX_LIFETIME:1800000}
+      validationTimeout: ${DB_VALIDATION_TIMEOUT:5000}
+      maximumPoolSize: ${DB_MAXPOOLSIZE:10}
+      minimumIdle: ${DB_MINIMUM_IDLE:10}
+      initializationFailTimeout: ${DB_INITIALIZATION_FAIL_TIMEOUT:30000}
+      leakDetectionThreshold: ${DB_LEAK_DETECTION_THRESHOLD:60000}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:okapi_modules}
+    password: ${DB_PASSWORD:folio_admin}
+    username: ${DB_USERNAME:folio_admin}
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+
+folio:
+  logging:
+    request:
+      enabled: true
+    feign:
+      enabled: true
+
+server.port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,liquibase,threaddump,heapdump,loggers
+      base-path: /admin
+  endpoint:
+    loggers:
+      enabled: true
