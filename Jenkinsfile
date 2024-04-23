@@ -1,11 +1,12 @@
 buildMvn {
   buildNode = 'jenkins-agent-java17'
-  mvnDeploy = false
-  publishModDescriptor = false
+  mvnDeploy = true
+  publishModDescriptor = true
 
   doDocker = {
     buildDocker {
-      publishMaster = false
+      publishMaster = true
+      healthChk = false
     }
   }
 }
