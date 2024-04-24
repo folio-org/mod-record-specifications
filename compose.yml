@@ -1,9 +1,9 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16-alpine'
     environment:
-      - 'POSTGRES_DB=modules'
-      - 'POSTGRES_PASSWORD=admin'
+      - 'POSTGRES_DB=okapi_modules'
+      - 'POSTGRES_PASSWORD=folio_admin'
       - 'POSTGRES_USER=folio_admin'
     ports:
-      - '5432'
+      - '5432:5432'
