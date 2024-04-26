@@ -30,6 +30,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openapitools</groupId>
       <artifactId>openapi-generator</artifactId>
       <version>${openapi-generator.version}</version>
@@ -66,19 +70,8 @@
               <configOptions>
                 <library>spring-boot</library>
                 <useSpringBoot3>true</useSpringBoot3>
+                <sourceFolder>model</sourceFolder>
               </configOptions>
-            </configuration>
-          </execution>
-          <execution>
-            <id>Client generation</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>${project.parent.basedir}/${openapi.input.file}</inputSpec>
-              <output>${project.build.directory}/generated-sources</output>
-              <modelPackage>${project.groupId}.rspec.domain.dto</modelPackage>
-              <generatorName>mysql-schema</generatorName>
             </configuration>
           </execution>
         </executions>
@@ -96,7 +89,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.build.directory}/generated-sources/src/main/java</source>
+                <source>${project.build.directory}/generated-sources/model</source>
               </sources>
             </configuration>
           </execution>

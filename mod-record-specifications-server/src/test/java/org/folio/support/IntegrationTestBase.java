@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.spring.integration.XOkapiHeaders;
 import org.folio.spring.testing.extension.EnableOkapi;
 import org.folio.spring.testing.extension.EnablePostgres;
@@ -35,7 +36,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 @EnableOkapi
 @EnablePostgres
-@SpringBootTest
+@SpringBootTest(classes = RecordSpecificationsApp.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class IntegrationTestBase {
