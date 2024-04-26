@@ -3,6 +3,21 @@
   "name": "Record Specifications",
   "provides": [
     {
+      "id": "specification-storage",
+      "version": "1.0",
+      "handlers": [
+        {
+          "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/specifications",
+          "permissionsRequired": [
+            "specification-storage.specifications.collection.get"
+          ]
+        }
+      ]
+    },
+    {
       "id": "_tenant",
       "version": "2.0",
       "interfaceType": "system",
@@ -24,6 +39,19 @@
     }
   ],
   "permissionSets": [
+    {
+      "permissionName": "specification-storage.specifications.collection.get",
+      "displayName": "Specification Storage - Get specification collection",
+      "description": "Get specification collection"
+    },
+    {
+      "permissionName": "specification-storage.all",
+      "displayName": "Specification Storage - All permissions",
+      "description": "Entire set of permissions needed to manage specifications",
+      "subPermissions": [
+        "specification-storage.specifications.collection.get"
+      ]
+    }
   ],
   "launchDescriptor": {
     "dockerImage": "@artifactId@:@version@",

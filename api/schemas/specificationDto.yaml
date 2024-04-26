@@ -1,0 +1,17 @@
+type: object
+x-parent: "abstract"
+properties:
+  id:
+    type: string
+    format: uuid
+  title:
+    type: string
+  family:
+    $ref: 'family.yaml'
+  profile:
+    $ref: 'familyProfile.yaml'
+  url:
+    type: string
+    format: url
+  metadata:
+    $ref: 'common/metadataDto.yaml'

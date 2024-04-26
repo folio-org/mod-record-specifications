@@ -1,0 +1,12 @@
+allOf:
+  - $ref: 'specificationDto.yaml'
+  - type: object
+    properties:
+      fields:
+        type: array
+        items:
+          type: object
+      rules:
+        type: array
+        items:
+          type: object

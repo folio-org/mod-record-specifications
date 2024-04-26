@@ -1,0 +1,38 @@
+get:
+  summary: Get Specifications
+  description: Get a collection of specifications.
+  operationId: getSpecifications
+  tags:
+    - specification-storage
+  parameters:
+    - in: query
+      name: family
+      description: Filter by specification's family.
+      schema:
+        $ref: '../../schemas/family.yaml'
+    - in: query
+      name: profile
+      description: Filter by specification's family profile.
+      schema:
+        $ref: '../../schemas/familyProfile.yaml'
+    - in: query
+      name: include
+      description: Limit the number of elements returned in the response.
+      schema:
+        type: string
+        enum:
+          - all
+          - required-fields
+    - $ref: '../../parameters/limit-param.yaml'
+    - $ref: '../../parameters/offset-param.yaml'
+  responses:
+    '200':
+      description: Collection of specifications
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

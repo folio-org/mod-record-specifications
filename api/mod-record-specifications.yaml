@@ -25,28 +25,10 @@ servers:
           - snapshot-2
 
 tags:
-  - name: tag
-    description: Tag description
+  - name: specification-storage
+    description: Provides API for managing specifications.
 
 
 paths:
-  /stub:
-    get:
-      summary: Stub
-      description: New endpoint
-      tags:
-        - tag
-      operationId: stub
-      responses:
-        '200':
-          description: New response
-          content:
-            application/json:
-              schema:
-                title: StubObject
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-
+  /specification-storage/specifications:
+    $ref: 'paths/specification-storage/get-specifications-path.yaml'

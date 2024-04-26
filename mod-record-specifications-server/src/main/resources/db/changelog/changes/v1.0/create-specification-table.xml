@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-3@@create-table:specification" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="specification"/>
+      </not>
+    </preConditions>
+
+    <comment>Create specification table</comment>
+
+    <createTable tableName="specification">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_specification"/>
+      </column>
+      <column name="title" type="VARCHAR(350)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="family" type="family_enum">
+        <constraints nullable="false"/>
+      </column>
+      <column name="profile" type="family_profile_enum">
+        <constraints nullable="false"/>
+      </column>
+      <column name="url" type="VARCHAR(350)"/>
+      <column name="created_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="MRSPECS-3@@create-unique-index:uc_specification_family_profile" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="specification"/>
+        <not>
+          <indexExists tableName="specification" columnNames="family,profile"/>
+        </not>
+      </and>
+    </preConditions>
+
+    <comment>Create unique index for specification table and family, profile columns</comment>
+
+    <createIndex tableName="specification" indexName="uc_specification_family_profile" unique="true">
+      <column name="family"/>
+      <column name="profile"/>
+    </createIndex>
+  </changeSet>
+
+</databaseChangeLog>

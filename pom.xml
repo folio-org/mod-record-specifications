@@ -30,6 +30,8 @@
     <folio-spring-support.version>8.2.0-SNAPSHOT</folio-spring-support.version>
     <lombok.version>1.18.32</lombok.version>
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <lombok.mapstruct-binding.version>0.2.0</lombok.mapstruct-binding.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
@@ -66,6 +68,17 @@
         <groupId>org.folio</groupId>
         <artifactId>folio-spring-base</artifactId>
         <version>${folio-spring-support.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${mapstruct.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -137,26 +150,6 @@
           </execution>
         </executions>
       </plugin>
-
-<!--      <plugin>-->
-<!--        <groupId>org.springframework.boot</groupId>-->
-<!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--        <version>${spring-boot.version}</version>-->
-<!--        <configuration>-->
-<!--          <excludeDevtools>true</excludeDevtools>-->
-<!--          <excludeDockerCompose>true</excludeDockerCompose>-->
-<!--          <excludes>-->
-<!--            <exclude>-->
-<!--              <groupId>org.springframework.boot</groupId>-->
-<!--              <artifactId>spring-boot-configuration-processor</artifactId>-->
-<!--            </exclude>-->
-<!--            <exclude>-->
-<!--              <groupId>org.projectlombok</groupId>-->
-<!--              <artifactId>lombok</artifactId>-->
-<!--            </exclude>-->
-<!--          </excludes>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -250,6 +243,7 @@
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <release>${java.version}</release>
+          <parameters>true</parameters>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
@@ -260,6 +254,16 @@
               <groupId>org.springframework.boot</groupId>
               <artifactId>spring-boot-configuration-processor</artifactId>
               <version>${spring-boot.version}</version>
+            </path>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-mapstruct-binding</artifactId>
+              <version>${lombok.mapstruct-binding.version}</version>
+            </path>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>${mapstruct.version}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
