@@ -4,53 +4,89 @@ Copyright (C) 2024 The Open Library Foundation
 This software is distributed under the terms of the Apache License,
 Version 2.0. See the file "[LICENSE](LICENSE)" for more information.
 
-## Introduction
-Module for managing and validating records against predefined specifications.
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=org.folio%3Amod-record-specifications&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=org.folio%3Amod-record-specifications)
 
-## Installing and deployment
+## Introduction
+
+mod-record-specifications is a module for managing and validating records against predefined specifications.
+
+## Installation and Deployment
 
 ### Compiling
 
-Compile with 
+To compile mod-record-specifications, use the command: 
+
 ```shell
 mvn clean install
 ```
 
-### Running it
-Run locally on listening port 8081 (default listening port):
+### Environment Variables
 
-Using Docker to run the local stand-alone instance:
+Below are the environment variables used by this module:
+
+| Variable Name                  | Default Value | Description                                                                                                                   |
+|--------------------------------|---------------|-------------------------------------------------------------------------------------------------------------------------------|
+| DB_HOST                        | localhost     | Postgres hostname                                                                                                             |
+| DB_PORT                        | 5432          | Postgres port                                                                                                                 |
+| DB_USERNAME                    | folio_admin   | Postgres username                                                                                                             |
+| DB_PASSWORD                    | folio_admin   | Postgres username password                                                                                                    |
+| DB_DATABASE                    | okapi_modules | Postgres database name                                                                                                        |
+| DB_MAXPOOLSIZE                 | 10            | Max pool size allowed, including both idle and in-use connections                                                             |
+| DB_MINIMUM_IDLE                | 10            | Min number of idle connections that HikariCP tries to maintain in the pool                                                    |
+| DB_CONNECTION_TIMEOUT          | 30000         | Max number of milliseconds that a client will wait for a connection from the pool                                             |
+| DB_IDLE_TIMEOUT                | 600000        | Max amount of time that a connection is allowed to sit idle in the pool, applicable when `DB_MINIMUM_IDLE` < `DB_MAXPOOLSIZE` |
+| DB_KEEPALIVE_TIME              | 0             | Frequency of connection keep alive attempts by HikariCP to prevent time-out by database/network. 0 means disabled             |
+| DB_MAX_LIFETIME                | 1800000       | Max lifetime of a connection in the pool                                                                                      |
+| DB_VALIDATION_TIMEOUT          | 5000          | Max amount of time a connection is tested for aliveness. Must be less than `DB_CONNECTION_TIMEOUT`                            |
+| DB_INITIALIZATION_FAIL_TIMEOUT | 30000         | Defines whether the pool will 'fail fast' if it can't be seeded with an initial connection                                    |
+| DB_LEAK_DETECTION_THRESHOLD    | 30000         | Time a connection can be out of the pool before a message is logged for a possible connection leak. 0 means disabled          |
+
+Change these variables as per your requirements.
+
+### Running The Module
+
+#### Locally
+
+Run the module locally on the default listening port (8081) with the prescribed command:
 
 ```shell
-DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \
-   java -Dserver.port=8081 -jar target/mod-record-specifications-*.jar
+DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \ 
+java -Dserver.port=8081 -jar target/mod-record-specifications-*.jar
 ```
 
-### Docker
+#### Using Docker
 
-Build the docker container with:
+To run the module in a Docker container, first build the Docker image:
 
 ```shell
 docker build -t dev.folio/mod-record-specifications .
 ```
 
-Test that it runs with:
+Prepare infrastructure needed for the module: PostgreSQL database.
+Alternatively, you can use Docker Compose to manage the application's infrastructure.
+```shell
+docker compose up
+```
+
+Then run the container:
 
 ```shell
 docker run -t -i -p 8081:8081 dev.folio/mod-record-specifications
 ```
 
-### ModuleDescriptor
+### Module Descriptor
 
-See the built `target/ModuleDescriptor.json` for the interfaces that this module
-requires and provides, the permissions, and the additional module metadata.
+See the built target/ModuleDescriptor.json file for the interfaces, permissions, and additional modules required and provided by this one.
 
 ## Additional Information
 
-### Issue tracker
+### Development documentation
 
-See project [MSEARCH](https://folio-org.atlassian.net/browse/MSEARCH)
-at the [FOLIO issue tracker](https://dev.folio.org/guidelines/issue-tracker/).
+Additional development documentation exists in the [development.md](docs%2Fdevelopment.md)
+
+### Issue Tracker
+
+If you find any issues or bugs, please report at project [MRSPECS](https://folio-org.atlassian.net/browse/MRSPECS) at the FOLIO issue tracker.
 
 ### API Documentation
 
@@ -67,5 +103,6 @@ See [configuration](https://dev.folio.org/download/artifacts) for repository acc
 and the [Docker image](https://hub.docker.com/r/folioorg/mod-record-specifications/)
 
 ### Code of Conduct
+
 [FOLIO Code of Conduct](https://folio-org.atlassian.net/wiki/spaces/COMMUNITY/pages/4231255/FOLIO+Code+of+Conduct)
 
