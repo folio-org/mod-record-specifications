@@ -1,0 +1,60 @@
+name: build dependants
+# mod-quick-marc master depend on the
+# latest -SNAPSHOT of mod-record-specifications master.
+# Try to build it with the current master of mod-record-specifications.
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  mod-record-specifications:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2
+            !~/.m2/repository/org/folio/mod-record-specifications
+          key: mod-record-specifications-${{ hashFiles('**/pom.xml') }}
+          restore-keys: mod-record-specifications-
+      - run: mvn -B clean install -DskipTests
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mod-record-specifications
+          path: ~/.m2/repository/org/folio/mod-record-specifications
+          if-no-files-found: error
+          retention-days: 1
+  mod-quick-marc:
+    needs: mod-record-specifications
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    timeout-minutes: 20
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - run: git clone --depth 1 --recurse-submodules https://github.com/folio-org/mod-quick-marc
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2
+            !~/.m2/repository/org/folio/mod-record-specifications
+          key: mod-quick-marc-${{ hashFiles('**/pom.xml') }}
+          restore-keys: mod-quick-marc-
+      - uses: actions/download-artifact@v2
+        with:
+          name: mod-record-specifications
+          path: ~/.m2/repository/org/folio/mod-record-specifications
+      - run: cd mod-quick-marc; mvn -B clean verify
