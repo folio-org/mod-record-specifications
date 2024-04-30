@@ -1,0 +1,5 @@
+type: string
+description: define what to include in response
+enum:
+  - all
+  - required-fields

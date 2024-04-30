@@ -1,0 +1,10 @@
+type: object
+properties:
+  specifications:
+    type: array
+    items:
+      oneOf:
+        - $ref: 'specificationDto.yaml'
+        - $ref: 'specificationFullDto.yaml'
+  totalRecords:
+    type: integer

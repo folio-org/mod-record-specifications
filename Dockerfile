@@ -4,8 +4,8 @@ USER root
 RUN apk upgrade --no-cache
 USER folio
 
-ENV APP_FILE mod-record-specifications-fat.jar
-ARG JAR_FILE=./mod-record-specifications-server/target/mod-record-specifications-server-1.0.0-SNAPSHOT.jar
+ENV APP_FILE mod-record-specifications-server-fat.jar
+ENV JAR_FILE=mod-record-specifications-server/target/${APP_FILE}
 COPY ${JAR_FILE} ${JAVA_APP_DIR}/${APP_FILE}
 
 EXPOSE 8081

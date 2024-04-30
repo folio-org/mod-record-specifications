@@ -4,5 +4,10 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+  <include file="v1.0/create-enum-types.xml" relativeToChangelogFile="true"/>
+  <include file="v1.0/create-specification-table.xml" relativeToChangelogFile="true"/>
+
+  <!-- Always last in the list to have all prepared tables -->
+  <include file="v1.0/populate-default-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
