@@ -6,8 +6,6 @@ import static org.folio.rspec.domain.dto.ErrorCode.INVALID_QUERY_VALUE;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ElementKind;
-import jakarta.validation.Path;
-import org.folio.rspec.domain.dto.Error;
 import org.folio.rspec.domain.dto.ErrorCollection;
 import org.folio.rspec.domain.dto.Parameter;
 import org.springframework.http.HttpStatus;
@@ -19,8 +17,8 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
 
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
-    ConstraintViolationException exception = (ConstraintViolationException) e;
-    ErrorCollection errorCollection = buildErrorCollection(exception);
+    var exception = (ConstraintViolationException) e;
+    var errorCollection = buildErrorCollection(exception);
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorCollection);
   }
 
@@ -30,20 +28,20 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
   }
 
   private ErrorCollection buildErrorCollection(ConstraintViolationException exception) {
-    ErrorCollection errorCollection = new ErrorCollection();
+    var errorCollection = new ErrorCollection();
     exception.getConstraintViolations()
       .forEach(violation -> processViolation(violation, errorCollection));
     return errorCollection;
   }
 
   private void processViolation(ConstraintViolation<?> violation, ErrorCollection errorCollection) {
-    Path propertyPath = violation.getPropertyPath();
-    for (Path.Node node : propertyPath) {
+    var propertyPath = violation.getPropertyPath();
+    for (var node : propertyPath) {
       if (node.getKind() == ElementKind.PARAMETER) {
         var parameter = new Parameter()
           .key(node.getName())
           .value(String.valueOf(violation.getInvalidValue()));
-        Error error = fromErrorCode(INVALID_QUERY_VALUE).message(violation.getMessage());
+        var error = fromErrorCode(INVALID_QUERY_VALUE).message(violation.getMessage());
         error.addParametersItem(parameter);
 
         errorCollection.addErrorsItem(error);

@@ -15,13 +15,13 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
 
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
-    MethodArgumentTypeMismatchException exception = (MethodArgumentTypeMismatchException) e;
-    Class<?> requiredType = exception.getRequiredType();
-    ErrorCollection errorCollection = new ErrorCollection();
+    var exception = (MethodArgumentTypeMismatchException) e;
+    var requiredType = exception.getRequiredType();
+    var errorCollection = new ErrorCollection();
 
     if (requiredType != null && requiredType.isEnum()) {
-      String message = buildErrorMessage(exception, requiredType);
-      Error code = buildErrorCode(exception, message);
+      var message = buildErrorMessage(exception, requiredType);
+      var code = buildErrorCode(exception, message);
       errorCollection.addErrorsItem(code);
     }
 
@@ -34,18 +34,24 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
   }
 
   private String buildErrorMessage(MethodArgumentTypeMismatchException e, Class<?> requiredType) {
-    Object[] enumConstants = requiredType.getEnumConstants();
-    Throwable rootCause = e.getRootCause();
-    return (rootCause != null ? rootCause.getMessage() + ". " : "")
-      + "Possible values: " + Arrays.toString(enumConstants);
+    var enumConstants = requiredType.getEnumConstants();
+    var rootCause = e.getRootCause();
+    return buildErrorMessage(rootCause, enumConstants);
+  }
+
+  private String buildErrorMessage(Throwable rootCause, Object[] enumConstants) {
+    return "%sPossible values: %s".formatted(
+      rootCause != null ? rootCause.getMessage() + ". " : "",
+      Arrays.toString(enumConstants)
+    );
   }
 
   private Error buildErrorCode(MethodArgumentTypeMismatchException e, String message) {
-    Error code = new Error()
+    var code = new Error()
       .message(message)
       .code(ErrorCode.INVALID_QUERY_ENUM_VALUE.getCode())
       .type(ErrorCode.INVALID_QUERY_ENUM_VALUE.getErrorType());
-    Parameter parameter = new Parameter().key(e.getName()).value(String.valueOf(e.getValue()));
+    var parameter = new Parameter().key(e.getName()).value(String.valueOf(e.getValue()));
     code.addParametersItem(parameter);
     return code;
   }

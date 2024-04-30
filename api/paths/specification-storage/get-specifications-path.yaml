@@ -19,10 +19,7 @@ get:
       name: include
       description: Limit the number of elements returned in the response.
       schema:
-        type: string
-        enum:
-          - all
-          - required-fields
+        $ref: '../../schemas/includeParam.yaml'
     - $ref: '../../parameters/limit-param.yaml'
     - $ref: '../../parameters/offset-param.yaml'
   responses:

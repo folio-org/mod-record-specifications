@@ -1,9 +1,9 @@
 package org.folio.rspec.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
+import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
 import org.folio.rspec.rest.resource.SpecificationStorageApi;
 import org.folio.rspec.service.SpecificationService;
@@ -21,8 +21,9 @@ public class SpecificationStorageController implements SpecificationStorageApi {
 
   @Override
   public ResponseEntity<SpecificationDtoCollection> getSpecifications(Family family, FamilyProfile profile,
-                                                                   String include, Integer limit, Integer offset) {
-    if (StringUtils.isNotBlank(include)) {
+                                                                      IncludeParam include, Integer limit,
+                                                                      Integer offset) {
+    if (include != null) {
       return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
     var specifications = specificationService.findSpecifications(family, profile, include, limit, offset);
