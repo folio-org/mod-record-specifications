@@ -47,6 +47,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -76,9 +81,16 @@
       <artifactId>folio-spring-testing</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <finalName>mod-record-specifications-server-fat</finalName>
+
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -105,6 +117,14 @@
             <exclude>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
+            </exclude>
+            <exclude>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+            </exclude>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-mapstruct-binding</artifactId>
             </exclude>
           </excludes>
         </configuration>
@@ -133,12 +153,15 @@
               <generateSupportingFiles>true</generateSupportingFiles>
               <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
               <generateModelDocumentation>true</generateModelDocumentation>
+              <enablePostProcessFile>true</enablePostProcessFile>
+              <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
               <configOptions>
                 <dateLibrary>java8</dateLibrary>
                 <interfaceOnly>true</interfaceOnly>
                 <useTags>true</useTags>
                 <library>spring-boot</library>
                 <useSpringBoot3>true</useSpringBoot3>
+                <sourceFolder>api</sourceFolder>
               </configOptions>
             </configuration>
           </execution>
@@ -156,7 +179,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.build.directory}/generated-sources/src/main/java</source>
+                <source>${project.build.directory}/generated-sources/api</source>
               </sources>
             </configuration>
           </execution>

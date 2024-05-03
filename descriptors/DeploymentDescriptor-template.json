@@ -2,7 +2,7 @@
   "srvcId": "@artifactId@-@version@",
   "nodeId": "localhost",
   "descriptor": {
-    "exec": "java -Dport=%p -jar ../mod-record-specifications/target/mod-record-specifications-fat.jar -Dhttp.port=%p embed_postgres=true"
+    "exec": "java -Dport=%p -jar ../mod-record-specifications/mod-record-specifications-server/target/mod-record-specifications-fat.jar -Dhttp.port=%p"
   }
 }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-3@@default-data:marc-bib-specification" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM specification
+        WHERE id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for MARC bibliographic specification</comment>
+
+    <insert tableName="specification">
+      <column name="id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="title" value="MARC Bibliographic Specification"/>
+      <column name="family" value="MARC"/>
+      <column name="profile" value="BIBLIOGRAPHIC"/>
+      <column name="url" value="https://www.loc.gov/marc/bibliographic/"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-3@@default-data:marc-auth-specification" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM specification
+        WHERE id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for MARC authority specification</comment>
+
+    <insert tableName="specification">
+      <column name="id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="title" value="MARC Authority Specification"/>
+      <column name="family" value="MARC"/>
+      <column name="profile" value="AUTHORITY"/>
+      <column name="url" value="https://www.loc.gov/marc/authority/"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>
