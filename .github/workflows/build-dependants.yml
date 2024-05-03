@@ -3,8 +3,6 @@ name: build dependants
 # latest -SNAPSHOT of mod-record-specifications master.
 # Try to build it with the current master of mod-record-specifications.
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
