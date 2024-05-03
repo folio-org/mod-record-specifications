@@ -6,6 +6,8 @@
 ### Features
 #### Server
 * Specification Storage: implement endpoint to fetch specifications ([MRSPECS-3](https://folio-org.atlassian.net//browse/MRSPECS-3))
+#### General
+* Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
 
 ### Bug fixes
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
