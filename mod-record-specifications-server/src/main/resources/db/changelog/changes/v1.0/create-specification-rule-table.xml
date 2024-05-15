@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-4@@create-table:specification-rule" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="specification_rule"/>
+      </not>
+    </preConditions>
+
+    <comment>Create rule table</comment>
+
+    <createTable tableName="specification_rule">
+      <column name="specification_id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_specification_rule"/>
+      </column>
+      <column name="rule_id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_specification_rule"/>
+      </column>
+      <column name="enabled" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseColumnNames="rule_id" baseTableName="specification_rule"
+                             constraintName="fk_specification_rule_on_rule" referencedColumnNames="id"
+                             referencedTableName="rule"/>
+    <addForeignKeyConstraint baseColumnNames="specification_id" baseTableName="specification_rule"
+                             constraintName="fk_specification_rule_on_specification" referencedColumnNames="id"
+                             referencedTableName="specification"/>
+  </changeSet>
+
+
+</databaseChangeLog>

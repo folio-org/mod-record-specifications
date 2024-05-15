@@ -1,0 +1,25 @@
+get:
+  summary: Get Specification Rules
+  description: Get a collection of specification rules enabled and disabled.
+  operationId: getSpecificationRules
+  tags:
+    - specification-storage
+  parameters:
+    - in: path
+      name: id
+      description: Specification ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Collection of specifications
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationRuleDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

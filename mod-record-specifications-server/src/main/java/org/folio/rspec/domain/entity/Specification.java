@@ -5,8 +5,11 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.folio.rspec.domain.dto.Family;
@@ -45,6 +48,9 @@ public class Specification extends UuidPersistable {
 
   @Column(name = URL_COLUMN)
   private String url;
+
+  @OneToMany(mappedBy = "specification", orphanRemoval = true)
+  private Set<SpecificationRule> specificationRules = new LinkedHashSet<>();
 
   @Embedded
   private Metadata metadata;

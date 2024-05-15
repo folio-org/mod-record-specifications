@@ -21,4 +21,12 @@ public interface ServiceExceptionHandler {
   static Error fromErrorCode(ErrorCode errorCode) {
     return new Error().code(errorCode.getCode()).type(errorCode.getErrorType());
   }
+
+  static ErrorCollection errorCollection(Error... errors) {
+    ErrorCollection errorCollection = new ErrorCollection();
+    for (Error error : errors) {
+      errorCollection.addErrorsItem(error);
+    }
+    return errorCollection;
+  }
 }

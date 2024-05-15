@@ -32,3 +32,7 @@ tags:
 paths:
   /specification-storage/specifications:
     $ref: 'paths/specification-storage/get-specifications-path.yaml'
+  /specification-storage/specifications/{id}/rules:
+    $ref: 'paths/specification-storage/get-specification-rules-path.yaml'
+  /specification-storage/specifications/{id}/rules/{ruleId}:
+    $ref: 'paths/specification-storage/get-specification-rules-by-id-path.yaml'

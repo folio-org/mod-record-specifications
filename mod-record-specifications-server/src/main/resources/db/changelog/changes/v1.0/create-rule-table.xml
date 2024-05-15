@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-4@@create-table:rule" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="rule"/>
+      </not>
+    </preConditions>
+
+    <comment>Create rule table</comment>
+
+    <createTable tableName="rule">
+        <column name="id" type="UUID">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="pk_rule"/>
+        </column>
+        <column name="name" type="VARCHAR(50)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="description" type="VARCHAR(350)"/>
+        <column name="code" type="VARCHAR(50)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="created_by_user_id" type="UUID">
+            <constraints nullable="false"/>
+        </column>
+        <column name="created_date" type="DATETIME">
+            <constraints nullable="false"/>
+        </column>
+        <column name="updated_by_user_id" type="UUID">
+            <constraints nullable="false"/>
+        </column>
+        <column name="updated_date" type="DATETIME">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>
