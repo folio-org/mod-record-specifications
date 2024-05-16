@@ -1,0 +1,34 @@
+patch:
+  summary: Toggle Specification Rule
+  description: Enable or disable specification rule.
+  operationId: toggleSpecificationRule
+  tags:
+    - specification-storage
+  parameters:
+    - in: path
+      name: id
+      description: Specification ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: path
+      name: ruleId
+      description: Specification Rule ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/toggleSpecificationRuleDto.yaml'
+  responses:
+    '204':
+      description: 'Operation was successful'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

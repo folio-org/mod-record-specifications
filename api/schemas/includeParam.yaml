@@ -2,4 +2,6 @@ type: string
 description: define what to include in response
 enum:
   - all
+  - none
   - required-fields
+default: none

@@ -47,3 +47,7 @@ management:
   endpoint:
     loggers:
       enabled: true
+
+logging:
+  level:
+    org.folio.spring.filter.LoggingRequestFilter: DEBUG

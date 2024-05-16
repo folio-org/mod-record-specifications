@@ -7,6 +7,8 @@ public enum ErrorCode {
 
   INVALID_QUERY_VALUE("invalid-query-value", "101"),
   INVALID_QUERY_ENUM_VALUE("invalid-query-enum-value", "102"),
+  INVALID_REQUEST_PARAMETER("invalid-request-parameter", "400"),
+  RESOURCE_NOT_FOUND("resource-not-found", "404"),
   UNEXPECTED("unexpected", "500"),
 
   ;

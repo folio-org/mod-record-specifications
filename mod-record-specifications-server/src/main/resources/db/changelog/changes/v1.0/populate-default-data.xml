@@ -4,6 +4,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+  <!-- Specifications -->
+
   <changeSet id="MRSPECS-3@@default-data:marc-bib-specification" labels="default-data" author="pavlo_smahin">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
@@ -52,4 +54,791 @@
     </insert>
   </changeSet>
 
+  <!-- Rules -->
+
+  <changeSet id="MRSPECS-4@@default-data:rule-undefinedField" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '7c843a14-4c87-4c7d-9ad6-5c7654bff9b5';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for undefinedField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="7c843a14-4c87-4c7d-9ad6-5c7654bff9b5"/>
+      <column name="name" value="Undefined Field"/>
+      <column name="code" value="undefinedField"/>
+      <column name="description" value="Field is not defined but exists in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-deprecatedField" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'b67da9f9-6f54-4727-9fd0-58a522a56fde';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for deprecatedField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="b67da9f9-6f54-4727-9fd0-58a522a56fde"/>
+      <column name="name" value="Deprecated Field"/>
+      <column name="code" value="deprecatedField"/>
+      <column name="description" value="Field is deprecated but exists in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-nonRepeatableField" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'c1b80d56-5f6f-4c0e-92df-6d2356eb379f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for nonRepeatableField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="c1b80d56-5f6f-4c0e-92df-6d2356eb379f"/>
+      <column name="name" value="Non-Repeatable Field"/>
+      <column name="code" value="nonRepeatableField"/>
+      <column name="description" value="Field is non-repeatable but exists more than once in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-missingField" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'db1f2423-037e-4ec9-9931-ff25ccbac917';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for missingField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="db1f2423-037e-4ec9-9931-ff25ccbac917"/>
+      <column name="name" value="Missing Field"/>
+      <column name="code" value="missingField"/>
+      <column name="description" value="Field is required but does not exist in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-invalidFieldValue" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '35675d8c-7753-4d74-9e8c-5ff749931f2a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for invalidFieldValue rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="35675d8c-7753-4d74-9e8c-5ff749931f2a"/>
+      <column name="name" value="Invalid Field Value"/>
+      <column name="code" value="invalidFieldValue"/>
+      <column name="description" value="Field is flat and contains an invalid value"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-invalidIndicator" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '3ec76c78-28c9-4c29-9439-19f8345e86db';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for invalidIndicator rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="3ec76c78-28c9-4c29-9439-19f8345e86db"/>
+      <column name="name" value="Invalid Indicator"/>
+      <column name="code" value="invalidIndicator"/>
+      <column name="description"
+              value="Field contains specified indicators and codes but with invalid indicator in the record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-undefinedSubfield" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '108ca421-24ba-4dc2-8d0f-661c00667e9a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for undefinedSubfield rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="108ca421-24ba-4dc2-8d0f-661c00667e9a"/>
+      <column name="name" value="Undefined Subfield"/>
+      <column name="code" value="undefinedSubfield"/>
+      <column name="description" value="Subfield is not defined but exists in a record's field"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-deprecatedSubfield" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'ceb0cfc7-d2b1-4358-829b-f7204f4305bd';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for deprecatedSubfield rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="ceb0cfc7-d2b1-4358-829b-f7204f4305bd"/>
+      <column name="name" value="Deprecated Subfield"/>
+      <column name="code" value="deprecatedSubfield"/>
+      <column name="description" value="Subfield is deprecated but exists in a record's field"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-nonRepeatableSubfield" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '1aa070fd-d2b5-4def-bf3d-699895f13b88';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for nonRepeatableSubfield rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="1aa070fd-d2b5-4def-bf3d-699895f13b88"/>
+      <column name="name" value="Non-Repeatable Subfield"/>
+      <column name="code" value="nonRepeatableSubfield"/>
+      <column name="description" value="Subfield is non-repeatable but exists more than once in a record's field"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-missingSubfield" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '3cf61681-deb9-482c-beac-db8544fa3019';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for missingSubfield rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="3cf61681-deb9-482c-beac-db8544fa3019"/>
+      <column name="name" value="Missing Subfield"/>
+      <column name="code" value="missingSubfield"/>
+      <column name="description" value="Subfield is required but does not exist in a record's field"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-invalidSubfieldValue" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '2182d955-c1e8-44b6-8f97-94b2b173244d';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for invalidSubfieldValue rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="2182d955-c1e8-44b6-8f97-94b2b173244d"/>
+      <column name="name" value="Invalid Subfield Value"/>
+      <column name="code" value="invalidSubfieldValue"/>
+      <column name="description" value="Subfield value is not valid based on subfield definition"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-nonRepeatable1XXField" labels="default-data" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'ed98f7ce-ee87-47a3-a509-367e3fae540f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for nonRepeatable1XXField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="ed98f7ce-ee87-47a3-a509-367e3fae540f"/>
+      <column name="name" value="Non-Repeatable 1XX Field"/>
+      <column name="code" value="nonRepeatable1XXField"/>
+      <column name="description" value="More than one field from the 1XX group exists in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:rule-nonRepeatableRequired1XXField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = 'e7b3c766-f8a0-4e7f-ad9f-98b7bb3121e5';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for nonRepeatableRequired1XXField rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="e7b3c766-f8a0-4e7f-ad9f-98b7bb3121e5"/>
+      <column name="name" value="Non-Repeatable Required 1XX Field"/>
+      <column name="code" value="nonRepeatableRequired1XXField"/>
+      <column name="description" value="Exactly one field from the 1XX group exists in a record"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
+  <!-- Authority specification rules -->
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-undefinedField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '7c843a14-4c87-4c7d-9ad6-5c7654bff9b5';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-undefinedField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="7c843a14-4c87-4c7d-9ad6-5c7654bff9b5"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-deprecatedField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = 'b67da9f9-6f54-4727-9fd0-58a522a56fde';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-deprecatedField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="b67da9f9-6f54-4727-9fd0-58a522a56fde"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-nonRepeatableField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = 'c1b80d56-5f6f-4c0e-92df-6d2356eb379f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-nonRepeatableField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="c1b80d56-5f6f-4c0e-92df-6d2356eb379f"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-missingField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = 'db1f2423-037e-4ec9-9931-ff25ccbac917';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-missingField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="db1f2423-037e-4ec9-9931-ff25ccbac917"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-invalidFieldValue" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '35675d8c-7753-4d74-9e8c-5ff749931f2a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-invalidFieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="35675d8c-7753-4d74-9e8c-5ff749931f2a"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-invalidIndicator" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '3ec76c78-28c9-4c29-9439-19f8345e86db';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-invalidIndicator rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="3ec76c78-28c9-4c29-9439-19f8345e86db"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-undefinedSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '108ca421-24ba-4dc2-8d0f-661c00667e9a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-undefinedSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="108ca421-24ba-4dc2-8d0f-661c00667e9a"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-deprecatedSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = 'ceb0cfc7-d2b1-4358-829b-f7204f4305bd';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-deprecatedSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="ceb0cfc7-d2b1-4358-829b-f7204f4305bd"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-nonRepeatableSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '1aa070fd-d2b5-4def-bf3d-699895f13b88';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-nonRepeatableSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="1aa070fd-d2b5-4def-bf3d-699895f13b88"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-missingSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '3cf61681-deb9-482c-beac-db8544fa3019';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-missingSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="3cf61681-deb9-482c-beac-db8544fa3019"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-invalidSubfieldValue" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = '2182d955-c1e8-44b6-8f97-94b2b173244d';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-invalidSubfieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="2182d955-c1e8-44b6-8f97-94b2b173244d"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-nonRepeatableRequired1XXField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+          AND rule_id = 'e7b3c766-f8a0-4e7f-ad9f-98b7bb3121e5';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-nonRepeatableRequired1XXField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="e7b3c766-f8a0-4e7f-ad9f-98b7bb3121e5"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+  
+  <!-- Bibliographic specification rules -->
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-undefinedField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '7c843a14-4c87-4c7d-9ad6-5c7654bff9b5';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-undefinedField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="7c843a14-4c87-4c7d-9ad6-5c7654bff9b5"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-deprecatedField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = 'b67da9f9-6f54-4727-9fd0-58a522a56fde';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-deprecatedField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="b67da9f9-6f54-4727-9fd0-58a522a56fde"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-nonRepeatableField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = 'c1b80d56-5f6f-4c0e-92df-6d2356eb379f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-nonRepeatableField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="c1b80d56-5f6f-4c0e-92df-6d2356eb379f"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-missingField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = 'db1f2423-037e-4ec9-9931-ff25ccbac917';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-missingField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="db1f2423-037e-4ec9-9931-ff25ccbac917"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-invalidFieldValue" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '35675d8c-7753-4d74-9e8c-5ff749931f2a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-invalidFieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="35675d8c-7753-4d74-9e8c-5ff749931f2a"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-invalidIndicator" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '3ec76c78-28c9-4c29-9439-19f8345e86db';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-invalidIndicator rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="3ec76c78-28c9-4c29-9439-19f8345e86db"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-undefinedSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '108ca421-24ba-4dc2-8d0f-661c00667e9a';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-undefinedSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="108ca421-24ba-4dc2-8d0f-661c00667e9a"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-deprecatedSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = 'ceb0cfc7-d2b1-4358-829b-f7204f4305bd';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-deprecatedSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="ceb0cfc7-d2b1-4358-829b-f7204f4305bd"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-nonRepeatableSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '1aa070fd-d2b5-4def-bf3d-699895f13b88';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-nonRepeatableSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="1aa070fd-d2b5-4def-bf3d-699895f13b88"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-missingSubfield" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '3cf61681-deb9-482c-beac-db8544fa3019';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-missingSubfield rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="3cf61681-deb9-482c-beac-db8544fa3019"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-invalidSubfieldValue" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = '2182d955-c1e8-44b6-8f97-94b2b173244d';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-invalidSubfieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="2182d955-c1e8-44b6-8f97-94b2b173244d"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-nonRepeatable1XXField" labels="default-data"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+          AND rule_id = 'ed98f7ce-ee87-47a3-a509-367e3fae540f';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-nonRepeatable1XXField rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="ed98f7ce-ee87-47a3-a509-367e3fae540f"/>
+      <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+  
 </databaseChangeLog>

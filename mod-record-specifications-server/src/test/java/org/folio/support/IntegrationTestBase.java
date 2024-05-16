@@ -4,6 +4,8 @@ import static org.folio.spring.integration.XOkapiHeaders.TENANT;
 import static org.folio.spring.integration.XOkapiHeaders.URL;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +25,8 @@ import org.folio.spring.testing.extension.EnablePostgres;
 import org.folio.spring.testing.extension.impl.OkapiConfiguration;
 import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +37,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @EnableOkapi
 @EnablePostgres
 @SpringBootTest(classes = RecordSpecificationsApp.class)
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 @AutoConfigureMockMvc
 public class IntegrationTestBase {
 
@@ -180,6 +186,18 @@ public class IntegrationTestBase {
   protected static <T> T contentAsObj(MvcResult result, Class<T> objectClass) {
     var contentAsBytes = result.getResponse().getContentAsByteArray();
     return objectMapper.readValue(contentAsBytes, objectClass);
+  }
+
+  protected <T> ResultMatcher exceptionMatch(Class<T> type) {
+    return result -> MatcherAssert.assertThat(result.getResolvedException(), instanceOf(type));
+  }
+
+  protected ResultMatcher errorMessageMatch(Matcher<String> errorMessageMatcher) {
+    return jsonPath("$.errors.[*].message", hasItem(errorMessageMatcher));
+  }
+
+  protected ResultMatcher errorParameterMatch(String parameterName) {
+    return jsonPath("$.errors.[*].parameters.[*].key", hasItem(parameterName));
   }
 
   @NotNull

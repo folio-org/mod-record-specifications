@@ -1,0 +1,8 @@
+type: object
+properties:
+  rules:
+    type: array
+    items:
+      $ref: specificationRuleDto.yaml
+  totalRecords:
+    type: integer

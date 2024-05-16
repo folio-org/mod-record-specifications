@@ -1,0 +1,18 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  specificationId:
+    type: string
+    format: uuid
+  name:
+    type: string
+  description:
+    type: string
+  code:
+    type: string
+  enabled:
+    type: boolean
+  metadata:
+    $ref: 'common/metadataDto.yaml'
