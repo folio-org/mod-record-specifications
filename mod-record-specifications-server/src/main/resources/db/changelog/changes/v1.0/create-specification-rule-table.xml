@@ -11,7 +11,7 @@
       </not>
     </preConditions>
 
-    <comment>Create rule table</comment>
+    <comment>Create specification rule table</comment>
 
     <createTable tableName="specification_rule">
       <column name="specification_id" type="UUID">

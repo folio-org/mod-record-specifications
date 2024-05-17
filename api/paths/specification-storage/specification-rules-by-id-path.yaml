@@ -5,15 +5,9 @@ patch:
   tags:
     - specification-storage
   parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
     - in: path
       name: id
-      description: Specification ID
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - in: path
-      name: ruleId
       description: Specification Rule ID
       required: true
       schema:

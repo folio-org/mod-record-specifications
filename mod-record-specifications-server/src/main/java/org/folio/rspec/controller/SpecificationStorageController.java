@@ -34,14 +34,14 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   }
 
   @Override
-  public ResponseEntity<SpecificationRuleDtoCollection> getSpecificationRules(UUID id) {
-    return ResponseEntity.ok(specificationService.findSpecificationRules(id));
+  public ResponseEntity<SpecificationRuleDtoCollection> getSpecificationRules(UUID specificationId) {
+    return ResponseEntity.ok(specificationService.findSpecificationRules(specificationId));
   }
 
   @Override
-  public ResponseEntity<Void> toggleSpecificationRule(UUID specificationId, UUID ruleId,
+  public ResponseEntity<Void> toggleSpecificationRule(UUID specificationId, UUID id,
                                                       ToggleSpecificationRuleDto toggleSpecificationRuleDto) {
-    specificationService.toggleSpecificationRule(specificationId, ruleId, toggleSpecificationRuleDto);
+    specificationService.toggleSpecificationRule(specificationId, id, toggleSpecificationRuleDto);
     return ResponseEntity.noContent().build();
   }
 }

@@ -5,13 +5,7 @@ get:
   tags:
     - specification-storage
   parameters:
-    - in: path
-      name: id
-      description: Specification ID
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: '../../parameters/specificationId-param.yaml'
   responses:
     '200':
       description: Collection of specifications
