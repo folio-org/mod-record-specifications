@@ -1,4 +1,5 @@
-description: Creater, updater, creation date, last updated date
+title: Metadata
+description: Creator, updater, creation date, last updated date
 type: object
 properties:
   createdDate:

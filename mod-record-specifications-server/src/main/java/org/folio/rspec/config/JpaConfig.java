@@ -17,7 +17,7 @@ public class JpaConfig {
 
   static final UUID SYSTEM_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
-  @Bean
+  @Bean("auditorProvider")
   public AuditorAware<UUID> auditorProvider(FolioExecutionContext folioExecutionContext) {
     return () -> Optional.ofNullable(folioExecutionContext.getUserId()).or(useDefault());
   }

@@ -1,9 +1,14 @@
 package org.folio.rspec.controller;
 
+import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -11,6 +16,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,23 +24,32 @@ import java.util.UUID;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
+import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.SpecificationService;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageController.class)
+@Import(ApiExceptionHandler.class)
+@ComponentScan(basePackages = "org.folio.rspec.controller.handler")
 class SpecificationStorageControllerTest {
 
   @Autowired
@@ -111,4 +126,94 @@ class SpecificationStorageControllerTest {
     verify(specificationService).toggleSpecificationRule(specificationId, ruleId,
       new ToggleSpecificationRuleDto(Boolean.FALSE));
   }
+
+  @Test
+  void getSpecificationFields_returnSpecificationFields(@Random SpecificationFieldDto fieldDto) throws Exception {
+    var specificationId = UUID.randomUUID();
+    when(specificationService.findSpecificationFields(specificationId))
+      .thenReturn(new SpecificationFieldDtoCollection().totalRecords(1).addFieldsItem(fieldDto));
+
+    var requestBuilder = get(specificationFieldsPath(specificationId))
+      .accept(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.totalRecords", is(1)))
+      .andExpect(jsonPath("$.fields.size()", is(1)))
+      .andExpect(jsonPath("$.fields[0].id", is(fieldDto.getId().toString())));
+  }
+
+  @Test
+  void getSpecificationFields_return404_notExistedSpecification() throws Exception {
+    var specificationId = UUID.randomUUID();
+    when(specificationService.findSpecificationFields(specificationId))
+      .thenThrow(ResourceNotFoundException.forSpecification("id"));
+
+    var requestBuilder = get(specificationFieldsPath(specificationId))
+      .accept(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(containsString("not found"))));
+  }
+
+  @Test
+  void createSpecificationLocalField_createNewLocalField(@Random SpecificationFieldDto fieldDto) throws Exception {
+    var specificationId = UUID.randomUUID();
+    when(specificationService.createLocalField(eq(specificationId), any())).thenReturn(fieldDto);
+
+    var requestBuilder = post(specificationFieldsPath(specificationId))
+      .contentType(APPLICATION_JSON)
+      .content("""
+        {
+          "tag": 888,
+          "label": "Custom Field - Contributor Data",
+          "url": "http://www.example.org/field888.html",
+          "repeatable": true,
+          "required": true,
+          "deprecated": true
+        }
+        """);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.id", is(fieldDto.getId().toString())))
+      .andExpect(jsonPath("$.tag", is(fieldDto.getTag())))
+      .andExpect(jsonPath("$.label", is(fieldDto.getLabel())))
+      .andExpect(jsonPath("$.url", is(fieldDto.getUrl())))
+      .andExpect(jsonPath("$.repeatable", is(fieldDto.getRepeatable())))
+      .andExpect(jsonPath("$.required", is(fieldDto.getRequired())))
+      .andExpect(jsonPath("$.deprecated", is(fieldDto.getDeprecated())));
+  }
+
+  @Test
+  void createSpecificationLocalField_return404_notExistedSpecification() throws Exception {
+    var specificationId = UUID.randomUUID();
+    when(specificationService.createLocalField(eq(specificationId), any()))
+      .thenThrow(ResourceNotFoundException.forSpecification("id"));
+
+    var requestBuilder = post(specificationFieldsPath(specificationId))
+      .contentType(APPLICATION_JSON)
+      .content("{\"tag\": \"666\", \"label\": \"Mystic field\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(containsString("not found"))));
+  }
+
+  @ValueSource(strings = {
+    "{\"label\": \"Mystic field\"}",
+    "{\"tag\": \"666\"}"
+  })
+  @ParameterizedTest
+  void createSpecificationLocalField_return400_missingFieldInPayload(String content) throws Exception {
+    var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content(content);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("must not be null"))));
+  }
+
 }

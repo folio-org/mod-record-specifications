@@ -1,6 +1,9 @@
+title: 'Toggle Specification Rule'
+description: 'Object that define change of the specification rule enabled flag'
 type: object
 properties:
   enabled:
+    description: 'Flag that enable or disable specification rule'
     type: boolean
 required:
   - enabled

@@ -1,8 +1,12 @@
+title: Specification Rule DTO Collection
+description: Collection of specification rules DTOs
 type: object
 properties:
   rules:
+    description: Collection of specification rules
     type: array
     items:
       $ref: specificationRuleDto.yaml
   totalRecords:
+    description: Total number of specification rules in collection
     type: integer

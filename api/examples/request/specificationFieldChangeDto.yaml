@@ -1,0 +1,6 @@
+value:
+  tag: '888'
+  label: Custom Field - Contributor Data
+  url: http://www.example.org/field888.html
+  repeatable: true
+  required: true

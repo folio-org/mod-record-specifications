@@ -13,6 +13,9 @@ get:
         application/json:
           schema:
             $ref: '../../schemas/specificationRuleDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/specificationRuleDtoCollection.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':

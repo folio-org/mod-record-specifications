@@ -1,0 +1,58 @@
+put:
+  summary: Update Field Definitions
+  description: Update a fields definition.
+  operationId: updateField
+  parameters:
+    - in: path
+      name: id
+      description: Specification Field ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+  tags:
+    - specification-storage-fields
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/specificationFieldChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/specificationFieldChangeDto.yaml'
+  responses:
+    '202':
+      description: Field definition was updated
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationFieldDto.yaml'
+          examples:
+            RequestExample:
+              $ref: '../../examples/request/specificationFieldChangeDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+delete:
+  summary: Delete Field Definition
+  description: Delete field definition
+  operationId: deleteField
+  parameters:
+    - in: path
+      name: id
+      description: Specification Field ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+  tags:
+    - specification-storage-fields
+  responses:
+    '204':
+      description: Field definition was deleted
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

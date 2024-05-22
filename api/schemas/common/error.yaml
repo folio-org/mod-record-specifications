@@ -1,3 +1,4 @@
+title: Error
 description: An error
 type: object
 properties:
@@ -11,6 +12,7 @@ properties:
     type: string
     description: Error message code
   parameters:
+    description: Error parameters
     type: array
     items:
       $ref: 'parameter.yaml'

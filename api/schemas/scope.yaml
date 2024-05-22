@@ -1,0 +1,6 @@
+description: Scope of the specification definition
+type: string
+enum:
+  - system
+  - defined
+  - custom

@@ -1,10 +1,14 @@
+title: Specification DTO Collection
+description: Collection of specifications
 type: object
 properties:
   specifications:
+    description: Collection of specifications
     type: array
     items:
       oneOf:
         - $ref: 'specificationDto.yaml'
         - $ref: 'specificationFullDto.yaml'
   totalRecords:
+    description: Total number of specification in collection
     type: integer

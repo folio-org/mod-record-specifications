@@ -1,4 +1,5 @@
-description: A List of errors
+title: Error Collection
+description: Collection of errors
 type: object
 properties:
   errors:

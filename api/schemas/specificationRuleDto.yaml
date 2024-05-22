@@ -1,18 +1,26 @@
+title: Specification Rule DTO
+description: Details of specification rule that will be used for validating a record
 type: object
 properties:
   id:
+    description: Rule ID
     type: string
     format: uuid
   specificationId:
+    description: Specification ID
     type: string
     format: uuid
   name:
+    description: Rule name
     type: string
   description:
+    description: Rule description
     type: string
   code:
+    description: Rule code
     type: string
   enabled:
+    description: Flag that define if the rule is enabled or disabled for the specification
     type: boolean
   metadata:
     $ref: 'common/metadataDto.yaml'

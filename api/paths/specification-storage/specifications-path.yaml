@@ -29,6 +29,9 @@ get:
         application/json:
           schema:
             $ref: '../../schemas/specificationDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/specificationDtoCollection.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':

@@ -1,0 +1,25 @@
+value:
+  specifications:
+    - id: 6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3
+      title: MARC Bibliographic Specification
+      family: MARC
+      profile: bibliographic
+      url: https://www.loc.gov/marc/bibliographic/
+      fields: []
+      rules: []
+      metadata:
+        createdDate: 2024-05-22 14:55:06
+        createdByUserId: 00000000-0000-0000-0000-000000000000
+        updatedDate: 2024-05-22 14:55:06
+        updatedByUserId: 00000000-0000-0000-0000-000000000000
+    - id: a37d01ba-75c7-4a0c-997e-309823f1df3f
+      title: MARC Authority Specification
+      family: MARC
+      profile: authority
+      url: https://www.loc.gov/marc/authority/
+      metadata:
+        createdDate: 2024-05-22 14:55:06
+        createdByUserId: 00000000-0000-0000-0000-000000000000
+        updatedDate: 2024-05-22 14:55:06
+        updatedByUserId: 00000000-0000-0000-0000-000000000000
+  totalRecords: 2

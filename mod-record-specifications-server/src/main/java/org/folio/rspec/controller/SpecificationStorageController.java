@@ -6,6 +6,9 @@ import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
+import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.rest.resource.SpecificationStorageApi;
@@ -23,6 +26,23 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   private final SpecificationService specificationService;
 
   @Override
+  public ResponseEntity<SpecificationFieldDto> createSpecificationLocalField(UUID specificationId,
+                                                                             SpecificationFieldChangeDto createDto) {
+    SpecificationFieldDto fieldDto = specificationService.createLocalField(specificationId, createDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(fieldDto);
+  }
+
+  @Override
+  public ResponseEntity<SpecificationFieldDtoCollection> getSpecificationFields(UUID specificationId) {
+    return ResponseEntity.ok(specificationService.findSpecificationFields(specificationId));
+  }
+
+  @Override
+  public ResponseEntity<SpecificationRuleDtoCollection> getSpecificationRules(UUID specificationId) {
+    return ResponseEntity.ok(specificationService.findSpecificationRules(specificationId));
+  }
+
+  @Override
   public ResponseEntity<SpecificationDtoCollection> getSpecifications(Family family, FamilyProfile profile,
                                                                       IncludeParam include, Integer limit,
                                                                       Integer offset) {
@@ -34,14 +54,10 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   }
 
   @Override
-  public ResponseEntity<SpecificationRuleDtoCollection> getSpecificationRules(UUID specificationId) {
-    return ResponseEntity.ok(specificationService.findSpecificationRules(specificationId));
-  }
-
-  @Override
   public ResponseEntity<Void> toggleSpecificationRule(UUID specificationId, UUID id,
                                                       ToggleSpecificationRuleDto toggleSpecificationRuleDto) {
     specificationService.toggleSpecificationRule(specificationId, id, toggleSpecificationRuleDto);
     return ResponseEntity.noContent().build();
   }
+
 }

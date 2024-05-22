@@ -22,11 +22,16 @@ public class ResourceNotFoundException extends RuntimeException {
     return new ResourceNotFoundException(Resource.SPECIFICATION_RULE, id);
   }
 
+  public static ResourceNotFoundException forField(Object id) {
+    return new ResourceNotFoundException(Resource.FIELD_DEFINITION, id);
+  }
+
   @Getter
   protected enum Resource {
 
     SPECIFICATION("specification"),
-    SPECIFICATION_RULE("specification rule");
+    SPECIFICATION_RULE("specification rule"),
+    FIELD_DEFINITION("field definition");
 
     private final String name;
 

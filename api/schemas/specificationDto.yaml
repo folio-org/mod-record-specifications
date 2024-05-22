@@ -1,17 +1,22 @@
+title: Specification DTO
+description: Describes specification
 type: object
 x-parent: "abstract"
 properties:
   id:
+    description: Specification ID
     type: string
     format: uuid
   title:
+    description: Specification title
     type: string
   family:
     $ref: 'family.yaml'
   profile:
     $ref: 'familyProfile.yaml'
   url:
+    description: Help url for the specification
     type: string
-    format: url
+    x-field-extra-annotation: '@org.hibernate.validator.constraints.URL'
   metadata:
     $ref: 'common/metadataDto.yaml'

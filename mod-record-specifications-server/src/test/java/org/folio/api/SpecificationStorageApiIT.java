@@ -1,17 +1,23 @@
 package org.folio.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
+import static org.folio.support.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
+import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
@@ -151,6 +157,59 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
       .andExpect(errorMessageMatch(is("must not be null")))
       .andExpect(errorParameterMatch("enabled"));
+  }
+
+  @Test
+  void getSpecificationFields_shouldReturn200AndCollectionOfFields() throws Exception {
+    doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
+      .andExpect(jsonPath("totalRecords", greaterThan(1)))
+      .andExpect(jsonPath("fields.size()", greaterThan(1)))
+      .andExpect(jsonPath("fields.[0].id", notNullValue()))
+      .andExpect(jsonPath("fields.[0].tag", notNullValue()))
+      .andExpect(jsonPath("fields.[0].label", notNullValue()))
+      .andExpect(jsonPath("fields.[0].specificationId", is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString())))
+      .andExpect(jsonPath("fields.[0].url", notNullValue()))
+      .andExpect(jsonPath("fields.[0].repeatable", notNullValue()))
+      .andExpect(jsonPath("fields.[0].required", notNullValue()))
+      .andExpect(jsonPath("fields.[0].deprecated", notNullValue()))
+      .andExpect(jsonPath("fields.[0].scope", notNullValue()))
+      .andExpect(jsonPath("fields.[0].metadata.createdDate", notNullValue()))
+      .andExpect(jsonPath("fields.[0].metadata.createdByUserId", notNullValue()))
+      .andExpect(jsonPath("fields.[0].metadata.updatedByUserId", notNullValue()))
+      .andExpect(jsonPath("fields.[0].metadata.updatedDate", notNullValue()));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn201AndCreatedField() throws Exception {
+    var dto = new SpecificationFieldChangeDto()
+      .tag("666")
+      .label("Mystic Field")
+      .deprecated(true)
+      .repeatable(false)
+      .required(true)
+      .url("http://www.inceptos.com");
+
+    var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.id", notNullValue()))
+      .andExpect(jsonPath("$.scope", is(Scope.CUSTOM.getValue())))
+      .andExpect(jsonPath("$.specificationId", is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString())))
+      .andExpect(jsonPath("$.tag", is(dto.getTag())))
+      .andExpect(jsonPath("$.label", is(dto.getLabel())))
+      .andExpect(jsonPath("$.deprecated", is(dto.getDeprecated())))
+      .andExpect(jsonPath("$.repeatable", is(dto.getRepeatable())))
+      .andExpect(jsonPath("$.required", is(dto.getRequired())))
+      .andExpect(jsonPath("$.url", is(dto.getUrl())))
+      .andExpect(jsonPath("$.metadata.createdDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.createdByUserId", is(USER_ID)))
+      .andExpect(jsonPath("$.metadata.updatedDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.updatedByUserId", is(USER_ID)))
+      .andReturn();
+
+    var createdFieldId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+    doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
+      .andExpect(jsonPath("$.fields.[*].id", hasItem(createdFieldId)));
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

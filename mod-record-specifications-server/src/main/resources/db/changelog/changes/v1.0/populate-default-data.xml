@@ -840,5 +840,9 @@
       <column name="enabled" value="true"/>
     </insert>
   </changeSet>
-  
+
+  <changeSet id="MRSPECS-6@@default-data:specification-fields" author="pavlo_smahin" runOnChange="true">
+    <sqlFile path="sql/default-fields.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
 </databaseChangeLog>

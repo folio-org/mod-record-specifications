@@ -1,0 +1,30 @@
+title: Field definition change DTO
+description: Describe field definition that should be created or change to existed field definition
+type: object
+additionalProperties: false
+properties:
+  tag:
+    description: Record tag
+    type: string
+  label:
+    description: Tag description
+    type: string
+  url:
+    description: Help url for the tag
+    type: string
+    x-field-extra-annotation: '@org.hibernate.validator.constraints.URL'
+  repeatable:
+    description: Define if tag is repeatable
+    type: boolean
+    default: true
+  required:
+    description: Define if tag is required
+    type: boolean
+    default: false
+  deprecated:
+    description: Define if tag is deprecated
+    type: boolean
+    default: false
+required:
+  - tag
+  - label
