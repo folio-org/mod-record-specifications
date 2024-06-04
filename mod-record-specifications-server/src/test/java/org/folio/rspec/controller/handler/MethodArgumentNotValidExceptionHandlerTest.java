@@ -24,7 +24,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @ExtendWith(MockitoExtension.class)
 class MethodArgumentNotValidExceptionHandlerTest {
 
-  private final MethodArgumentNotValidExceptionHandler exceptionHandler = new MethodArgumentNotValidExceptionHandler();
+  private final MethodArgumentNotValidExceptionHandler exceptionHandler =
+    new MethodArgumentNotValidExceptionHandler(null);
 
   @Mock
   private MethodArgumentNotValidException methodArgumentNotValidException;
@@ -55,7 +56,7 @@ class MethodArgumentNotValidExceptionHandlerTest {
     var error = errorCollection.getErrors().get(0);
     assertEquals(defaultMessage, error.getMessage());
     assertEquals(INVALID_REQUEST_PARAMETER.getCode(), error.getCode());
-    assertEquals(INVALID_REQUEST_PARAMETER.getErrorType(), error.getType());
+    assertEquals(INVALID_REQUEST_PARAMETER.getType(), error.getType());
 
     var parameter = error.getParameters().get(0);
     assertEquals(field, parameter.getKey());

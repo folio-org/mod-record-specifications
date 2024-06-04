@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
+import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
@@ -27,6 +28,7 @@ import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
@@ -155,7 +157,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       new ToggleSpecificationRuleDto())
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("must not be null")))
+      .andExpect(errorMessageMatch(is("Field [enabled] must be not null.")))
       .andExpect(errorParameterMatch("enabled"));
   }
 
@@ -181,18 +183,12 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
   @Test
   void createSpecificationLocalField_shouldReturn201AndCreatedField() throws Exception {
-    var dto = new SpecificationFieldChangeDto()
-      .tag("666")
-      .label("Mystic Field")
-      .deprecated(true)
-      .repeatable(false)
-      .required(true)
-      .url("http://www.inceptos.com");
+    var dto = localTestField("666");
 
     var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
       .andExpect(status().isCreated())
       .andExpect(jsonPath("$.id", notNullValue()))
-      .andExpect(jsonPath("$.scope", is(Scope.CUSTOM.getValue())))
+      .andExpect(jsonPath("$.scope", is(Scope.LOCAL.getValue())))
       .andExpect(jsonPath("$.specificationId", is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString())))
       .andExpect(jsonPath("$.tag", is(dto.getTag())))
       .andExpect(jsonPath("$.label", is(dto.getLabel())))
@@ -210,6 +206,41 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("$.fields.[*].id", hasItem(createdFieldId)));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn400WhenFieldForTagAlreadyExist() throws Exception {
+    var dto = localTestField("998");
+
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto);
+
+    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(DataIntegrityViolationException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SPECIFICATION_FIELD.getType())))
+      .andExpect(errorMessageMatch(is("Can only have one validation rule per MARC field/tag number.")));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn400WhenFieldTagIsNotAlphabetical() throws Exception {
+    var dto = localTestField("666").tag("abc");
+
+    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
+      .andExpect(errorMessageMatch(is("A MARC tag must contain three characters.")))
+      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
+      .andExpect(errorParameterMatch("tag"));
+  }
+
+  private SpecificationFieldChangeDto localTestField(String tag) {
+    return new SpecificationFieldChangeDto()
+      .tag(tag)
+      .label("Mystic Field")
+      .deprecated(true)
+      .repeatable(false)
+      .required(true)
+      .url("http://www.inceptos.com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

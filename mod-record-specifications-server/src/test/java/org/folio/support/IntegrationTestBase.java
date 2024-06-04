@@ -196,6 +196,10 @@ public class IntegrationTestBase {
     return jsonPath("$.errors.[*].message", hasItem(errorMessageMatcher));
   }
 
+  protected ResultMatcher errorTypeMatch(Matcher<String> errorMessageMatcher) {
+    return jsonPath("$.errors.[*].type", hasItem(errorMessageMatcher));
+  }
+
   protected ResultMatcher errorParameterMatch(String parameterName) {
     return jsonPath("$.errors.[*].parameters.[*].key", hasItem(parameterName));
   }

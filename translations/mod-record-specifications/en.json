@@ -1,0 +1,8 @@
+{
+  "specification.field.tag.duplicate": "Can only have one validation rule per MARC field/tag number.",
+  "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found",
+
+  "Pattern.specificationFieldChangeDto.tag": "A MARC tag must contain three characters.",
+  "NotNull": "Field [{field}] must be not null."
+
+}

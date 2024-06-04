@@ -33,7 +33,7 @@ class ServiceExceptionHandlerTest {
     Error error = fromErrorCode(ErrorCode.INVALID_QUERY_VALUE);
 
     assertEquals(ErrorCode.INVALID_QUERY_VALUE.getCode(), error.getCode());
-    assertEquals(ErrorCode.INVALID_QUERY_VALUE.getErrorType(), error.getType());
+    assertEquals(ErrorCode.INVALID_QUERY_VALUE.getType(), error.getType());
   }
 
   @Test

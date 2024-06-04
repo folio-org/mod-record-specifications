@@ -45,7 +45,7 @@
 
     <comment>Create scope_enum type</comment>
 
-    <sql>CREATE TYPE scope_enum AS ENUM ('SYSTEM', 'DEFINED', 'CUSTOM')</sql>
+    <sql>CREATE TYPE scope_enum AS ENUM ('SYSTEM', 'STANDARD', 'LOCAL')</sql>
   </changeSet>
 
 </databaseChangeLog>

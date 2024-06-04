@@ -50,7 +50,7 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
     var code = new Error()
       .message(message)
       .code(ErrorCode.INVALID_QUERY_ENUM_VALUE.getCode())
-      .type(ErrorCode.INVALID_QUERY_ENUM_VALUE.getErrorType());
+      .type(ErrorCode.INVALID_QUERY_ENUM_VALUE.getType());
     var parameter = new Parameter().key(e.getName()).value(String.valueOf(e.getValue()));
     code.addParametersItem(parameter);
     return code;

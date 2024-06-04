@@ -34,6 +34,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.folio</groupId>
+      <artifactId>folio-spring-i18n</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>
@@ -90,6 +94,16 @@
 
   <build>
     <finalName>mod-record-specifications-server-fat</finalName>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${maven.multiModuleProjectDirectory}/translations</directory>
+        <targetPath>translations</targetPath>
+      </resource>
+    </resources>
 
     <plugins>
       <plugin>

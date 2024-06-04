@@ -6,12 +6,18 @@ import lombok.Getter;
  * This class represents a custom exception indicating that a resource was not found.
  * The exception message is constructed using a resource name and ID.
  */
+@Getter
 public class ResourceNotFoundException extends RuntimeException {
 
   private static final String MSG_TEMPLATE = "%s with ID [%s] was not found";
 
+  private final Resource resource;
+  private final Object id;
+
   protected ResourceNotFoundException(Resource resource, Object id) {
     super(String.format(MSG_TEMPLATE, resource.getName(), id));
+    this.resource = resource;
+    this.id = id;
   }
 
   public static ResourceNotFoundException forSpecification(Object id) {
@@ -27,7 +33,7 @@ public class ResourceNotFoundException extends RuntimeException {
   }
 
   @Getter
-  protected enum Resource {
+  public enum Resource {
 
     SPECIFICATION("specification"),
     SPECIFICATION_RULE("specification rule"),

@@ -32,7 +32,7 @@ public class SpecificationFieldService {
   public SpecificationFieldDto createLocalField(Specification specification, SpecificationFieldChangeDto createDto) {
     var fieldEntity = specificationFieldMapper.toEntity(createDto);
     fieldEntity.setSpecification(specification);
-    fieldEntity.setScope(Scope.CUSTOM);
+    fieldEntity.setScope(Scope.LOCAL);
     return specificationFieldMapper.toDto(fieldRepository.save(fieldEntity));
   }
 

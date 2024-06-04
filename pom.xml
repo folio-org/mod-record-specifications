@@ -70,6 +70,11 @@
         <version>${folio-spring-support.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.folio</groupId>
+        <artifactId>folio-spring-i18n</artifactId>
+        <version>${folio-spring-support.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mapstruct</groupId>
         <artifactId>mapstruct</artifactId>
         <version>${mapstruct.version}</version>

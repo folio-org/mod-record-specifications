@@ -6,6 +6,7 @@ properties:
   tag:
     description: Record tag
     type: string
+    pattern: \d{3}
   label:
     description: Tag description
     type: string

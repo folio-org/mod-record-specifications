@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 @UnitTest
 class ResourceNotFoundExceptionHandlerTest {
 
-  private final ResourceNotFoundExceptionHandler exceptionHandler = new ResourceNotFoundExceptionHandler();
+  private final ResourceNotFoundExceptionHandler exceptionHandler = new ResourceNotFoundExceptionHandler(null);
 
   @Test
   void handleException_ReturnsNotFoundWithErrorCollection() {
@@ -36,7 +36,7 @@ class ResourceNotFoundExceptionHandlerTest {
 
     var error = errorCollection.getErrors().get(0);
     assertEquals(RESOURCE_NOT_FOUND.getCode(), error.getCode());
-    assertEquals(RESOURCE_NOT_FOUND.getErrorType(), error.getType());
+    assertEquals(RESOURCE_NOT_FOUND.getType(), error.getType());
     assertEquals("specification with ID [%s] was not found".formatted(resourceId), error.getMessage());
   }
 
