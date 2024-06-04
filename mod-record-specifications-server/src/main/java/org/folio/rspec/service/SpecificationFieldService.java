@@ -8,7 +8,6 @@ import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
-import org.folio.rspec.exception.IllegalSpecificationChangeException;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.mapper.SpecificationFieldMapper;
 import org.springframework.stereotype.Service;
@@ -40,9 +39,6 @@ public class SpecificationFieldService {
   @Transactional
   public void deleteField(UUID id) {
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
-    if (fieldEntity.getScope() != Scope.CUSTOM) {
-      throw IllegalSpecificationChangeException.forDelete(fieldEntity.getScope());
-    }
     fieldRepository.delete(fieldEntity);
   }
 

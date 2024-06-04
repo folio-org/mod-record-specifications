@@ -61,6 +61,7 @@ rules:
   info-license: off
   license-url: off
   contact-properties: off
+  oas3-valid-media-example: off
   docs-descriptions:
     given:
       - "#DescribableObjects"

@@ -7,10 +7,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ApiEndpoints {
 
-  public static final String SPECIFICATIONS_PATH = "/specification-storage/specifications";
+  public static final String SPECIFICATION_STORAGE_PATH = "/specification-storage";
+  public static final String SPECIFICATIONS_PATH = SPECIFICATION_STORAGE_PATH + "/specifications";
   public static final String SPECIFICATION_RULES_PATH = SPECIFICATIONS_PATH + "/%s/rules";
   public static final String SPECIFICATION_RULE_PATH = SPECIFICATION_RULES_PATH + "/%s";
   public static final String SPECIFICATION_FIELDS_PATH = SPECIFICATIONS_PATH + "/%s/fields";
+  public static final String FIELD_PATH = SPECIFICATION_STORAGE_PATH + "/fields/%s";
 
   public static String specificationsPath() {
     return SPECIFICATIONS_PATH;
@@ -42,6 +44,14 @@ public class ApiEndpoints {
 
   public static String specificationFieldsPath(UUID specId) {
     return specificationFieldsPath(specId.toString());
+  }
+
+  public static String fieldPath(String fieldId) {
+    return FIELD_PATH.formatted(fieldId);
+  }
+
+  public static String fieldPath(UUID fieldId) {
+    return fieldPath(fieldId.toString());
   }
 
   private static String addQueryParams(String path, QueryParams queryParams) {
