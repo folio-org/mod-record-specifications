@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
+import org.folio.rspec.config.TranslationConfig;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
@@ -31,32 +32,49 @@ import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.SpecificationService;
+import org.folio.rspec.service.mapper.StringToFamilyEnumConverter;
+import org.folio.rspec.service.mapper.StringToFamilyProfileEnumConverter;
+import org.folio.rspec.service.mapper.StringToIncludeParamEnumConverter;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
 import org.folio.spring.testing.type.UnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.test.web.servlet.MockMvc;
 
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageController.class)
-@Import(ApiExceptionHandler.class)
-@ComponentScan(basePackages = "org.folio.rspec.controller.handler")
+@Import({ApiExceptionHandler.class, TranslationConfig.class})
+@ComponentScan(basePackages = {"org.folio.rspec.controller.handler",
+                               "org.folio.rspec.service.i18n",
+                               "org.folio.spring.i18n"})
 class SpecificationStorageControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
 
+  @Autowired
+  private GenericConversionService conversionService;
+
   @MockBean
   private SpecificationService specificationService;
+
+  @BeforeEach
+  public void setup() {
+    conversionService.addConverter(new StringToFamilyEnumConverter());
+    conversionService.addConverter(new StringToFamilyProfileEnumConverter());
+    conversionService.addConverter(new StringToIncludeParamEnumConverter());
+  }
 
   @Test
   void getSpecifications_returnSpecifications(@Random SpecificationDto specificationDto) throws Exception {
@@ -88,6 +106,22 @@ class SpecificationStorageControllerTest {
       .andExpect(status().isNotImplemented());
 
     verifyNoInteractions(specificationService);
+  }
+
+  @CsvSource(delimiter = '|', value = {
+    "family   | MARC",
+    "profile  | authority and bibliographic"})
+  @ParameterizedTest
+  void getSpecifications_badRequest_whenInvalidEnumQueryParam(String queryParam, String possibleValues)
+    throws Exception {
+    var requestBuilder = get(specificationsPath())
+      .queryParam(queryParam, "randomValue")
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isUnprocessableEntity())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Unexpected value [randomValue]. Possible values: [%s]"
+        .formatted(possibleValues)))));
   }
 
   @Test
@@ -190,7 +224,7 @@ class SpecificationStorageControllerTest {
   void createSpecificationLocalField_return404_notExistedSpecification() throws Exception {
     var specificationId = UUID.randomUUID();
     when(specificationService.createLocalField(eq(specificationId), any()))
-      .thenThrow(ResourceNotFoundException.forSpecification("id"));
+      .thenThrow(ResourceNotFoundException.forSpecification(specificationId));
 
     var requestBuilder = post(specificationFieldsPath(specificationId))
       .contentType(APPLICATION_JSON)
@@ -198,22 +232,23 @@ class SpecificationStorageControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(containsString("not found"))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("specification with ID [%s] was not found"
+        .formatted(specificationId)))));
   }
 
-  @ValueSource(strings = {
-    "{\"label\": \"Mystic field\"}",
-    "{\"tag\": \"666\"}"
+  @CsvSource(delimiter = '|', value = {
+    "{\"label\": \"Mystic field\"}  | tag",
+    "{\"tag\": \"666\"}             | label"
   })
   @ParameterizedTest
-  void createSpecificationLocalField_return400_missingFieldInPayload(String content) throws Exception {
+  void createSpecificationLocalField_return400_missingFieldInPayload(String content, String field) throws Exception {
     var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
       .content(content);
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("must not be null"))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
   }
 
 }

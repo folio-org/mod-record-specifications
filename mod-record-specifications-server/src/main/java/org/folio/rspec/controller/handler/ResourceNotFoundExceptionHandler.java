@@ -18,6 +18,7 @@ public class ResourceNotFoundExceptionHandler implements ServiceExceptionHandler
 
   private static final String RESOURCE_NAME_MSG_ARG = "resourceName";
   private static final String RESOURCE_ID_MSG_ARG = "resourceId";
+
   private final TranslationService translationService;
 
   @Override

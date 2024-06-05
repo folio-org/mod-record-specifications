@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
+import org.folio.rspec.config.TranslationConfig;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.service.SpecificationFieldService;
@@ -28,8 +29,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageFieldsController.class)
-@Import(ApiExceptionHandler.class)
-@ComponentScan(basePackages = "org.folio.rspec.controller.handler")
+@Import({ApiExceptionHandler.class, TranslationConfig.class})
+@ComponentScan(basePackages = {"org.folio.rspec.controller.handler",
+                               "org.folio.rspec.service.i18n",
+                               "org.folio.spring.i18n"})
 class SpecificationStorageFieldsControllerTest {
 
   @Autowired

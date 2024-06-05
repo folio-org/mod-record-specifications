@@ -15,10 +15,9 @@ import org.folio.rspec.rest.resource.SpecificationStorageApi;
 import org.folio.rspec.service.SpecificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-@Validated
+//@Validated
 @RestController
 @RequiredArgsConstructor
 public class SpecificationStorageController implements SpecificationStorageApi {

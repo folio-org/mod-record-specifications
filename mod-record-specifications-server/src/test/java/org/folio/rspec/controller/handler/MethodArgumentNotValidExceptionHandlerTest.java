@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import org.folio.rspec.domain.dto.ErrorCollection;
+import org.folio.spring.i18n.service.TranslationService;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,8 +24,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @ExtendWith(MockitoExtension.class)
 class MethodArgumentNotValidExceptionHandlerTest {
 
-  private final MethodArgumentNotValidExceptionHandler exceptionHandler =
-    new MethodArgumentNotValidExceptionHandler(null);
+  @Mock
+  private TranslationService translationService;
 
   @Mock
   private MethodArgumentNotValidException methodArgumentNotValidException;
@@ -33,18 +33,23 @@ class MethodArgumentNotValidExceptionHandlerTest {
   @Mock
   private BindingResult bindingResult;
 
+  @InjectMocks
+  private MethodArgumentNotValidExceptionHandler exceptionHandler;
+
   @Test
   void handleException_ReturnsBadRequestWithErrorCollection() {
     // Arrange
     var field = "testField";
     var defaultMessage = "must not be null";
     var rejectedValue = "null";
-    var fieldError = new FieldError("objectName", field, rejectedValue, false, null, null, defaultMessage);
+    var codes = new String[] {"c1", "c2"};
+    var fieldError = new FieldError("objectName", field, rejectedValue, false, codes, null, defaultMessage);
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(List.of(fieldError));
+    when(translationService.format(codes, "field", field)).thenReturn(defaultMessage);
 
     // Act
-    ResponseEntity<ErrorCollection> responseEntity = exceptionHandler.handleException(methodArgumentNotValidException);
+    var responseEntity = exceptionHandler.handleException(methodArgumentNotValidException);
 
     // Assert
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
