@@ -8,7 +8,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.folio.spring.i18n.service.TranslationService;
+import org.folio.rspec.service.i18n.ExtendedTranslationService;
 import org.folio.spring.testing.type.UnitTest;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
 class HibernateConstraintViolationExceptionHandlerTest {
 
   @Mock
-  private TranslationService translationService;
+  private ExtendedTranslationService translationService;
 
   @InjectMocks
   private HibernateConstraintViolationExceptionHandler handler;
@@ -52,11 +52,11 @@ class HibernateConstraintViolationExceptionHandlerTest {
     when(cause.getConstraintName()).thenReturn("unknown_constraint");
     var expectedMessage = "Unexpected error";
     var exception = new DataIntegrityViolationException("Error", cause);
-    when(translationService.format(anyString())).thenReturn(expectedMessage);
+    when(translationService.formatUnexpected(anyString())).thenReturn(expectedMessage);
 
     var response = handler.handleException(exception);
 
-    assertEquals(400, response.getStatusCodeValue());
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     var errorCollection = response.getBody();
     assertNotNull(errorCollection);
     assertEquals(1, errorCollection.getErrors().size());
