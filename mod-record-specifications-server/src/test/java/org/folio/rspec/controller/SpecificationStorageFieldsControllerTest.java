@@ -54,7 +54,6 @@ class SpecificationStorageFieldsControllerTest {
   @Test
   void updateField_returnAccepted() throws Exception {
     UUID id = UUID.randomUUID();
-    SpecificationFieldChangeDto specificationFieldChangeDto = new SpecificationFieldChangeDto();
     SpecificationFieldDto specificationFieldDto = new SpecificationFieldDto();
 
     when(specificationFieldService.updateField(eq(id), any(SpecificationFieldChangeDto.class))).thenReturn(

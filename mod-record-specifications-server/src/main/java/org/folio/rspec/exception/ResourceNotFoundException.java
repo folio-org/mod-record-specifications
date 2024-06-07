@@ -11,8 +11,8 @@ public class ResourceNotFoundException extends RuntimeException {
 
   private static final String MSG_TEMPLATE = "%s with ID [%s] was not found";
 
-  private final Resource resource;
-  private final Object id;
+  private final transient Resource resource;
+  private final transient Object id;
 
   protected ResourceNotFoundException(Resource resource, Object id) {
     super(String.format(MSG_TEMPLATE, resource.getName(), id));
