@@ -1,5 +1,9 @@
 package org.folio.rspec.domain.entity;
 
+import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
+import static org.folio.rspec.domain.entity.Field.SPECIFICATION_ID_COLUMN;
+import static org.folio.rspec.domain.entity.Field.TAG_COLUMN;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -23,11 +27,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "field", uniqueConstraints = {
-  @UniqueConstraint(name = "uc_field_tag_specification_id", columnNames = {"tag", "specification_id"})
+@Table(name = FIELD_TABLE_NAME, uniqueConstraints = {
+  @UniqueConstraint(name = "uc_field_tag_specification_id", columnNames = {TAG_COLUMN, SPECIFICATION_ID_COLUMN})
 })
 public class Field extends UuidPersistable {
 
+  public static final String FIELD_TABLE_NAME = "field";
   public static final String TAG_COLUMN = "tag";
   public static final String LABEL_COLUMN = "label";
   public static final String URL_COLUMN = "url";
@@ -63,12 +68,12 @@ public class Field extends UuidPersistable {
   private Metadata metadata = new Metadata();
 
   @Override
-  public boolean equals(Object o) {
-    return super.equals(o);
+  public int hashCode() {
+    return super.hashCode();
   }
 
   @Override
-  public int hashCode() {
-    return super.hashCode();
+  public boolean equals(Object o) {
+    return super.equals(o);
   }
 }

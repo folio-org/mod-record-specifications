@@ -1,8 +1,10 @@
 package org.folio.api;
 
+import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.fieldPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
+import static org.folio.support.TestConstants.TENANT_ID;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.TestConstants;
@@ -24,6 +27,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @IntegrationTest
+@DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
   @BeforeAll

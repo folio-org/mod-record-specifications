@@ -1,14 +1,18 @@
 package org.folio.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
+import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,16 +27,21 @@ import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
+import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
+@DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends IntegrationTestBase {
+
+  private final EasyRandom easyRandom = new EasyRandom();
 
   @BeforeAll
   static void beforeAll() {
@@ -163,22 +172,27 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
   @Test
   void getSpecificationFields_shouldReturn200AndCollectionOfFields() throws Exception {
+    var dto1 = localTestField("101");
+    var dto2 = localTestField("102");
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto1);
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto2);
+
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
-      .andExpect(jsonPath("totalRecords", greaterThan(1)))
-      .andExpect(jsonPath("fields.size()", greaterThan(1)))
-      .andExpect(jsonPath("fields.[0].id", notNullValue()))
-      .andExpect(jsonPath("fields.[0].tag", notNullValue()))
-      .andExpect(jsonPath("fields.[0].label", notNullValue()))
-      .andExpect(jsonPath("fields.[0].specificationId", is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString())))
-      .andExpect(jsonPath("fields.[0].url", notNullValue()))
-      .andExpect(jsonPath("fields.[0].repeatable", notNullValue()))
-      .andExpect(jsonPath("fields.[0].required", notNullValue()))
-      .andExpect(jsonPath("fields.[0].deprecated", notNullValue()))
-      .andExpect(jsonPath("fields.[0].scope", notNullValue()))
-      .andExpect(jsonPath("fields.[0].metadata.createdDate", notNullValue()))
-      .andExpect(jsonPath("fields.[0].metadata.createdByUserId", notNullValue()))
-      .andExpect(jsonPath("fields.[0].metadata.updatedByUserId", notNullValue()))
-      .andExpect(jsonPath("fields.[0].metadata.updatedDate", notNullValue()));
+      .andExpect(jsonPath("totalRecords", is(2)))
+      .andExpect(jsonPath("fields.size()", is(2)))
+      .andExpect(jsonPath("fields.[*].id", everyItem(notNullValue())))
+      .andExpect(jsonPath("fields.[*].tag", hasItems(dto1.getTag(), dto2.getTag())))
+      .andExpect(jsonPath("fields.[*].label", hasItems(dto1.getLabel(), dto2.getLabel())))
+      .andExpect(jsonPath("fields.[*].specificationId", everyItem(is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString()))))
+      .andExpect(jsonPath("fields.[*].url", hasItems(dto1.getUrl(), dto2.getUrl())))
+      .andExpect(jsonPath("fields.[*].repeatable", hasItems(dto1.getRepeatable(), dto2.getRepeatable())))
+      .andExpect(jsonPath("fields.[*].required", hasItems(dto1.getRequired(), dto2.getRequired())))
+      .andExpect(jsonPath("fields.[*].deprecated", hasItems(dto1.getDeprecated(), dto2.getDeprecated())))
+      .andExpect(jsonPath("fields.[*].scope", everyItem(is(Scope.LOCAL.getValue()))))
+      .andExpect(jsonPath("fields.[*].metadata.createdDate", everyItem(notNullValue())))
+      .andExpect(jsonPath("fields.[*].metadata.createdByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("fields.[*].metadata.updatedByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("fields.[*].metadata.updatedDate", everyItem(notNullValue())));
   }
 
   @Test
@@ -236,11 +250,11 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
   private SpecificationFieldChangeDto localTestField(String tag) {
     return new SpecificationFieldChangeDto()
       .tag(tag)
-      .label("Mystic Field")
-      .deprecated(true)
-      .repeatable(false)
-      .required(true)
-      .url("http://www.inceptos.com");
+      .label(easyRandom.nextObject(String.class))
+      .deprecated(easyRandom.nextBoolean())
+      .repeatable(easyRandom.nextBoolean())
+      .required(easyRandom.nextBoolean())
+      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {
