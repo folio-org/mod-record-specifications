@@ -2,6 +2,7 @@ package org.folio.rspec.service;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -13,6 +14,7 @@ import org.folio.rspec.service.mapper.SpecificationFieldMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SpecificationFieldService {
@@ -21,6 +23,7 @@ public class SpecificationFieldService {
   private final SpecificationFieldMapper specificationFieldMapper;
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
+    log.debug("findSpecificationFields::specificationId={}", specificationId);
     var specificationFieldDtos = fieldRepository.findBySpecificationId(specificationId).stream()
       .map(specificationFieldMapper::toDto)
       .toList();
@@ -30,6 +33,7 @@ public class SpecificationFieldService {
   }
 
   public SpecificationFieldDto createLocalField(Specification specification, SpecificationFieldChangeDto createDto) {
+    log.debug("createLocalField::specificationId={}, createDto={}", specification.getId(), createDto);
     var fieldEntity = specificationFieldMapper.toEntity(createDto);
     fieldEntity.setSpecification(specification);
     fieldEntity.setScope(Scope.LOCAL);
@@ -38,12 +42,14 @@ public class SpecificationFieldService {
 
   @Transactional
   public void deleteField(UUID id) {
+    log.debug("deleteField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     fieldRepository.delete(fieldEntity);
   }
 
   @Transactional
   public SpecificationFieldDto updateField(UUID id, SpecificationFieldChangeDto changeDto) {
+    log.debug("updateField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     var updatedField = specificationFieldMapper.partialUpdate(changeDto, fieldEntity);
 

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
@@ -24,6 +25,7 @@ import org.folio.spring.data.OffsetRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SpecificationService {
@@ -36,6 +38,8 @@ public class SpecificationService {
   @Transactional
   public SpecificationDtoCollection findSpecifications(Family family, FamilyProfile profile, IncludeParam include,
                                                        Integer limit, Integer offset) {
+    log.debug("findSpecifications::family={}, profile={}, include={}, limit={}, offset={}",
+      family, profile, include, limit, offset);
     var specificationCollection = new SpecificationDtoCollection();
 
     var page = specificationRepository.findByFamilyAndProfile(family, profile, OffsetRequest.of(offset, limit));
@@ -50,6 +54,7 @@ public class SpecificationService {
 
   @Transactional
   public SpecificationRuleDtoCollection findSpecificationRules(UUID specificationId) {
+    log.debug("findSpecificationRules::specificationId={}", specificationId);
     return doForSpecificationOrFail(specificationId,
       specification -> specificationRuleService.findSpecificationRules(specificationId)
     );
@@ -57,6 +62,7 @@ public class SpecificationService {
 
   public void toggleSpecificationRule(UUID specificationId, UUID ruleId,
                                       ToggleSpecificationRuleDto toggleSpecificationRuleDto) {
+    log.debug("toggleSpecificationRule::specificationId={}, ruleId={}", specificationId, toggleSpecificationRuleDto);
     Objects.requireNonNull(toggleSpecificationRuleDto.getEnabled());
     specificationRuleService.toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId),
       toggleSpecificationRuleDto.getEnabled());
@@ -64,6 +70,7 @@ public class SpecificationService {
 
   @Transactional
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
+    log.debug("findSpecificationFields::specificationId={}", specificationId);
     return doForSpecificationOrFail(specificationId,
       specification -> specificationFieldService.findSpecificationFields(specificationId)
     );
@@ -71,6 +78,7 @@ public class SpecificationService {
 
   @Transactional
   public SpecificationFieldDto createLocalField(UUID specificationId, SpecificationFieldChangeDto createDto) {
+    log.debug("createLocalField::specificationId={}, createDto={}", specificationId, createDto);
     return doForSpecificationOrFail(specificationId,
       specification -> specificationFieldService.createLocalField(specification, createDto)
     );
