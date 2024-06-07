@@ -120,7 +120,7 @@ class SpecificationStorageControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isUnprocessableEntity())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Unexpected value [randomValue]. Possible values: [%s]"
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Unexpected value [randomValue]. Possible values: [%s]."
         .formatted(possibleValues)))));
   }
 
@@ -232,7 +232,7 @@ class SpecificationStorageControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("specification with ID [%s] was not found"
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("specification with ID [%s] was not found."
         .formatted(specificationId)))));
   }
 
@@ -250,5 +250,17 @@ class SpecificationStorageControllerTest {
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
   }
+
+  @Test
+  void createSpecificationLocalField_return400_invalidUrl() throws Exception {
+    var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"tag\": \"666\", \"label\": \"Mystic field\", \"url\": \"invalid\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [url] contains invalid URL."))));
+  }
+
 
 }

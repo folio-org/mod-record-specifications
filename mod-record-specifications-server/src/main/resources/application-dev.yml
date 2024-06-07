@@ -51,3 +51,4 @@ management:
 logging:
   level:
     org.folio.spring.filter.LoggingRequestFilter: DEBUG
+    org.folio.spring.i18n.model.TranslationMap: INFO

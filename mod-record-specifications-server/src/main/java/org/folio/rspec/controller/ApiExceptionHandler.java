@@ -18,12 +18,13 @@ public class ApiExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorCollection> globalExceptionHandler(Exception e) {
-    log.error("Trying to handle exception", e);
+    log.warn("Trying to handle [exception: {}}, message: {}]", e.getClass().getName(), e.getMessage());
     for (ServiceExceptionHandler exceptionHandler : exceptionHandlers) {
       if (exceptionHandler.canHandle(e)) {
         return exceptionHandler.handleException(e);
       }
     }
+    log.error("Failed to handle exception", e);
     return ServiceExceptionHandler.fallback(e);
   }
 

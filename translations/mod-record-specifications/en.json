@@ -1,13 +1,14 @@
 {
   "specification.field.tag.duplicate": "Can only have one validation rule per MARC field/tag number.",
-  "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found",
+  "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
 
-  "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}]",
+  "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.specificationFieldChangeDto.tag": "A MARC tag must contain three characters.",
-  "Min": "{parameter} must be greater than or equal to {value}",
-  "Max": "{parameter} must be less than or equal to {value}",
+  "Min": "{parameter} must be greater than or equal to {value}.",
+  "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "Field [{field}] must be not null.",
-  
+  "URL.url": "Field [{field}] contains invalid URL.",
+
   "unexpected": "Unexpected error: {errorMessage}."
 
 }

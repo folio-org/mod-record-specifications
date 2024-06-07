@@ -51,7 +51,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
     tryDelete(fieldPath(notExistId))
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("field definition with ID [%s] was not found".formatted(notExistId))));
+      .andExpect(errorMessageMatch(is("field definition with ID [%s] was not found.".formatted(notExistId))));
   }
 
   @Test
@@ -78,7 +78,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
     tryPut(fieldPath(notExistId), getLocalFieldDto())
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("field definition with ID [%s] was not found".formatted(notExistId))));
+      .andExpect(errorMessageMatch(is("field definition with ID [%s] was not found.".formatted(notExistId))));
   }
 
   private SpecificationFieldChangeDto getLocalFieldDto() {

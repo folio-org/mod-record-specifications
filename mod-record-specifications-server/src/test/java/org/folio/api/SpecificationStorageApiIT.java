@@ -129,7 +129,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryGet(specificationRulesPath(notExistId))
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("specification with ID [%s] was not found".formatted(notExistId))));
+      .andExpect(errorMessageMatch(is("specification with ID [%s] was not found.".formatted(notExistId))));
   }
 
   @Test
@@ -156,7 +156,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, notExistId), new ToggleSpecificationRuleDto(false))
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("specification rule with ID [specificationId=%s, ruleId=%s] was not found"
+      .andExpect(errorMessageMatch(is("specification rule with ID [specificationId=%s, ruleId=%s] was not found."
         .formatted(BIBLIOGRAPHIC_SPECIFICATION_ID, notExistId))));
   }
 
