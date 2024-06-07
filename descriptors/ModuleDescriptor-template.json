@@ -19,7 +19,7 @@
           "methods": [
             "GET"
           ],
-          "pathPattern": "/specification-storage/specifications/{id}/rules",
+          "pathPattern": "/specification-storage/specifications/{specificationId}/rules",
           "permissionsRequired": [
             "specification-storage.specification.rules.collection.get"
           ]
@@ -28,9 +28,45 @@
           "methods": [
             "PATCH"
           ],
-          "pathPattern": "/specification-storage/specifications/{id}/rules/{ruleId}",
+          "pathPattern": "/specification-storage/specifications/{specificationId}/rules/{ruleId}",
           "permissionsRequired": [
             "specification-storage.specification.rules.item.patch"
+          ]
+        },
+        {
+          "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/specifications/{specificationId}/fields",
+          "permissionsRequired": [
+            "specification-storage.specification.fields.collection.get"
+          ]
+        },
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/specification-storage/specifications/{specificationId}/fields",
+          "permissionsRequired": [
+            "specification-storage.specification.fields.item.post"
+          ]
+        },
+        {
+          "methods": [
+            "PUT"
+          ],
+          "pathPattern": "/specification-storage/fields/{id}",
+          "permissionsRequired": [
+            "specification-storage.fields.item.put"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/specification-storage/fields/{id}",
+          "permissionsRequired": [
+            "specification-storage.fields.item.delete"
           ]
         }
       ]
@@ -73,13 +109,37 @@
       "description": "Toggle rule for specification"
     },
     {
+      "permissionName": "specification-storage.specification.fields.collection.get",
+      "displayName": "Specification Storage - Get specification field definition collection",
+      "description": "Get specification fields collection"
+    },
+    {
+      "permissionName": "specification-storage.specification.fields.item.post",
+      "displayName": "Specification Storage - Create field definition for specification",
+      "description": "Create specification field definition"
+    },
+    {
+      "permissionName": "specification-storage.fields.item.put",
+      "displayName": "Specification Storage - Update field definition",
+      "description": "Update field definition"
+    },
+    {
+      "permissionName": "specification-storage.fields.item.delete",
+      "displayName": "Specification Storage - Delete field definition",
+      "description": "Delete field definition"
+    },
+    {
       "permissionName": "specification-storage.all",
       "displayName": "Specification Storage - All permissions",
       "description": "Entire set of permissions needed to manage specifications",
       "subPermissions": [
         "specification-storage.specifications.collection.get",
         "specification-storage.specification.rules.collection.get",
-        "specification-storage.specification.rules.item.patch"
+        "specification-storage.specification.rules.item.patch",
+        "specification-storage.specification.fields.collection.get",
+        "specification-storage.specification.fields.item.post",
+        "specification-storage.fields.item.put",
+        "specification-storage.fields.item.delete"
       ]
     }
   ],
