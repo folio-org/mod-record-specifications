@@ -34,4 +34,18 @@
     <sql>CREATE TYPE family_profile_enum AS ENUM ('AUTHORITY', 'BIBLIOGRAPHIC')</sql>
   </changeSet>
 
+  <changeSet id="MRSPECS-6@@create-type:scope_enum" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM pg_type t JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+        WHERE t.typname = 'scope_enum' AND n.nspname = '${database.defaultSchemaName}';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Create scope_enum type</comment>
+
+    <sql>CREATE TYPE scope_enum AS ENUM ('SYSTEM', 'STANDARD', 'LOCAL')</sql>
+  </changeSet>
+
 </databaseChangeLog>

@@ -27,12 +27,18 @@ servers:
 tags:
   - name: specification-storage
     description: Provides API for managing specifications.
+  - name: specification-storage-fields
+    description: Provides API for managing specification fields.
 
 
 paths:
   /specification-storage/specifications:
-    $ref: 'paths/specification-storage/get-specifications-path.yaml'
-  /specification-storage/specifications/{id}/rules:
-    $ref: 'paths/specification-storage/get-specification-rules-path.yaml'
-  /specification-storage/specifications/{id}/rules/{ruleId}:
-    $ref: 'paths/specification-storage/get-specification-rules-by-id-path.yaml'
+    $ref: 'paths/specification-storage/specifications-path.yaml'
+  /specification-storage/specifications/{specificationId}/rules:
+    $ref: 'paths/specification-storage/specification-rules-path.yaml'
+  /specification-storage/specifications/{specificationId}/rules/{id}:
+    $ref: 'paths/specification-storage/specification-rules-by-id-path.yaml'
+  /specification-storage/specifications/{specificationId}/fields:
+    $ref: 'paths/specification-storage/specification-fields-path.yaml'
+  /specification-storage/fields/{id}:
+    $ref: 'paths/specification-storage/fields-by-id-path.yaml'

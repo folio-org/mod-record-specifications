@@ -840,5 +840,5 @@
       <column name="enabled" value="true"/>
     </insert>
   </changeSet>
-  
+
 </databaseChangeLog>

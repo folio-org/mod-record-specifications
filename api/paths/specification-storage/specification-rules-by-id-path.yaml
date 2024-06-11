@@ -5,15 +5,9 @@ patch:
   tags:
     - specification-storage
   parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
     - in: path
       name: id
-      description: Specification ID
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - in: path
-      name: ruleId
       description: Specification Rule ID
       required: true
       schema:
@@ -25,8 +19,17 @@ patch:
       application/json:
         schema:
           $ref: '../../schemas/toggleSpecificationRuleDto.yaml'
+        examples:
+          Enable:
+            value:
+              enabled: true
+            summary: Enables rule for the specification
+          Disable:
+            value:
+              enabled: false
+            summary: Disables rule for the specification
   responses:
-    '204':
+    '202':
       description: 'Operation was successful'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'

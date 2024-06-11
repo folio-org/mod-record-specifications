@@ -5,13 +5,7 @@ get:
   tags:
     - specification-storage
   parameters:
-    - in: path
-      name: id
-      description: Specification ID
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: '../../parameters/specificationId-param.yaml'
   responses:
     '200':
       description: Collection of specifications
@@ -19,6 +13,9 @@ get:
         application/json:
           schema:
             $ref: '../../schemas/specificationRuleDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/specificationRuleDtoCollection.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':

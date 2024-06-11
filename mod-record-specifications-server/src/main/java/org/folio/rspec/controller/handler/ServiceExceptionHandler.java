@@ -19,7 +19,7 @@ public interface ServiceExceptionHandler {
   }
 
   static Error fromErrorCode(ErrorCode errorCode) {
-    return new Error().code(errorCode.getCode()).type(errorCode.getErrorType());
+    return new Error().code(errorCode.getCode()).type(errorCode.getType());
   }
 
   static ErrorCollection errorCollection(Error... errors) {

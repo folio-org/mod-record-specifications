@@ -1,30 +1,47 @@
 package org.folio.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
+import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
+import static org.folio.support.TestConstants.TENANT_ID;
+import static org.folio.support.TestConstants.USER_ID;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
+import org.folio.rspec.domain.dto.ErrorCode;
+import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
+import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
+@DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends IntegrationTestBase {
+
+  private final EasyRandom easyRandom = new EasyRandom();
 
   @BeforeAll
   static void beforeAll() {
@@ -112,7 +129,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryGet(specificationRulesPath(notExistId))
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("specification with ID [%s] was not found".formatted(notExistId))));
+      .andExpect(errorMessageMatch(is("specification with ID [%s] was not found.".formatted(notExistId))));
   }
 
   @Test
@@ -139,7 +156,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, notExistId), new ToggleSpecificationRuleDto(false))
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("specification rule with ID [specificationId=%s, ruleId=%s] was not found"
+      .andExpect(errorMessageMatch(is("specification rule with ID [specificationId=%s, ruleId=%s] was not found."
         .formatted(BIBLIOGRAPHIC_SPECIFICATION_ID, notExistId))));
   }
 
@@ -149,8 +166,95 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       new ToggleSpecificationRuleDto())
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("must not be null")))
+      .andExpect(errorMessageMatch(is("Field [enabled] must be not null.")))
       .andExpect(errorParameterMatch("enabled"));
+  }
+
+  @Test
+  void getSpecificationFields_shouldReturn200AndCollectionOfFields() throws Exception {
+    var dto1 = localTestField("101");
+    var dto2 = localTestField("102");
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto1);
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto2);
+
+    doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
+      .andExpect(jsonPath("totalRecords", is(2)))
+      .andExpect(jsonPath("fields.size()", is(2)))
+      .andExpect(jsonPath("fields.[*].id", everyItem(notNullValue())))
+      .andExpect(jsonPath("fields.[*].tag", hasItems(dto1.getTag(), dto2.getTag())))
+      .andExpect(jsonPath("fields.[*].label", hasItems(dto1.getLabel(), dto2.getLabel())))
+      .andExpect(jsonPath("fields.[*].specificationId", everyItem(is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString()))))
+      .andExpect(jsonPath("fields.[*].url", hasItems(dto1.getUrl(), dto2.getUrl())))
+      .andExpect(jsonPath("fields.[*].repeatable", hasItems(dto1.getRepeatable(), dto2.getRepeatable())))
+      .andExpect(jsonPath("fields.[*].required", hasItems(dto1.getRequired(), dto2.getRequired())))
+      .andExpect(jsonPath("fields.[*].deprecated", hasItems(dto1.getDeprecated(), dto2.getDeprecated())))
+      .andExpect(jsonPath("fields.[*].scope", everyItem(is(Scope.LOCAL.getValue()))))
+      .andExpect(jsonPath("fields.[*].metadata.createdDate", everyItem(notNullValue())))
+      .andExpect(jsonPath("fields.[*].metadata.createdByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("fields.[*].metadata.updatedByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("fields.[*].metadata.updatedDate", everyItem(notNullValue())));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn201AndCreatedField() throws Exception {
+    var dto = localTestField("666");
+
+    var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.id", notNullValue()))
+      .andExpect(jsonPath("$.scope", is(Scope.LOCAL.getValue())))
+      .andExpect(jsonPath("$.specificationId", is(BIBLIOGRAPHIC_SPECIFICATION_ID.toString())))
+      .andExpect(jsonPath("$.tag", is(dto.getTag())))
+      .andExpect(jsonPath("$.label", is(dto.getLabel())))
+      .andExpect(jsonPath("$.deprecated", is(dto.getDeprecated())))
+      .andExpect(jsonPath("$.repeatable", is(dto.getRepeatable())))
+      .andExpect(jsonPath("$.required", is(dto.getRequired())))
+      .andExpect(jsonPath("$.url", is(dto.getUrl())))
+      .andExpect(jsonPath("$.metadata.createdDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.createdByUserId", is(USER_ID)))
+      .andExpect(jsonPath("$.metadata.updatedDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.updatedByUserId", is(USER_ID)))
+      .andReturn();
+
+    var createdFieldId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+    doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
+      .andExpect(jsonPath("$.fields.[*].id", hasItem(createdFieldId)));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn400WhenFieldForTagAlreadyExist() throws Exception {
+    var dto = localTestField("998");
+
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto);
+
+    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(DataIntegrityViolationException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SPECIFICATION_FIELD.getType())))
+      .andExpect(errorMessageMatch(is("Can only have one validation rule per MARC field/tag number.")));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn400WhenFieldTagIsNotAlphabetical() throws Exception {
+    var dto = localTestField("666").tag("abc");
+
+    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
+      .andExpect(errorMessageMatch(is("A MARC tag must contain three characters.")))
+      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
+      .andExpect(errorParameterMatch("tag"));
+  }
+
+  private SpecificationFieldChangeDto localTestField(String tag) {
+    return new SpecificationFieldChangeDto()
+      .tag(tag)
+      .label(easyRandom.nextObject(String.class))
+      .deprecated(easyRandom.nextBoolean())
+      .repeatable(easyRandom.nextBoolean())
+      .required(easyRandom.nextBoolean())
+      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

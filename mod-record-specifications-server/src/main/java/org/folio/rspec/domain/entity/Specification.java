@@ -6,9 +6,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,6 +57,10 @@ public class Specification extends UuidPersistable {
 
   @Embedded
   private Metadata metadata;
+
+  @OneToMany(mappedBy = "specification", orphanRemoval = true)
+  @OrderBy(Field.TAG_COLUMN)
+  private List<Field> fields = new ArrayList<>();
 
   @Override
   public int hashCode() {

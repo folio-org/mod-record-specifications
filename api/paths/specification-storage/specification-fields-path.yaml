@@ -1,0 +1,53 @@
+get:
+  summary: Get Specification Field Definitions
+  description: Get a collection of fields definitions that are defined in the specification.
+  operationId: getSpecificationFields
+  parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
+  tags:
+    - specification-storage
+  responses:
+    '200':
+      description: Collection of fields definitions
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationFieldDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/specificationFieldDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+post:
+  summary: Create Local Field Definition
+  description: Create new local field definition for the specification
+  operationId: createSpecificationLocalField
+  parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
+  tags:
+    - specification-storage
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/specificationFieldChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/specificationFieldChangeDto.yaml'
+  responses:
+    '201':
+      description: Local field definition was created
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationFieldDto.yaml'
+          examples:
+            Created:
+              $ref: '../../examples/response/specificationFieldDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

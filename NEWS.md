@@ -7,6 +7,7 @@
 #### Server
 * Specification Storage: implement endpoint to fetch specifications ([MRSPECS-3](https://folio-org.atlassian.net//browse/MRSPECS-3))
 * Specification Storage: implement endpoints to fetch specification rules and enable/disable it ([MRSPECS-4](https://folio-org.atlassian.net//browse/MRSPECS-4))
+* Specification Storage: implement endpoints to manage field definitions ([MRSPECS-6](https://folio-org.atlassian.net//browse/MRSPECS-6))
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
 

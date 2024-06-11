@@ -1,0 +1,12 @@
+title: Specification Fields DTO Collection
+description: Collection of specification field DTOs
+type: object
+properties:
+  fields:
+    description: Collection of specification fields
+    type: array
+    items:
+      $ref: 'specificationFieldDto.yaml'
+  totalRecords:
+    description: Total number of specification fields in collection
+    type: integer

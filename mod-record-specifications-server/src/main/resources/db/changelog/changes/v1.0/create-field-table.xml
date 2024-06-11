@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-6@@create-table:field" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="field"/>
+      </not>
+    </preConditions>
+
+    <comment>Create field table</comment>
+
+    <createTable tableName="field">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_field"/>
+      </column>
+      <column name="tag" type="VARCHAR(5)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="label" type="VARCHAR(350)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="url" type="VARCHAR(350)"/>
+      <column name="repeatable" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="required" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="deprecated" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="scope" type="scope_enum">
+        <constraints nullable="false"/>
+      </column>
+      <column name="specification_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint columnNames="tag, specification_id"
+                         constraintName="uc_field_tag_specification_id"
+                         tableName="field"/>
+
+    <addForeignKeyConstraint baseColumnNames="specification_id"
+                             baseTableName="field"
+                             constraintName="FK_FIELD_ON_SPECIFICATION"
+                             referencedColumnNames="id"
+                             referencedTableName="specification"/>
+  </changeSet>
+
+</databaseChangeLog>

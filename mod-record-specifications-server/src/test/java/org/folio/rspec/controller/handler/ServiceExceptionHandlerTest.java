@@ -1,6 +1,7 @@
 package org.folio.rspec.controller.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.rspec.controller.handler.ServiceExceptionHandler.errorCollection;
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fallback;
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fromErrorCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,13 +34,13 @@ class ServiceExceptionHandlerTest {
     Error error = fromErrorCode(ErrorCode.INVALID_QUERY_VALUE);
 
     assertEquals(ErrorCode.INVALID_QUERY_VALUE.getCode(), error.getCode());
-    assertEquals(ErrorCode.INVALID_QUERY_VALUE.getErrorType(), error.getType());
+    assertEquals(ErrorCode.INVALID_QUERY_VALUE.getType(), error.getType());
   }
 
   @Test
   void errorCollection_ReturnsEmptyCollectionWhenNoErrorsProvided() {
     // Act
-    ErrorCollection result = ServiceExceptionHandler.errorCollection();
+    ErrorCollection result = errorCollection();
 
     // Assert
     assertTrue(result.getErrors().isEmpty());
@@ -51,7 +52,7 @@ class ServiceExceptionHandlerTest {
     Error error = new Error().message("Error message");
 
     // Act
-    ErrorCollection result = ServiceExceptionHandler.errorCollection(error);
+    ErrorCollection result = errorCollection(error);
 
     // Assert
     assertEquals(1, result.getErrors().size());
@@ -65,7 +66,7 @@ class ServiceExceptionHandlerTest {
     Error error2 = new Error().message("Error message 2");
 
     // Act
-    ErrorCollection result = ServiceExceptionHandler.errorCollection(error1, error2);
+    ErrorCollection result = errorCollection(error1, error2);
 
     // Assert
     assertEquals(2, result.getErrors().size());
