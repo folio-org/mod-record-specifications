@@ -49,7 +49,7 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
     var propertyPath = violation.getPropertyPath();
     for (var node : propertyPath) {
       if (node.getKind() == ElementKind.PARAMETER) {
-        String expectedValue = getExpectedValue(descriptor);
+        var expectedValue = getExpectedValue(descriptor);
         var parameter = buildParameter(node, violation);
         var message = buildMessage(simpleAnnotationName, violation, node, expectedValue);
         var error = fromErrorCode(INVALID_QUERY_VALUE).message(message);
