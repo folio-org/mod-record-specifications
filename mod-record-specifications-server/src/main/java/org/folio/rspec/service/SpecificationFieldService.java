@@ -33,7 +33,7 @@ public class SpecificationFieldService {
   }
 
   public SpecificationFieldDto createLocalField(Specification specification, SpecificationFieldChangeDto createDto) {
-    log.debug("createLocalField::specificationId={}, createDto={}", specification.getId(), createDto);
+    log.info("createLocalField::specificationId={}, dto={}", specification.getId(), createDto);
     var fieldEntity = specificationFieldMapper.toEntity(createDto);
     fieldEntity.setSpecification(specification);
     fieldEntity.setScope(Scope.LOCAL);
@@ -42,14 +42,14 @@ public class SpecificationFieldService {
 
   @Transactional
   public void deleteField(UUID id) {
-    log.debug("deleteField::id={}", id);
+    log.info("deleteField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     fieldRepository.delete(fieldEntity);
   }
 
   @Transactional
   public SpecificationFieldDto updateField(UUID id, SpecificationFieldChangeDto changeDto) {
-    log.debug("updateField::id={}", id);
+    log.info("updateField::id={}, dto={}", id, changeDto);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     var updatedField = specificationFieldMapper.partialUpdate(changeDto, fieldEntity);
 
