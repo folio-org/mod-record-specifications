@@ -31,7 +31,7 @@ public class SpecificationRuleService {
   }
 
   public void toggleSpecificationRule(SpecificationRuleId specificationRuleId, boolean enabled) {
-    log.debug("toggleSpecificationRule::specificationRuleId={}, enabled={}", specificationRuleId, enabled);
+    log.info("toggleSpecificationRule::specificationRuleId={}, enabled={}", specificationRuleId, enabled);
     int updated = specificationRuleRepository.updateEnabledBySpecificationRuleId(enabled, specificationRuleId);
     if (updated == 0) {
       throw ResourceNotFoundException.forSpecificationRule(specificationRuleId);
