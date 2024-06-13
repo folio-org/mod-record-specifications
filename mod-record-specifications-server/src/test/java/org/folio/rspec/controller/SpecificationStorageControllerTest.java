@@ -3,6 +3,7 @@ package org.folio.rspec.controller;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
+import static org.folio.support.ApiEndpoints.specificationSyncPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.containsString;
@@ -10,6 +11,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -31,6 +33,7 @@ import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.rspec.exception.SpecificationFetchingFailedException;
 import org.folio.rspec.service.SpecificationService;
 import org.folio.rspec.service.mapper.StringToFamilyEnumConverter;
 import org.folio.rspec.service.mapper.StringToFamilyProfileEnumConverter;
@@ -74,6 +77,34 @@ class SpecificationStorageControllerTest {
     conversionService.addConverter(new StringToFamilyEnumConverter());
     conversionService.addConverter(new StringToFamilyProfileEnumConverter());
     conversionService.addConverter(new StringToIncludeParamEnumConverter());
+  }
+
+  @Test
+  void syncSpecification() throws Exception {
+    var specificationId = UUID.randomUUID();
+
+    var requestBuilder = post(specificationSyncPath(specificationId))
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isAccepted());
+
+    verify(specificationService).sync(specificationId);
+  }
+
+  @Test
+  void syncSpecification_failedToFetchSpecfification() throws Exception {
+    var specificationId = UUID.randomUUID();
+
+    doThrow(new SpecificationFetchingFailedException())
+      .when(specificationService).sync(specificationId);
+
+    var requestBuilder = post(specificationSyncPath(specificationId))
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Specification fetching failed."))));
   }
 
   @Test
@@ -261,6 +292,5 @@ class SpecificationStorageControllerTest {
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [url] contains invalid URL."))));
   }
-
 
 }

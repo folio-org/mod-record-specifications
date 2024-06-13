@@ -34,6 +34,8 @@ tags:
 paths:
   /specification-storage/specifications:
     $ref: 'paths/specification-storage/specifications-path.yaml'
+  /specification-storage/specifications/{specificationId}/sync:
+    $ref: 'paths/specification-storage/specification-sync-path.yaml'
   /specification-storage/specifications/{specificationId}/rules:
     $ref: 'paths/specification-storage/specification-rules-path.yaml'
   /specification-storage/specifications/{specificationId}/rules/{id}:

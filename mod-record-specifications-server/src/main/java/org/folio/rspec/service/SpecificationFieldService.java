@@ -1,5 +1,8 @@
 package org.folio.rspec.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -7,6 +10,7 @@ import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
+import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
@@ -54,5 +58,20 @@ public class SpecificationFieldService {
     var updatedField = specificationFieldMapper.partialUpdate(changeDto, fieldEntity);
 
     return specificationFieldMapper.toDto(fieldRepository.save(updatedField));
+  }
+
+  @Transactional
+  public void syncFields(UUID specificationId, List<Field> fields) {
+    log.info("syncFields::specificationId={}, fields number={}", specificationId, fields.size());
+    log.trace("syncFields::specificationId={}, fields={}", specificationId, fields);
+    fieldRepository.deleteBySpecificationId(specificationId);
+    Map<String, Field> fieldByTags = new HashMap<>();
+    for (Field field : fields) {
+      fieldByTags.merge(field.getTag(), field, (field1, field2) -> field1.isDeprecated() ? field2 : field1);
+      var specification = new Specification();
+      specification.setId(specificationId);
+      field.setSpecification(specification);
+    }
+    fieldRepository.saveAll(fieldByTags.values());
   }
 }

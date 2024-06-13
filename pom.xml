@@ -27,11 +27,14 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <spring-boot.version>3.3.0</spring-boot.version>
+    <spring-shell.version>3.3.0</spring-shell.version>
     <folio-spring-support.version>8.2.0-SNAPSHOT</folio-spring-support.version>
     <lombok.version>1.18.32</lombok.version>
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <lombok.mapstruct-binding.version>0.2.0</lombok.mapstruct-binding.version>
+    <jsoup.version>1.17.2</jsoup.version>
+    <commons-text.version>1.11.0</commons-text.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
@@ -55,6 +58,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.shell</groupId>
+        <artifactId>spring-shell-dependencies</artifactId>
+        <version>${spring-shell.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -84,6 +94,16 @@
         <artifactId>mapstruct-processor</artifactId>
         <version>${mapstruct.version}</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${commons-text.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>${jsoup.version}</version>
       </dependency>
 
       <dependency>
