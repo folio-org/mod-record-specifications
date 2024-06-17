@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MarcSpecificationBlockSplitter {
 
-  private static final Pattern FIELD_BLOCK_SPLIT_PATTERN = compile("(?=(\\d{3}) - (.*) \\((.*)\\)( \\[OBSOLETE])?)");
+  private static final Pattern FIELD_BLOCK_SPLIT_PATTERN =
+    compile("(?=\\d{3} - .{1,500} \\(.{1,100}\\)( \\[OBSOLETE])?)");
   private static final Pattern LINE_SPLIT_PATTERN = compile("\n");
 
   private static final String COMMENT_LINE_PREFIX = "--";

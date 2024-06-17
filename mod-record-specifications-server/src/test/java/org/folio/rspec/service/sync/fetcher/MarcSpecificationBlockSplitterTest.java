@@ -14,9 +14,9 @@ class MarcSpecificationBlockSplitterTest {
   @Test
   void split_givesCorrectResult() {
     String textBlock = """
-      123 - Field1 (R)
+      123 - Field1/FieldVal (R)
       --Comment
-      234 - Field2 (R) [OBSOLETE]
+      234 - Field-2 (R) [OBSOLETE]
        Indicators
           First - Undefined
              # - Undefined
@@ -33,8 +33,8 @@ class MarcSpecificationBlockSplitterTest {
     assertEquals(1, result.get(0).size());
     assertEquals(9, result.get(1).size());
     assertEquals(1, result.get(2).size());
-    assertEquals("123 - Field1 (R)", result.get(0).get(0));
-    assertEquals("234 - Field2 (R) [OBSOLETE]", result.get(1).get(0));
+    assertEquals("123 - Field1/FieldVal (R)", result.get(0).get(0));
+    assertEquals("234 - Field-2 (R) [OBSOLETE]", result.get(1).get(0));
   }
 
   @Test
