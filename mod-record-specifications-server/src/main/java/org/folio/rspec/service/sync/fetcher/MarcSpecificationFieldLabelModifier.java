@@ -72,6 +72,6 @@ public class MarcSpecificationFieldLabelModifier {
    * @return the cleaned-up string
    */
   private String cleanUpInput(String input) {
-    return input.replaceAll(HYPHEN_PATTERN, REPLACEMENT).trim();
+    return input.replace(HYPHEN_PATTERN, REPLACEMENT).trim();
   }
 }

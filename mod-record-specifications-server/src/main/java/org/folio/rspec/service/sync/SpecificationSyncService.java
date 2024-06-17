@@ -52,7 +52,7 @@ public class SpecificationSyncService {
       fields.add(field);
     }
     for (FieldMetadata value : fieldsMetadata.values()) {
-      if (value.defaultValue()) {
+      if (Boolean.TRUE.equals(value.defaultValue())) {
         var defaultField = toField(value);
         fields.add(defaultField);
       }

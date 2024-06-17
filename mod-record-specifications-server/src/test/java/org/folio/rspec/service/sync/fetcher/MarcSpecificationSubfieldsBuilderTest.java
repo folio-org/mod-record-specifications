@@ -21,7 +21,7 @@ class MarcSpecificationSubfieldsBuilderTest {
 
   @ParameterizedTest
   @MethodSource("provideParametersForBuildTest")
-  public void build_givenLines_returnsArrayNode(List<String> lines, ArrayNode expected) {
+  void build_givenLines_returnsArrayNode(List<String> lines, ArrayNode expected) {
     var actual = marcSpecificationSubfieldsBuilder.build(lines);
     assertEquals(expected, actual);
   }
