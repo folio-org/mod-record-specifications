@@ -3,7 +3,7 @@ package org.folio.rspec;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "org.folio.rspec")
+@SpringBootApplication
 public class RecordSpecificationsApp {
 
   public static void main(String[] args) {
