@@ -1,6 +1,6 @@
 post:
   summary: Sync specification
-  description: Sync or return to defaults the specification
+  description: Sync or return to defaults the specification (will remove all changes)
   operationId: syncSpecification
   parameters:
     - $ref: '../../parameters/specificationId-param.yaml'
