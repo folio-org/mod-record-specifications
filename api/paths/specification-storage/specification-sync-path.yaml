@@ -1,0 +1,15 @@
+post:
+  summary: Sync specification
+  description: Sync or return to defaults the specification (will remove all changes)
+  operationId: syncSpecification
+  parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
+  tags:
+    - specification-storage
+  responses:
+    '202':
+      description: Specification successfully synced
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

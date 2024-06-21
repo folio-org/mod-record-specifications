@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-12@@create-table:specification_metadata" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="specification_metadata"/>
+      </not>
+    </preConditions>
+
+    <comment>Create specification_metadata table</comment>
+
+    <createTable tableName="specification_metadata">
+        <column name="id" type="UUID">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="pk_specification_metadata"/>
+        </column>
+        <column name="specification_id" type="UUID"/>
+        <column name="sync_url" type="VARCHAR(350)"/>
+        <column name="url_format" type="VARCHAR(350)"/>
+        <column name="fields" type="JSONB"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseColumnNames="specification_id"
+                             baseTableName="specification_metadata"
+                             constraintName="fk_specification_metadata_on_specification"
+                             referencedColumnNames="id"
+                             referencedTableName="specification"/>
+    <addUniqueConstraint tableName="specification_metadata" columnNames="specification_id"
+                         constraintName="uc_specification_id"/>
+  </changeSet>
+
+
+</databaseChangeLog>

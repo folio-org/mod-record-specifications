@@ -17,6 +17,15 @@
         },
         {
           "methods": [
+            "POST"
+          ],
+          "pathPattern": "/specification-storage/specifications/{specificationId}/sync",
+          "permissionsRequired": [
+            "specification-storage.specification.item.sync"
+          ]
+        },
+        {
+          "methods": [
             "GET"
           ],
           "pathPattern": "/specification-storage/specifications/{specificationId}/rules",
@@ -97,6 +106,11 @@
       "permissionName": "specification-storage.specifications.collection.get",
       "displayName": "Specification Storage - Get specification collection",
       "description": "Get specification collection"
+    },
+    {
+      "permissionName": "specification-storage.specification.item.sync",
+      "displayName": "Specification Storage - Sync specification",
+      "description": "Sync specification"
     },
     {
       "permissionName": "specification-storage.specification.rules.collection.get",

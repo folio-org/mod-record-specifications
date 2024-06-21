@@ -9,6 +9,7 @@ public enum ErrorCode {
   INVALID_QUERY_ENUM_VALUE("invalid-query-enum-value", "102", "invalid.request.query-param.enum"),
   INVALID_REQUEST_PARAMETER("invalid-request-parameter", "103", null),
   DUPLICATE_SPECIFICATION_FIELD("duplicate-specification-field", "104", "specification.field.tag.duplicate"),
+  SPECIFICATION_FETCH_FAILED("specification-fetch-failed", "105", "specification.fetch.failed"),
   RESOURCE_NOT_FOUND("resource-not-found", "404", "specification.resource.not-found"),
   UNEXPECTED("unexpected", "500", "unexpected"),
 

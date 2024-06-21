@@ -1,0 +1,30 @@
+{
+  "001": {
+    "defaultValue": false,
+    "id": "607e3bba-a0fd-4b3c-bbcb-1f914c110cd3",
+    "scope": "SYSTEM",
+    "tag": "001"
+  },
+  "005": {
+    "defaultValue": false,
+    "id": "8434487a-fe2c-4cec-aa9f-b3e0dbe7017d",
+    "scope": "SYSTEM",
+    "tag": "005"
+  },
+  "008": {
+    "defaultValue": false,
+    "id": "829b1836-4ace-4a26-abf9-1280397c823c",
+    "scope": "SYSTEM",
+    "tag": "008"
+  },
+  "999": {
+    "defaultValue": true,
+    "deprecated": false,
+    "id": "e6df5ced-d144-4959-81f9-651c65ac87b7",
+    "label": "999 - Local field",
+    "repeatable": true,
+    "required": false,
+    "scope": "SYSTEM",
+    "tag": "999"
+  }
+}

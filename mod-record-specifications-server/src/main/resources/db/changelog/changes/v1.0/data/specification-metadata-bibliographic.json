@@ -1,0 +1,48 @@
+{
+  "001": {
+    "defaultValue": false,
+    "id": "e50d17eb-bb1e-4d44-9fa4-d484f62bf59a",
+    "scope": "SYSTEM",
+    "tag": "001"
+  },
+  "005": {
+    "defaultValue": false,
+    "id": "5c92b6c1-af62-4bcc-a7cd-ddb9109be000",
+    "scope": "SYSTEM",
+    "tag": "005"
+  },
+  "006": {
+    "defaultValue": false,
+    "id": "114b0c3b-6b7f-449b-b208-7a9e0eddeaa5",
+    "scope": "SYSTEM",
+    "tag": "006"
+  },
+  "007": {
+    "defaultValue": false,
+    "id": "f1276f30-a5f1-4ee1-9f52-a58b8f26a6d5",
+    "scope": "SYSTEM",
+    "tag": "007"
+  },
+  "008": {
+    "defaultValue": false,
+    "id": "09041b35-056f-428f-bf2b-7a65b35e1b3b",
+    "scope": "SYSTEM",
+    "tag": "008"
+  },
+  "245": {
+    "defaultValue": false,
+    "id": "f2b7ad73-8e82-4909-9e49-694c35b52454",
+    "scope": "SYSTEM",
+    "tag": "245"
+  },
+  "999": {
+    "defaultValue": true,
+    "deprecated": false,
+    "id": "e6df5ced-d144-4959-81f9-651c65ac87b7",
+    "label": "999 - Local field",
+    "repeatable": true,
+    "required": false,
+    "scope": "SYSTEM",
+    "tag": "999"
+  }
+}

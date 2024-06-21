@@ -26,6 +26,12 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   private final SpecificationService specificationService;
 
   @Override
+  public ResponseEntity<Void> syncSpecification(UUID specificationId) {
+    specificationService.sync(specificationId);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+  }
+
+  @Override
   public ResponseEntity<SpecificationFieldDto> createSpecificationLocalField(UUID specificationId,
                                                                              SpecificationFieldChangeDto createDto) {
     SpecificationFieldDto fieldDto = specificationService.createLocalField(specificationId, createDto);
