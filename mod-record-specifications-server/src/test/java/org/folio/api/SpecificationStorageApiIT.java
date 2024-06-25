@@ -25,7 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
-import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
@@ -276,16 +275,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     doGet(specificationFieldsPath(specificationId))
       .andExpect(jsonPath("$.fields.size()", allOf(is(createdFieldIds.size()), is(292))))
       .andExpect(jsonPath("$.fields.[*].id", hasItems(createdFieldIds.toArray(String[]::new))));
-  }
-
-  private SpecificationFieldChangeDto localTestField(String tag) {
-    return new SpecificationFieldChangeDto()
-      .tag(tag)
-      .label(easyRandom.nextObject(String.class))
-      .deprecated(easyRandom.nextBoolean())
-      .repeatable(easyRandom.nextBoolean())
-      .required(easyRandom.nextBoolean())
-      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {
