@@ -6,7 +6,6 @@ import static org.folio.rspec.domain.dto.ErrorCode.INVALID_REQUEST_PARAMETER;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.bouncycastle.util.Arrays;
 import org.folio.rspec.domain.dto.Error;
 import org.folio.rspec.domain.dto.ErrorCollection;
 import org.folio.rspec.domain.dto.Parameter;
@@ -57,7 +56,7 @@ public class MethodArgumentNotValidExceptionHandler implements ServiceExceptionH
    * */
   private Object getBoundary(FieldError fieldError) {
     var args = fieldError.getArguments();
-    if (Arrays.isNullOrEmpty(args) || args.length == 1) {
+    if (args == null || args.length < 2) {
       return UNDEFINED_VALUE;
     } else if (args.length == 2) {
       return args[1];
