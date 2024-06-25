@@ -1,7 +1,6 @@
 package org.folio.rspec.controller.handler;
 
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fromErrorCode;
-import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_LABEL;
 import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_TAG;
 import static org.folio.rspec.domain.dto.ErrorCode.UNEXPECTED;
 
@@ -21,8 +20,7 @@ import org.springframework.stereotype.Component;
 public class HibernateConstraintViolationExceptionHandler implements ServiceExceptionHandler {
 
   private static final Map<String, ErrorCode> DB_CONSTRAINTS_MAP = Map.of(
-    Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG,
-    Field.LABEL_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_LABEL
+    Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG
   );
 
   private final ExtendedTranslationService translationService;
@@ -31,8 +29,8 @@ public class HibernateConstraintViolationExceptionHandler implements ServiceExce
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var errorCode = getErrorCode(e);
     var errorMessage = errorCode == UNEXPECTED
-                          ? translationService.formatUnexpected(e.getMessage())
-                          : translationService.format(errorCode.getMessageKey());
+                       ? translationService.formatUnexpected(e.getMessage())
+                       : translationService.format(errorCode.getMessageKey());
 
     var error = fromErrorCode(errorCode).message(errorMessage);
 

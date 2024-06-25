@@ -39,7 +39,6 @@ import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -53,7 +52,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
   @Autowired
   private DatabaseHelper databaseHelper;
-
 
   @BeforeAll
   static void beforeAll() {
@@ -248,19 +246,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
   }
 
   @Test
-  void createSpecificationLocalField_shouldReturn400WhenFieldWithSameLabelAlreadyExist() throws Exception {
-    var dto = localTestField("998");
-
-    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto);
-
-    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto.tag("997"))
-      .andExpect(status().isBadRequest())
-      .andExpect(exceptionMatch(DataIntegrityViolationException.class))
-      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_FIELD_LABEL.getType())))
-      .andExpect(errorMessageMatch(is("The 'label' must be unique.")));
-  }
-
-  @Test
   void createSpecificationLocalField_shouldReturn400WhenFieldTagIsNotAlphabetical() throws Exception {
     var dto = localTestField("abc");
 
@@ -273,7 +258,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
   }
 
   @Test
-  @Disabled
   void syncSpecification_produceSameFieldsEachTime() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
     var newSyncUrl = okapi.getOkapiUrl() + "/marc/bibliographic.html";

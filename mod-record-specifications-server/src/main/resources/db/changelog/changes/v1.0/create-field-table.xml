@@ -64,10 +64,4 @@
                              referencedTableName="specification"/>
   </changeSet>
 
-  <changeSet id="MRSPECS-6@@create-unique-constraint:table-field;columns-label,specification_id" author="pavlo_smahin">
-    <addUniqueConstraint tableName="field" columnNames="label, specification_id"
-                         constraintName="uc_field_label_specification_id"/>
-  </changeSet>
-
-
 </databaseChangeLog>

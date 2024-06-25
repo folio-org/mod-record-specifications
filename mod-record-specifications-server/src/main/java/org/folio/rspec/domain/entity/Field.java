@@ -1,8 +1,6 @@
 package org.folio.rspec.domain.entity;
 
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
-import static org.folio.rspec.domain.entity.Field.LABEL_COLUMN;
-import static org.folio.rspec.domain.entity.Field.LABEL_UNIQUE_CONSTRAINT;
 import static org.folio.rspec.domain.entity.Field.SPECIFICATION_ID_COLUMN;
 import static org.folio.rspec.domain.entity.Field.TAG_COLUMN;
 import static org.folio.rspec.domain.entity.Field.TAG_UNIQUE_CONSTRAINT;
@@ -31,8 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = FIELD_TABLE_NAME, uniqueConstraints = {
-  @UniqueConstraint(name = TAG_UNIQUE_CONSTRAINT, columnNames = {TAG_COLUMN, SPECIFICATION_ID_COLUMN}),
-  @UniqueConstraint(name = LABEL_UNIQUE_CONSTRAINT, columnNames = {LABEL_COLUMN, SPECIFICATION_ID_COLUMN})
+  @UniqueConstraint(name = TAG_UNIQUE_CONSTRAINT, columnNames = {TAG_COLUMN, SPECIFICATION_ID_COLUMN})
 })
 public class Field extends UuidPersistable {
 
@@ -46,7 +43,6 @@ public class Field extends UuidPersistable {
   public static final String SCOPE_COLUMN = "scope";
   public static final String SPECIFICATION_ID_COLUMN = "specification_id";
   public static final String TAG_UNIQUE_CONSTRAINT = "uc_field_tag_specification_id";
-  public static final String LABEL_UNIQUE_CONSTRAINT = "uc_field_label_specification_id";
 
   @Column(name = TAG_COLUMN, nullable = false)
   private String tag;
