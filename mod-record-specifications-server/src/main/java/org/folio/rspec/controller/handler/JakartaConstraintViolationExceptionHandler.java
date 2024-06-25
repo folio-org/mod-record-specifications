@@ -3,7 +3,6 @@ package org.folio.rspec.controller.handler;
 import static org.folio.rspec.domain.dto.ErrorCode.INVALID_QUERY_VALUE;
 
 import jakarta.validation.ConstraintViolationException;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.ErrorCollection;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
   private ErrorCollection buildErrorCollection(ConstraintViolationException exception) {
     var errorList = exception.getConstraintViolations().stream()
       .flatMap(violation -> constraintViolationResolver.processViolation(violation, INVALID_QUERY_VALUE).stream())
-      .collect(Collectors.toList());
+      .toList();
 
     return new ErrorCollection().errors(errorList);
   }

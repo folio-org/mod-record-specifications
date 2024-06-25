@@ -20,6 +20,7 @@ public class RegexpUrlValidator implements ConstraintValidator<URL, CharSequence
   /**
    * Reused from {@link org.hibernate.validator.constraintvalidators.RegexpURLValidator}.
    */
+  @SuppressWarnings({"java:S5843", "java:S6353", "java:S5998", "java:S6395"})
   private static final Pattern URL_REGEX = Pattern
     .compile(
       "(?i)^([a-z](?:[-a-z0-9\\+\\.])*)"
