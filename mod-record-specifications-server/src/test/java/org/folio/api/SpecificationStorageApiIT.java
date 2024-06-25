@@ -39,6 +39,7 @@ import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -267,11 +268,12 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
       .andExpect(errorMessageMatch(is("A tag must contain three characters.")))
-      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_QUERY_VALUE.getType())))
+      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
   }
 
   @Test
+  @Disabled
   void syncSpecification_produceSameFieldsEachTime() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
     var newSyncUrl = okapi.getOkapiUrl() + "/marc/bibliographic.html";

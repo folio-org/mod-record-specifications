@@ -1,5 +1,6 @@
 package org.folio.rspec.config;
 
+import org.folio.rspec.service.validation.RegexpUrlValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.boot.autoconfigure.validation.ValidationConfigurationCustomizer;
