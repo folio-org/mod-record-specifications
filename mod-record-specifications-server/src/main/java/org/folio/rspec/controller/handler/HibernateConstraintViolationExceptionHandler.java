@@ -1,13 +1,15 @@
 package org.folio.rspec.controller.handler;
 
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fromErrorCode;
-import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_SPECIFICATION_FIELD;
+import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_LABEL;
+import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_TAG;
 import static org.folio.rspec.domain.dto.ErrorCode.UNEXPECTED;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.ErrorCollection;
+import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.service.i18n.ExtendedTranslationService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +21,8 @@ import org.springframework.stereotype.Component;
 public class HibernateConstraintViolationExceptionHandler implements ServiceExceptionHandler {
 
   private static final Map<String, ErrorCode> DB_CONSTRAINTS_MAP = Map.of(
-    "uc_field_tag_specification_id", DUPLICATE_SPECIFICATION_FIELD
+    Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG,
+    Field.LABEL_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_LABEL
   );
 
   private final ExtendedTranslationService translationService;

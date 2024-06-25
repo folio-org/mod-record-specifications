@@ -29,11 +29,12 @@ public class MarcSpecificationFieldBuilder {
     var jsonObject = objectMapper.createObjectNode();
     var fieldMatcher = FIELD_PATTERN.matcher(line);
     if (fieldMatcher.lookingAt()) {
+      var deprecated = isDeprecated(fieldMatcher);
       jsonObject.put(TAG_PROP, getTag(fieldMatcher));
-      jsonObject.put(LABEL_PROP, getLabel(fieldMatcher));
+      jsonObject.put(LABEL_PROP, getLabel(fieldMatcher, deprecated));
       jsonObject.put(REPEATABLE_PROP, isRepeatable(fieldMatcher));
       jsonObject.put(REQUIRED_PROP, false);
-      jsonObject.put(DEPRECATED_PROP, isDeprecated(fieldMatcher));
+      jsonObject.put(DEPRECATED_PROP, deprecated);
     }
     return jsonObject;
   }
@@ -42,8 +43,10 @@ public class MarcSpecificationFieldBuilder {
     return fieldMatcher.group(TAG_PROP);
   }
 
-  private String getLabel(Matcher fieldMatcher) {
-    return labelModifier.modify(fieldMatcher.group(LABEL_PROP));
+  private String getLabel(Matcher fieldMatcher, boolean deprecated) {
+    return deprecated
+           ? labelModifier.modify(fieldMatcher.group(LABEL_PROP)) + " [OBSOLETE]"
+           : labelModifier.modify(fieldMatcher.group(LABEL_PROP));
   }
 
   private boolean isRepeatable(Matcher fieldMatcher) {

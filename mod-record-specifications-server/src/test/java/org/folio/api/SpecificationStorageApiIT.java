@@ -177,7 +177,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       new ToggleSpecificationRuleDto())
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("Field [enabled] must be not null.")))
+      .andExpect(errorMessageMatch(is("The 'enabled' field is required.")))
       .andExpect(errorParameterMatch("enabled"));
   }
 
@@ -242,19 +242,32 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(DataIntegrityViolationException.class))
-      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SPECIFICATION_FIELD.getType())))
-      .andExpect(errorMessageMatch(is("Can only have one validation rule per MARC field/tag number.")));
+      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_FIELD_TAG.getType())))
+      .andExpect(errorMessageMatch(is("The 'tag' must be unique.")));
+  }
+
+  @Test
+  void createSpecificationLocalField_shouldReturn400WhenFieldWithSameLabelAlreadyExist() throws Exception {
+    var dto = localTestField("998");
+
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto);
+
+    tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto.tag("997"))
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(DataIntegrityViolationException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_FIELD_LABEL.getType())))
+      .andExpect(errorMessageMatch(is("The 'label' must be unique.")));
   }
 
   @Test
   void createSpecificationLocalField_shouldReturn400WhenFieldTagIsNotAlphabetical() throws Exception {
-    var dto = localTestField("666").tag("abc");
+    var dto = localTestField("abc");
 
     tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("A MARC tag must contain three characters.")))
-      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
+      .andExpect(errorMessageMatch(is("A tag must contain three characters.")))
+      .andExpect(errorTypeMatch(is(ErrorCode.INVALID_QUERY_VALUE.getType())))
       .andExpect(errorParameterMatch("tag"));
   }
 
