@@ -1,0 +1,12 @@
+title: Field Indicators DTO Collection
+description: Collection of field indicator DTOs
+type: object
+properties:
+  indicators:
+    description: Collection of field indicators
+    type: array
+    items:
+      $ref: 'fieldIndicatorDto.yaml'
+  totalRecords:
+    description: Total number of field indicators in collection
+    type: integer

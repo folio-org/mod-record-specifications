@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-6@@create-table:indicator-code" author="viacheslav_kolesnyk">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="indicator_code"/>
+      </not>
+    </preConditions>
+
+    <comment>Create indicator code table</comment>
+
+    <createTable tableName="indicator_code">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_indicator_code"/>
+      </column>
+      <column name="code" type="VARCHAR(1)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="label" type="VARCHAR(350)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="scope" type="scope_enum">
+        <constraints nullable="false"/>
+      </column>
+      <column name="indicator_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint columnNames="code, indicator_id"
+                         constraintName="uc_indicator_code_indicator_id"
+                         tableName="indicator_code"/>
+
+    <addForeignKeyConstraint baseColumnNames="indicator_id"
+                             baseTableName="indicator_code"
+                             constraintName="FK_CODE_ON_INDICATOR"
+                             referencedColumnNames="id"
+                             referencedTableName="indicator"/>
+  </changeSet>
+
+</databaseChangeLog>

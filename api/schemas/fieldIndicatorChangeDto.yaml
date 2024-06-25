@@ -1,0 +1,16 @@
+title: Field indicator definition change DTO
+description: Describe indicator definition that should be created or change to existed indicator definition
+type: object
+additionalProperties: false
+properties:
+  order:
+    description: Indicator order
+    type: integer
+    minimum: 1
+    maximum: 2
+  label:
+    description: Indicator description
+    type: string
+required:
+  - order
+  - label

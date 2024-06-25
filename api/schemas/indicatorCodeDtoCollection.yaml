@@ -1,0 +1,12 @@
+title: Indicator codes DTO Collection
+description: Collection of indicator code DTOs
+type: object
+properties:
+  codes:
+    description: Collection of indicator codes
+    type: array
+    items:
+      $ref: 'indicatorCodeDto.yaml'
+  totalRecords:
+    description: Total number of indicator codes in collection
+    type: integer

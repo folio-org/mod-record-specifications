@@ -22,7 +22,6 @@ import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
-import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
@@ -31,7 +30,6 @@ import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
-import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -40,8 +38,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends IntegrationTestBase {
-
-  private final EasyRandom easyRandom = new EasyRandom();
 
   @BeforeAll
   static void beforeAll() {
@@ -245,16 +241,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(errorMessageMatch(is("A MARC tag must contain three characters.")))
       .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
-  }
-
-  private SpecificationFieldChangeDto localTestField(String tag) {
-    return new SpecificationFieldChangeDto()
-      .tag(tag)
-      .label(easyRandom.nextObject(String.class))
-      .deprecated(easyRandom.nextBoolean())
-      .repeatable(easyRandom.nextBoolean())
-      .required(easyRandom.nextBoolean())
-      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

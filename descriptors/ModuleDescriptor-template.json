@@ -68,6 +68,42 @@
           "permissionsRequired": [
             "specification-storage.fields.item.delete"
           ]
+        },
+        {
+          "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
+          "permissionsRequired": [
+            "specification-storage.specification.indicators.collection.get"
+          ]
+        },
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
+          "permissionsRequired": [
+            "specification-storage.specification.indicators.item.post"
+          ]
+        },
+        {
+          "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/indicators/{indicatorId}/codes",
+          "permissionsRequired": [
+            "specification-storage.specification.codes.collection.get"
+          ]
+        },
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/specification-storage/indicators/{indicatorId}/codes",
+          "permissionsRequired": [
+            "specification-storage.specification.codes.item.post"
+          ]
         }
       ]
     },
@@ -129,6 +165,26 @@
       "description": "Delete field definition"
     },
     {
+      "permissionName": "specification-storage.specification.indicators.collection.get",
+      "displayName": "Specification Storage - Get field indicators definition collection",
+      "description": "Get field indicators collection"
+    },
+    {
+      "permissionName": "specification-storage.specification.indicators.item.post",
+      "displayName": "Specification Storage - Create indicator definition for field",
+      "description": "Create field indicator definition"
+    },
+    {
+      "permissionName": "specification-storage.specification.codes.collection.get",
+      "displayName": "Specification Storage - Get indicator code definition collection",
+      "description": "Get indicator codes collection"
+    },
+    {
+      "permissionName": "specification-storage.specification.codes.item.post",
+      "displayName": "Specification Storage - Create code definition for indicator",
+      "description": "Create indicator code definition"
+    },
+    {
       "permissionName": "specification-storage.all",
       "displayName": "Specification Storage - All permissions",
       "description": "Entire set of permissions needed to manage specifications",
@@ -139,7 +195,11 @@
         "specification-storage.specification.fields.collection.get",
         "specification-storage.specification.fields.item.post",
         "specification-storage.fields.item.put",
-        "specification-storage.fields.item.delete"
+        "specification-storage.fields.item.delete",
+        "specification-storage.specification.indicators.collection.get",
+        "specification-storage.specification.indicators.item.post",
+        "specification-storage.specification.codes.collection.get",
+        "specification-storage.specification.codes.item.post"
       ]
     }
   ],

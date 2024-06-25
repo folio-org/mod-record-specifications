@@ -29,6 +29,8 @@ tags:
     description: Provides API for managing specifications.
   - name: specification-storage-fields
     description: Provides API for managing specification fields.
+  - name: specification-storage-indicators
+    description: Provides API for managing specification field indicators.
 
 
 paths:
@@ -42,3 +44,7 @@ paths:
     $ref: 'paths/specification-storage/specification-fields-path.yaml'
   /specification-storage/fields/{id}:
     $ref: 'paths/specification-storage/fields-by-id-path.yaml'
+  /specification-storage/fields/{fieldId}/indicators:
+    $ref: 'paths/specification-storage/field-indicators-path.yaml'
+  /specification-storage/indicators/{indicatorId}/codes:
+    $ref: 'paths/specification-storage/indicator-codes-path.yaml'

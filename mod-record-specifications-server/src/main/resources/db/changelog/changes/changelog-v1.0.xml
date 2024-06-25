@@ -9,6 +9,8 @@
   <include file="v1.0/create-rule-table.xml" relativeToChangelogFile="true"/>
   <include file="v1.0/create-specification-rule-table.xml" relativeToChangelogFile="true"/>
   <include file="v1.0/create-field-table.xml" relativeToChangelogFile="true"/>
+  <include file="v1.0/create-indicator-table.xml" relativeToChangelogFile="true"/>
+  <include file="v1.0/create-indicator-code-table.xml" relativeToChangelogFile="true"/>
 
   <!-- Always last in the list to have all prepared tables -->
   <include file="v1.0/populate-default-data.xml" relativeToChangelogFile="true"/>

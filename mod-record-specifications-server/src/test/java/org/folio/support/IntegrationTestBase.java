@@ -2,6 +2,7 @@ package org.folio.support;
 
 import static org.folio.spring.integration.XOkapiHeaders.TENANT;
 import static org.folio.spring.integration.XOkapiHeaders.URL;
+import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -17,8 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import java.io.UnsupportedEncodingException;
 import lombok.SneakyThrows;
 import org.folio.rspec.RecordSpecificationsApp;
+import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.spring.integration.XOkapiHeaders;
 import org.folio.spring.testing.extension.EnableOkapi;
 import org.folio.spring.testing.extension.EnablePostgres;
@@ -27,6 +32,7 @@ import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
+import org.jeasy.random.EasyRandom;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +56,8 @@ public class IntegrationTestBase {
   protected static MockMvc mockMvc;
   protected static OkapiConfiguration okapi;
   protected static ObjectMapper objectMapper = new ObjectMapper();
+
+  protected static EasyRandom easyRandom = new EasyRandom();
 
   @BeforeAll
   protected static void setUpBeans(@Autowired MockMvc mockMvc) {
@@ -178,6 +186,12 @@ public class IntegrationTestBase {
   }
 
   @SneakyThrows
+  protected static <T> T doPostAndReturn(String uri, Object body, Class<T> responseClass, Object... args) {
+    var result = doPost(uri, body, defaultHeaders(), args).andReturn();
+    return contentAsObj(result, responseClass);
+  }
+
+  @SneakyThrows
   protected static String asJson(Object value) {
     return objectMapper.writeValueAsString(value);
   }
@@ -202,6 +216,35 @@ public class IntegrationTestBase {
 
   protected ResultMatcher errorParameterMatch(String parameterName) {
     return jsonPath("$.errors.[*].parameters.[*].key", hasItem(parameterName));
+  }
+
+  protected SpecificationFieldChangeDto localTestField(String tag) {
+    return new SpecificationFieldChangeDto()
+      .tag(tag)
+      .label(easyRandom.nextObject(String.class))
+      .deprecated(easyRandom.nextBoolean())
+      .repeatable(easyRandom.nextBoolean())
+      .required(easyRandom.nextBoolean())
+      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
+  }
+
+  protected FieldIndicatorChangeDto localTestIndicator(Integer order) {
+    return new FieldIndicatorChangeDto()
+      .order(order)
+      .label("Ind " + order);
+  }
+
+  protected String createLocalField(SpecificationFieldChangeDto localTestField) throws UnsupportedEncodingException {
+    return JsonPath.read(
+      doPost(specificationFieldsPath(TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID), localTestField)
+        .andReturn()
+        .getResponse().getContentAsString(),
+      "$.id").toString();
+  }
+
+  protected String createLocalField(String tag) throws UnsupportedEncodingException {
+    var dto = localTestField(tag);
+    return createLocalField(dto);
   }
 
   @NotNull

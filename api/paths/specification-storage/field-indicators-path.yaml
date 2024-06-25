@@ -1,0 +1,53 @@
+get:
+  summary: Get Field Indicator Definitions
+  description: Get a collection of indicators definitions that are defined in the field.
+  operationId: getFieldIndicators
+  parameters:
+    - $ref: '../../parameters/fieldId-param.yaml'
+  tags:
+    - specification-storage-fields
+  responses:
+    '200':
+      description: Collection of indicators definitions
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/fieldIndicatorDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/fieldIndicatorDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+post:
+  summary: Create Local Indicator Definition
+  description: Create new local indicator definition for the field
+  operationId: createFieldLocalIndicator
+  parameters:
+    - $ref: '../../parameters/fieldId-param.yaml'
+  tags:
+    - specification-storage-fields
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/fieldIndicatorChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/fieldIndicatorChangeDto.yaml'
+  responses:
+    '201':
+      description: Local indicator definition was created
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/fieldIndicatorDto.yaml'
+          examples:
+            Created:
+              $ref: '../../examples/response/fieldIndicatorDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
