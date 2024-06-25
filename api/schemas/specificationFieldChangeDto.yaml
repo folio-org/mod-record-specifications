@@ -11,12 +11,13 @@ properties:
   label:
     description: Tag description
     type: string
-    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
     maxLength: 350
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   url:
     description: Help url for the tag
     type: string
-    x-field-extra-annotation: '@org.hibernate.validator.constraints.URL(regexp = ".*\\S.*")'
+    maxLength: 350
+    x-field-extra-annotation: '@org.hibernate.validator.constraints.URL'
   repeatable:
     description: Define if tag is repeatable
     type: boolean

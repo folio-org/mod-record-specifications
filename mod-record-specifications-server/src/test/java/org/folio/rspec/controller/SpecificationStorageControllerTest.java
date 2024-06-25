@@ -344,7 +344,7 @@ class SpecificationStorageControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' field name has exceeded 350 character limit"))));
+        hasItem(is("The 'label' field has exceeded 350 character limit"))));
   }
 
 }

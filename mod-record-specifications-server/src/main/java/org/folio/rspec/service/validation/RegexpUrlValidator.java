@@ -92,8 +92,12 @@ public class RegexpUrlValidator implements ConstraintValidator<URL, CharSequence
 
   @Override
   public boolean isValid(CharSequence value, ConstraintValidatorContext constraintValidatorContext) {
-    if (value == null || value.isEmpty()) {
+    if (value == null) {
       return true;
+    }
+
+    if (value.isEmpty()) {
+      return false;
     }
 
     ValueHolder values = parseUrl(value.toString());
