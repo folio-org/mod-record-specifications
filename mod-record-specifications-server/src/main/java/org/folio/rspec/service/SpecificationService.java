@@ -21,6 +21,7 @@ import org.folio.rspec.domain.entity.SpecificationRuleId;
 import org.folio.rspec.domain.repository.SpecificationRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.mapper.SpecificationMapper;
+import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ public class SpecificationService {
   private final SpecificationMapper specificationMapper;
   private final SpecificationRuleService specificationRuleService;
   private final SpecificationFieldService specificationFieldService;
+  private final SpecificationSyncService specificationSyncService;
 
   @Transactional
   public SpecificationDtoCollection findSpecifications(Family family, FamilyProfile profile, IncludeParam include,
@@ -82,6 +84,12 @@ public class SpecificationService {
     return doForSpecificationOrFail(specificationId,
       specification -> specificationFieldService.createLocalField(specification, createDto)
     );
+  }
+
+  public void sync(UUID specificationId) {
+    log.info("sync::specificationId={}", specificationId);
+    var specification = doForSpecificationOrFail(specificationId, Function.identity());
+    specificationSyncService.sync(specification);
   }
 
   private <T> T doForSpecificationOrFail(UUID specificationId, Function<Specification, T> action) {

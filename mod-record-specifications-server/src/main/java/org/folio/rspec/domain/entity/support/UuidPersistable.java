@@ -2,13 +2,14 @@ package org.folio.rspec.domain.entity.support;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.domain.Persistable;
 import org.springframework.lang.Nullable;
 
@@ -18,7 +19,6 @@ import org.springframework.lang.Nullable;
 public abstract class UuidPersistable implements Persistable<UUID> {
 
   @Id
-  @UuidGenerator
   private @Nullable UUID id;
 
   @Nullable
@@ -31,6 +31,14 @@ public abstract class UuidPersistable implements Persistable<UUID> {
   @Override
   public boolean isNew() {
     return null == getId();
+  }
+
+  @PreUpdate
+  @PrePersist
+  public void prePersist() {
+    if (isNew()) {
+      this.id = UUID.randomUUID();
+    }
   }
 
   @Override

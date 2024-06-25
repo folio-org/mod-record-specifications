@@ -20,6 +20,11 @@ spring:
     properties:
       hibernate:
         show_sql: true
+        ddl-auto: validate
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
   cloud:

@@ -3,6 +3,7 @@
   "field.indicator.order.duplicate": "Can only have one validation rule per MARC field indicator/order.",
   "indicator.code.code.duplicate": "Can only have one validation rule per MARC field indicator/code.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
+  "specification.fetch.failed": "Specification fetching failed.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.specificationFieldChangeDto.tag": "A MARC tag must contain three characters.",
