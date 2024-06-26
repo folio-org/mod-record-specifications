@@ -16,7 +16,7 @@ public class ApiEndpoints {
   public static final String FIELD_PATH = SPECIFICATION_STORAGE_PATH + "/fields/%s";
   public static final String FIELD_INDICATORS_PATH = FIELD_PATH + "/indicators";
   public static final String INDICATOR_PATH = SPECIFICATION_STORAGE_PATH + "/indicators/%s";
-  public static final String INDICATOR_CODES_PATH = INDICATOR_PATH + "/codes";
+  public static final String INDICATOR_CODES_PATH = INDICATOR_PATH + "/indicator-codes";
 
   public static String specificationsPath() {
     return SPECIFICATIONS_PATH;

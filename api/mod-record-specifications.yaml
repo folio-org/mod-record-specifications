@@ -48,5 +48,5 @@ paths:
     $ref: 'paths/specification-storage/fields-by-id-path.yaml'
   /specification-storage/fields/{fieldId}/indicators:
     $ref: 'paths/specification-storage/field-indicators-path.yaml'
-  /specification-storage/indicators/{indicatorId}/codes:
+  /specification-storage/indicators/{indicatorId}/indicator-codes:
     $ref: 'paths/specification-storage/indicator-codes-path.yaml'

@@ -100,18 +100,18 @@
           "methods": [
             "GET"
           ],
-          "pathPattern": "/specification-storage/indicators/{indicatorId}/codes",
+          "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
-            "specification-storage.specification.codes.collection.get"
+            "specification-storage.specification.indicator-codes.collection.get"
           ]
         },
         {
           "methods": [
             "POST"
           ],
-          "pathPattern": "/specification-storage/indicators/{indicatorId}/codes",
+          "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
-            "specification-storage.specification.codes.item.post"
+            "specification-storage.specification.indicator-codes.item.post"
           ]
         }
       ]
@@ -189,12 +189,12 @@
       "description": "Create field indicator definition"
     },
     {
-      "permissionName": "specification-storage.specification.codes.collection.get",
+      "permissionName": "specification-storage.specification.indicator-codes.collection.get",
       "displayName": "Specification Storage - Get indicator code definition collection",
       "description": "Get indicator codes collection"
     },
     {
-      "permissionName": "specification-storage.specification.codes.item.post",
+      "permissionName": "specification-storage.specification.indicator-codes.item.post",
       "displayName": "Specification Storage - Create code definition for indicator",
       "description": "Create indicator code definition"
     },
@@ -212,8 +212,8 @@
         "specification-storage.fields.item.delete",
         "specification-storage.specification.indicators.collection.get",
         "specification-storage.specification.indicators.item.post",
-        "specification-storage.specification.codes.collection.get",
-        "specification-storage.specification.codes.item.post"
+        "specification-storage.specification.indicator-codes.collection.get",
+        "specification-storage.specification.indicator-codes.item.post"
       ]
     }
   ],
