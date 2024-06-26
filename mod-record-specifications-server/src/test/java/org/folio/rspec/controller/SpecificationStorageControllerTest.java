@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
+import org.folio.rspec.config.ValidationConfig;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -57,7 +59,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageController.class)
-@Import({ApiExceptionHandler.class, TranslationConfig.class})
+@Import({ApiExceptionHandler.class, TranslationConfig.class, ValidationConfig.class})
 @ComponentScan(basePackages = {"org.folio.rspec.controller.handler",
                                "org.folio.rspec.service.i18n",
                                "org.folio.spring.i18n"})
@@ -279,18 +281,70 @@ class SpecificationStorageControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
-  @Test
-  void createSpecificationLocalField_return400_invalidUrl() throws Exception {
+  @CsvSource(delimiter = '|', value = {
+    "{\"label\": \"\", \"tag\": \"666\"}                             | label",
+    "{\"label\": \"  \", \"tag\": \"666\"}                           | label"
+  })
+  @ParameterizedTest
+  void createSpecificationLocalField_return400_blankRequiredFieldInPayload(String content, String field)
+    throws Exception {
     var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
-      .content("{\"tag\": \"666\", \"label\": \"Mystic field\", \"url\": \"invalid\"}");
+      .content(content);
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [url] contains invalid URL."))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' must be not blank.".formatted(field)))));
+  }
+
+  @ValueSource(strings = {
+    "",
+    "   ",
+    "invalid",
+    "h ttp://www.google.com",
+    "http:://www.google.com",
+    "www.google.com",
+    "http://",
+    "http://www .google.com",
+    "http:/google.com",
+    "htp://www.google.com",
+    "http://www.goo gle.com",
+    "http:/www.google.com",
+    "http//www.google.com",
+    "http:www.google.com",
+    "http/www.google.com",
+    "htt://www.google.com",
+    "http:/ /www.google.com",
+    "http://w ww.google.com",
+    "http:/",
+    "http://www.google./com",
+    "http:///www.google.com"
+  })
+  @ParameterizedTest
+  void createSpecificationLocalField_return400_invalidUrl(String invalidUrl) throws Exception {
+    var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"tag\": \"666\", \"label\": \"Mystic field\", \"url\": \"%s\"}".formatted(invalidUrl));
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The 'url' field should be valid URL."))));
+  }
+
+  @Test
+  void createSpecificationLocalField_return400_fieldLengthExceedLimit() throws Exception {
+    String label = "a".repeat(351);
+    var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"tag\": \"666\", \"label\": \"%s\"}".formatted(label));
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The 'label' field has exceeded 350 character limit"))));
   }
 
 }
