@@ -1,17 +1,19 @@
 {
-  "specification.field.tag.duplicate": "Can only have one validation rule per MARC field/tag number.",
+  "specification.field.tag.duplicate": "The 'tag' must be unique.",
+  "specification.field.label.duplicate": "The 'label' must be unique.",
   "field.indicator.order.duplicate": "Can only have one validation rule per MARC field indicator/order.",
   "indicator.code.code.duplicate": "Can only have one validation rule per MARC field indicator/code.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
   "specification.fetch.failed": "Specification fetching failed.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
-  "Pattern.specificationFieldChangeDto.tag": "A MARC tag must contain three characters.",
-  "Min": "{field} must be greater than or equal to {boundary}.",
-  "Max": "{field} must be less than or equal to {boundary}.",
-  "NotNull": "Field [{field}] must be not null.",
-  "URL.url": "Field [{field}] contains invalid URL.",
-  "Size": "{field} length must be between [{boundary}].",
+  "Pattern.SpecificationFieldChangeDto.tag": "A tag must contain three characters.",
+  "Min": "{parameter} must be greater than or equal to {value}.",
+  "Max": "{parameter} must be less than or equal to {value}.",
+  "NotNull": "The ''{parameter}'' field is required.",
+  "NotBlank": "The ''{parameter}'' must be not blank.",
+  "Size": "The ''{parameter}'' field is out of allowed bounds [{min}-{max}].",
+  "URL": "The ''{parameter}'' field should be valid URL.",
 
   "unexpected": "Unexpected error: {errorMessage}."
 

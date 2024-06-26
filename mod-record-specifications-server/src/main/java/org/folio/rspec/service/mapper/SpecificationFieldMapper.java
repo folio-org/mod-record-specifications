@@ -22,14 +22,17 @@ public interface SpecificationFieldMapper {
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "url", expression = "java(createDto.getUrl() == null ? null : createDto.getUrl().trim())")
   Field toEntity(SpecificationFieldChangeDto createDto);
 
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "specification", ignore = true)
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  Field partialUpdate(SpecificationFieldChangeDto specificationFieldDto, @MappingTarget Field field);
+  @Mapping(target = "tag", ignore = true)
+  @Mapping(target = "url", expression = "java(changeDto.getUrl() == null ? null : changeDto.getUrl().trim())")
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+  void update(@MappingTarget Field field, SpecificationFieldChangeDto changeDto);
 
 
 }

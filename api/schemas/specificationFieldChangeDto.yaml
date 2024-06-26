@@ -7,12 +7,16 @@ properties:
     description: Record tag
     type: string
     pattern: \d{3}
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   label:
     description: Tag description
     type: string
+    maxLength: 350
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   url:
     description: Help url for the tag
     type: string
+    maxLength: 350
     x-field-extra-annotation: '@org.hibernate.validator.constraints.URL'
   repeatable:
     description: Define if tag is repeatable

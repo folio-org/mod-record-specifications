@@ -17,6 +17,5 @@ properties:
   url:
     description: Help url for the specification
     type: string
-    x-field-extra-annotation: '@org.hibernate.validator.constraints.URL'
   metadata:
     $ref: 'common/metadataDto.yaml'

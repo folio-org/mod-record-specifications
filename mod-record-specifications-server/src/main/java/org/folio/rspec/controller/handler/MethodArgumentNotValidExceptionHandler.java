@@ -3,7 +3,10 @@ package org.folio.rspec.controller.handler;
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fromErrorCode;
 import static org.folio.rspec.domain.dto.ErrorCode.INVALID_REQUEST_PARAMETER;
 
-import com.google.common.collect.Lists;
+import jakarta.validation.ConstraintViolation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Error;
@@ -21,19 +24,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 public class MethodArgumentNotValidExceptionHandler implements ServiceExceptionHandler {
 
   private static final String FIELD_MSG_ARG = "field";
-  private static final String BOUNDARY_MSG_ARG = "boundary";
-  private static final String UNDEFINED_VALUE = "undefined";
 
   private final TranslationService translationService;
+  private final ConstraintViolationResolver constraintViolationResolver;
 
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var exception = (MethodArgumentNotValidException) e;
-    var errorCollection = new ErrorCollection();
+    var errorList = new ArrayList<Error>();
     for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
-      errorCollection.addErrorsItem(createErrorFromFieldError(fieldError));
+      errorList.addAll(createErrorsFromFieldError(fieldError));
     }
-    return ResponseEntity.badRequest().body(errorCollection);
+    return ResponseEntity.badRequest().body(new ErrorCollection().errors(errorList));
   }
 
   @Override
@@ -41,29 +43,15 @@ public class MethodArgumentNotValidExceptionHandler implements ServiceExceptionH
     return e instanceof MethodArgumentNotValidException;
   }
 
-  private Error createErrorFromFieldError(FieldError fieldError) {
+  private Collection<Error> createErrorsFromFieldError(FieldError fieldError) {
+    if (fieldError.contains(ConstraintViolation.class)) {
+      var violation = fieldError.unwrap(ConstraintViolation.class);
+      return constraintViolationResolver.processViolation(violation, INVALID_REQUEST_PARAMETER);
+    }
     var error = fromErrorCode(INVALID_REQUEST_PARAMETER);
-    error.setMessage(translationService.format(fieldError.getCodes(),
-      FIELD_MSG_ARG, fieldError.getField(),
-      BOUNDARY_MSG_ARG, getBoundary(fieldError)));
+    error.setMessage(translationService.format(fieldError.getCodes(), FIELD_MSG_ARG, fieldError.getField()));
     var parameter = new Parameter().key(fieldError.getField()).value(String.valueOf(fieldError.getRejectedValue()));
     error.addParametersItem(parameter);
-    return error;
-  }
-
-  /**
-   * Get boundary for Min/Max or minLength/maxLength violations.
-   * */
-  private Object getBoundary(FieldError fieldError) {
-    var args = fieldError.getArguments();
-    if (args == null || args.length < 2) {
-      return UNDEFINED_VALUE;
-    } else if (args.length == 2) {
-      return args[1];
-    } else {
-      var boundaries = Lists.newArrayList(args);
-      boundaries.remove(0);
-      return translationService.formatList(boundaries);
-    }
+    return Collections.singleton(error);
   }
 }

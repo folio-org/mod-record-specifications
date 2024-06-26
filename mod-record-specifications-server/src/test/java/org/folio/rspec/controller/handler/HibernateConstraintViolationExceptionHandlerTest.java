@@ -1,8 +1,8 @@
 package org.folio.rspec.controller.handler;
 
 import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_INDICATOR;
+import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_TAG;
 import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_INDICATOR_CODE;
-import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_SPECIFICATION_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -93,7 +93,7 @@ class HibernateConstraintViolationExceptionHandlerTest {
 
   public static Stream<Arguments> uniqueConstraintTestSource() {
     return Stream.of(
-      arguments("uc_field_tag_specification_id", DUPLICATE_SPECIFICATION_FIELD,
+      arguments("uc_field_tag_specification_id", DUPLICATE_FIELD_TAG,
         "Duplicate specification field error message"),
       arguments("uc_indicator_order_field_id", DUPLICATE_FIELD_INDICATOR, "Duplicate field indicator error message"),
       arguments("uc_indicator_code_indicator_id", DUPLICATE_INDICATOR_CODE, "Duplicate indicator code error message")

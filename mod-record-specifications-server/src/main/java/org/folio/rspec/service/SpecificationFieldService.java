@@ -60,9 +60,9 @@ public class SpecificationFieldService {
   public SpecificationFieldDto updateField(UUID id, SpecificationFieldChangeDto changeDto) {
     log.info("updateField::id={}, dto={}", id, changeDto);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
-    var updatedField = specificationFieldMapper.partialUpdate(changeDto, fieldEntity);
+    specificationFieldMapper.update(fieldEntity, changeDto);
 
-    return specificationFieldMapper.toDto(fieldRepository.save(updatedField));
+    return specificationFieldMapper.toDto(fieldRepository.save(fieldEntity));
   }
 
   @Transactional

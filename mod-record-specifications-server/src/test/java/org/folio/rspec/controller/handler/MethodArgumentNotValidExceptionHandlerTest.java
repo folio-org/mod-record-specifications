@@ -46,7 +46,7 @@ class MethodArgumentNotValidExceptionHandlerTest {
     var fieldError = new FieldError("objectName", field, rejectedValue, false, codes, null, defaultMessage);
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(List.of(fieldError));
-    when(translationService.format(codes, "field", field, "boundary", "undefined")).thenReturn(defaultMessage);
+    when(translationService.format(codes, "field", field)).thenReturn(defaultMessage);
 
     // Act
     var responseEntity = exceptionHandler.handleException(methodArgumentNotValidException);

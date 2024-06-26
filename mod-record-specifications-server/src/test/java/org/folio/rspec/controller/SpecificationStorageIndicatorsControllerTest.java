@@ -116,7 +116,7 @@ class SpecificationStorageIndicatorsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
   @Test
@@ -128,7 +128,7 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("code length must be between [1 and 1]."))))
+        hasItem(is("The 'code' field is out of allowed bounds [1-1]."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("aa"))));
@@ -143,7 +143,7 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("code length must be between [1 and 1]."))))
+        hasItem(is("The 'code' field is out of allowed bounds [1-1]."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));

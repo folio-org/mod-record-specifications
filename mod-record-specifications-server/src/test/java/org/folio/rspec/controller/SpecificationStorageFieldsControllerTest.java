@@ -99,7 +99,7 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [url] contains invalid URL."))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The 'url' field should be valid URL."))));
   }
 
   @ValueSource(strings = {
@@ -117,7 +117,7 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("A MARC tag must contain three characters."))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("A tag must contain three characters."))));
   }
 
   @CsvSource(delimiter = '|', value = {
@@ -132,7 +132,8 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
   @Test
@@ -217,7 +218,7 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Field [%s] must be not null.".formatted(field)))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
   @Test

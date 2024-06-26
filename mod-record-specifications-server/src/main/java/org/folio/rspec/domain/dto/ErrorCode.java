@@ -8,7 +8,7 @@ public enum ErrorCode {
   INVALID_QUERY_VALUE("invalid-query-value", "101", null),
   INVALID_QUERY_ENUM_VALUE("invalid-query-enum-value", "102", "invalid.request.query-param.enum"),
   INVALID_REQUEST_PARAMETER("invalid-request-parameter", "103", null),
-  DUPLICATE_SPECIFICATION_FIELD("duplicate-specification-field", "104", "specification.field.tag.duplicate"),
+  DUPLICATE_FIELD_TAG("duplicate-specification-field-tag", "104", "specification.field.tag.duplicate"),
   SPECIFICATION_FETCH_FAILED("specification-fetch-failed", "105", "specification.fetch.failed"),
   DUPLICATE_FIELD_INDICATOR("duplicate-field-indicator", "106", "field.indicator.order.duplicate"),
   DUPLICATE_INDICATOR_CODE("duplicate-indicator-code", "107", "indicator.code.code.duplicate"),
