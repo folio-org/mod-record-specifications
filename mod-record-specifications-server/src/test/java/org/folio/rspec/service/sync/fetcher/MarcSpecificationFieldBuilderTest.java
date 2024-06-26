@@ -33,7 +33,7 @@ class MarcSpecificationFieldBuilderTest {
   @BeforeEach
   public void setUp() {
     marcSpecificationFieldBuilder = new MarcSpecificationFieldBuilder(labelModifier, MAPPER);
-    lenient().when(labelModifier.modify(anyString())).thenAnswer(i -> i.getArgument(0));
+    lenient().when(labelModifier.modify(anyString())).thenAnswer(i -> i.getArgument(0).toString().trim());
   }
 
   @MethodSource("testDataProvider")
