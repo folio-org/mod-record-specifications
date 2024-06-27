@@ -9,10 +9,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.exception.SpecificationFetchingFailedException;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class MarcSpecificationParser {
@@ -28,6 +30,7 @@ public class MarcSpecificationParser {
   public ArrayNode parse(Document document) {
     var specElement = document.select(SPEC_ELEMENT_CSS_QUERY).first();
     if (specElement == null) {
+      log.error("Spec element not found in document with uri {}", document.baseUri());
       throw new SpecificationFetchingFailedException();
     }
     var fieldBlocks = fieldBlockSplitter.split(specElement.text());

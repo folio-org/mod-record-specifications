@@ -4,6 +4,7 @@ import static java.util.UUID.randomUUID;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.fieldPath;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,6 +103,17 @@ class SpecificationStorageFieldsControllerTest {
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The 'url' field should be valid URL."))));
   }
 
+  @Test
+  void updateField_return400_invalidJson() throws Exception {
+    var requestBuilder = put(fieldPath(randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"tag\": \"666\", \"label\": \"Mystic field\", \"deprecated\": invalid}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(containsString("JSON parse error"))));
+  }
+
   @ValueSource(strings = {
     "abc",
     "a1x",
@@ -117,7 +129,8 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("A tag must contain three characters."))));
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("A 'tag' field must contain three characters and can only accept numbers 0-9."))));
   }
 
   @CsvSource(delimiter = '|', value = {
@@ -276,7 +289,7 @@ class SpecificationStorageFieldsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' field has exceeded 350 character limit"))))
+        hasItem(is("The 'label' field has exceeded 350 character limit."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
   }

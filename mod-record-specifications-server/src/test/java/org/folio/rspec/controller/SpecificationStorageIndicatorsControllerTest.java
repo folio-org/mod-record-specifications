@@ -128,7 +128,7 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'code' field has exceeded 1 character limit"))))
+        hasItem(is("The 'code' field has exceeded 1 character limit."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("aa"))));
@@ -174,7 +174,7 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' field has exceeded 350 character limit"))))
+        hasItem(is("The 'label' field has exceeded 350 character limit."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
   }

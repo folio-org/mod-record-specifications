@@ -248,7 +248,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("A tag must contain three characters.")))
+      .andExpect(errorMessageMatch(
+        is("A 'tag' field must contain three characters and can only accept numbers 0-9.")))
       .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
   }
