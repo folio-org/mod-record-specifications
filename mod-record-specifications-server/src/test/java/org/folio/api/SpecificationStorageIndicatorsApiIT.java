@@ -96,7 +96,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(DataIntegrityViolationException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_INDICATOR_CODE.getType())))
-      .andExpect(errorMessageMatch(is("Can only have one validation rule per MARC field indicator/code.")));
+      .andExpect(errorMessageMatch(is("The 'code' must be unique.")));
   }
 
   private String createLocalIndicator(String fieldId) {

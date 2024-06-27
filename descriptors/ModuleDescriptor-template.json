@@ -84,7 +84,7 @@
           ],
           "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
           "permissionsRequired": [
-            "specification-storage.specification.indicators.collection.get"
+            "specification-storage.field.indicators.collection.get"
           ]
         },
         {
@@ -93,7 +93,7 @@
           ],
           "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
           "permissionsRequired": [
-            "specification-storage.specification.indicators.item.post"
+            "specification-storage.field.indicators.item.post"
           ]
         },
         {
@@ -102,7 +102,7 @@
           ],
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
-            "specification-storage.specification.indicator-codes.collection.get"
+            "specification-storage.indicator.indicator-codes.collection.get"
           ]
         },
         {
@@ -111,7 +111,7 @@
           ],
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
-            "specification-storage.specification.indicator-codes.item.post"
+            "specification-storage.indicator.indicator-codes.item.post"
           ]
         }
       ]
@@ -179,22 +179,22 @@
       "description": "Delete field definition"
     },
     {
-      "permissionName": "specification-storage.specification.indicators.collection.get",
+      "permissionName": "specification-storage.field.indicators.collection.get",
       "displayName": "Specification Storage - Get field indicators definition collection",
       "description": "Get field indicators collection"
     },
     {
-      "permissionName": "specification-storage.specification.indicators.item.post",
+      "permissionName": "specification-storage.field.indicators.item.post",
       "displayName": "Specification Storage - Create indicator definition for field",
       "description": "Create field indicator definition"
     },
     {
-      "permissionName": "specification-storage.specification.indicator-codes.collection.get",
+      "permissionName": "specification-storage.indicator.indicator-codes.collection.get",
       "displayName": "Specification Storage - Get indicator code definition collection",
       "description": "Get indicator codes collection"
     },
     {
-      "permissionName": "specification-storage.specification.indicator-codes.item.post",
+      "permissionName": "specification-storage.indicator.indicator-codes.item.post",
       "displayName": "Specification Storage - Create code definition for indicator",
       "description": "Create indicator code definition"
     },
@@ -210,10 +210,10 @@
         "specification-storage.specification.fields.item.post",
         "specification-storage.fields.item.put",
         "specification-storage.fields.item.delete",
-        "specification-storage.specification.indicators.collection.get",
-        "specification-storage.specification.indicators.item.post",
-        "specification-storage.specification.indicator-codes.collection.get",
-        "specification-storage.specification.indicator-codes.item.post"
+        "specification-storage.field.indicators.collection.get",
+        "specification-storage.field.indicators.item.post",
+        "specification-storage.indicator.indicator-codes.collection.get",
+        "specification-storage.indicator.indicator-codes.item.post"
       ]
     }
   ],

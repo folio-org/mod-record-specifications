@@ -143,7 +143,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(DataIntegrityViolationException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_FIELD_INDICATOR.getType())))
-      .andExpect(errorMessageMatch(is("Can only have one validation rule per MARC field indicator/order.")));
+      .andExpect(errorMessageMatch(is("The 'order' must be unique.")));
   }
 
   private SpecificationFieldChangeDto getLocalFieldDto() {

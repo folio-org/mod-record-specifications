@@ -27,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = INDICATOR_TABLE_NAME, uniqueConstraints = {
-  @UniqueConstraint(name = "uc_indicator_order_field_id", columnNames = {ORDER_COLUMN, FIELD_ID_COLUMN})
+  @UniqueConstraint(name = Indicator.ORDER_UNIQUE_CONSTRAINT, columnNames = {ORDER_COLUMN, FIELD_ID_COLUMN})
 })
 public class Indicator extends UuidPersistable {
 
@@ -35,6 +35,7 @@ public class Indicator extends UuidPersistable {
   public static final String ORDER_COLUMN = "indicator_order";
   public static final String LABEL_COLUMN = "label";
   public static final String FIELD_ID_COLUMN = "field_id";
+  public static final String ORDER_UNIQUE_CONSTRAINT = "uc_indicator_order_field_id";
 
   @Column(name = ORDER_COLUMN)
   private Integer order;

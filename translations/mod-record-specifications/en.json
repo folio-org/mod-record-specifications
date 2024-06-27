@@ -1,8 +1,7 @@
 {
   "specification.field.tag.duplicate": "The 'tag' must be unique.",
-  "specification.field.label.duplicate": "The 'label' must be unique.",
-  "field.indicator.order.duplicate": "Can only have one validation rule per MARC field indicator/order.",
-  "indicator.code.code.duplicate": "Can only have one validation rule per MARC field indicator/code.",
+  "field.indicator.order.duplicate": "The 'order' must be unique.",
+  "indicator.code.code.duplicate": "The 'code' must be unique.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
   "specification.fetch.failed": "Specification fetching failed.",
 
@@ -12,7 +11,7 @@
   "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "The ''{parameter}'' field is required.",
   "NotBlank": "The ''{parameter}'' must be not blank.",
-  "Size": "The ''{parameter}'' field is out of allowed bounds [{min}-{max}].",
+  "Size": "The ''{parameter}'' field has exceeded {max} character limit",
   "URL": "The ''{parameter}'' field should be valid URL.",
 
   "unexpected": "Unexpected error: {errorMessage}."

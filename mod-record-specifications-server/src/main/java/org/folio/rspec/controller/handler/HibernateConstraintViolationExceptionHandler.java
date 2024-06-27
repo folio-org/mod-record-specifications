@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.ErrorCollection;
 import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.Indicator;
+import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.service.i18n.ExtendedTranslationService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,8 +25,8 @@ public class HibernateConstraintViolationExceptionHandler implements ServiceExce
 
   private static final Map<String, ErrorCode> DB_CONSTRAINTS_MAP = Map.of(
     Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG,
-    "uc_indicator_order_field_id", DUPLICATE_FIELD_INDICATOR,
-    "uc_indicator_code_indicator_id", DUPLICATE_INDICATOR_CODE
+    Indicator.ORDER_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_INDICATOR,
+    IndicatorCode.CODE_UNIQUE_CONSTRAINT, DUPLICATE_INDICATOR_CODE
   );
 
   private final ExtendedTranslationService translationService;

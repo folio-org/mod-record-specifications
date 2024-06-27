@@ -251,4 +251,34 @@ class SpecificationStorageFieldsControllerTest {
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("0"))));
   }
 
+  @Test
+  void createFieldLocalIndicator_return400_blankLabel() throws Exception {
+    var requestBuilder = post(fieldIndicatorsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"order\": 1, \"label\": \"\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The 'label' must be not blank."))))
+      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));
+  }
+
+  @Test
+  void createFieldLocalIndicator_return400_longLabel() throws Exception {
+    var label = "a".repeat(351);
+    var requestBuilder = post(fieldIndicatorsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"order\": 1, \"label\": \"%s\"}".formatted(label));
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The 'label' field has exceeded 350 character limit"))))
+      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
+  }
+
 }

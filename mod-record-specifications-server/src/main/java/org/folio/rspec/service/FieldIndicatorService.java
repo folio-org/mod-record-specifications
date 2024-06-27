@@ -39,9 +39,9 @@ public class FieldIndicatorService {
 
   public FieldIndicatorDto createLocalIndicator(Field field, FieldIndicatorChangeDto createDto) {
     log.info("createLocalIndicator::fieldId={}, dto={}", field.getId(), createDto);
-    var fieldEntity = mapper.toEntity(createDto);
-    fieldEntity.setField(field);
-    return mapper.toDto(repository.save(fieldEntity));
+    var indicatorEntity = mapper.toEntity(createDto);
+    indicatorEntity.setField(field);
+    return mapper.toDto(repository.save(indicatorEntity));
   }
 
   @Transactional

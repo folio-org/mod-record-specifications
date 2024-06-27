@@ -46,7 +46,7 @@
 
     <addForeignKeyConstraint baseColumnNames="field_id"
                              baseTableName="indicator"
-                             constraintName="FK_INDICATOR_ON_FIELD"
+                             constraintName="fk_indicator_on_field"
                              referencedColumnNames="id"
                              referencedTableName="field"/>
   </changeSet>

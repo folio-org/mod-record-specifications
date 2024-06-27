@@ -6,11 +6,13 @@ properties:
   code:
     description: Indicator code
     type: string
-    minLength: 1
     maxLength: 1
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   label:
     description: Code description
     type: string
+    maxLength: 350
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
 required:
   - code
   - label

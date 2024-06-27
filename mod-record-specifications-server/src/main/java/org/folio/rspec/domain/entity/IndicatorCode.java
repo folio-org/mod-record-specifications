@@ -28,7 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = INDICATOR_CODE_TABLE_NAME, uniqueConstraints = {
-  @UniqueConstraint(name = "uc_indicator_code_indicator_id", columnNames = {CODE_COLUMN, INDICATOR_ID_COLUMN})
+  @UniqueConstraint(name = IndicatorCode.CODE_UNIQUE_CONSTRAINT, columnNames = {CODE_COLUMN, INDICATOR_ID_COLUMN})
 })
 public class IndicatorCode extends UuidPersistable {
 
@@ -37,6 +37,7 @@ public class IndicatorCode extends UuidPersistable {
   public static final String LABEL_COLUMN = "label";
   public static final String SCOPE_COLUMN = "scope";
   public static final String INDICATOR_ID_COLUMN = "indicator_id";
+  public static final String CODE_UNIQUE_CONSTRAINT = "uc_indicator_code_indicator_id";
 
   @Column(name = CODE_COLUMN)
   private String code;
