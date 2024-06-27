@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface FieldRepository extends JpaRepository<Field, UUID> {
 
-  @Query("select f from Field f where f.specification.id = ?1")
+  @Query("select f from Field f where f.specification.id = ?1 order by f.tag")
   List<Field> findBySpecificationId(UUID specificationId);
 
   @Transactional

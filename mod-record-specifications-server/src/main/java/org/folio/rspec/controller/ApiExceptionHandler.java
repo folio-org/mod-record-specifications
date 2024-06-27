@@ -18,7 +18,7 @@ public class ApiExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorCollection> globalExceptionHandler(Exception e) {
-    log.warn("Trying to handle [exception: {}}, message: {}]", e.getClass().getName(), e.getMessage());
+    log.debug("Trying to handle [exception: {}}, message: {}]", e.getClass().getName(), e.getMessage());
     for (ServiceExceptionHandler exceptionHandler : exceptionHandlers) {
       if (exceptionHandler.canHandle(e)) {
         return exceptionHandler.handleException(e);

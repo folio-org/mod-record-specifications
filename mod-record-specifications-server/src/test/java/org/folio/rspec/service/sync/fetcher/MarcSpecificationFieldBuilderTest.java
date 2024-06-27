@@ -33,7 +33,7 @@ class MarcSpecificationFieldBuilderTest {
   @BeforeEach
   public void setUp() {
     marcSpecificationFieldBuilder = new MarcSpecificationFieldBuilder(labelModifier, MAPPER);
-    lenient().when(labelModifier.modify(anyString())).thenAnswer(i -> i.getArgument(0));
+    lenient().when(labelModifier.modify(anyString())).thenAnswer(i -> i.getArgument(0).toString().trim());
   }
 
   @MethodSource("testDataProvider")
@@ -61,7 +61,7 @@ class MarcSpecificationFieldBuilderTest {
       arguments("111 - My Non-Repeatable Field (NR)",
         createFieldNode("111", "My Non-Repeatable Field", false, false)),
       arguments("112 - My Deprecated Field (NR) [OBSOLETE]",
-        createFieldNode("112", "My Deprecated Field", false, true)),
+        createFieldNode("112", "My Deprecated Field [OBSOLETE]", false, true)),
       arguments("123 - My Repeatable Field 1 (Some Value)",
         createFieldNode("123", "My Repeatable Field 1", true, false)),
       arguments("124 - My Repeatable Field 2 (R)",
