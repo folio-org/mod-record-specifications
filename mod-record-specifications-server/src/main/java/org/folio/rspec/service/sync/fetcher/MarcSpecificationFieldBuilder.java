@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class MarcSpecificationFieldBuilder {
 
   private static final Pattern FIELD_PATTERN = Pattern.compile(
-    "(?<%s>\\d{3}) - (?<%s>.{1,500}) \\((?<%s>.{1,100})\\)(?<%s> \\[OBSOLETE])?"
+    "(?<%s>\\d{3}) - (?<%s>.{1,500})\\s?\\((?<%s>.{1,100})\\)(?<%s> \\[OBSOLETE])?"
       .formatted(TAG_PROP, LABEL_PROP, REPEATABLE_PROP, DEPRECATED_PROP));
   private static final String NON_REPEATABLE_SIGN = "NR";
 
