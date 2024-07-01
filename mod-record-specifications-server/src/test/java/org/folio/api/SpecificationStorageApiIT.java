@@ -25,7 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
-import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
@@ -37,7 +36,6 @@ import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.DatabaseHelper;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
-import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +45,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends IntegrationTestBase {
-
-  private final EasyRandom easyRandom = new EasyRandom();
 
   @Autowired
   private DatabaseHelper databaseHelper;
@@ -252,7 +248,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     tryPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), dto)
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(MethodArgumentNotValidException.class))
-      .andExpect(errorMessageMatch(is("A tag must contain three characters.")))
+      .andExpect(errorMessageMatch(
+        is("A 'tag' field must contain three characters and can only accept numbers 0-9.")))
       .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
   }
@@ -279,16 +276,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     doGet(specificationFieldsPath(specificationId))
       .andExpect(jsonPath("$.fields.size()", allOf(is(createdFieldIds.size()), is(293))))
       .andExpect(jsonPath("$.fields.[*].id", hasItems(createdFieldIds.toArray(String[]::new))));
-  }
-
-  private SpecificationFieldChangeDto localTestField(String tag) {
-    return new SpecificationFieldChangeDto()
-      .tag(tag)
-      .label(easyRandom.nextObject(String.class))
-      .deprecated(easyRandom.nextBoolean())
-      .repeatable(easyRandom.nextBoolean())
-      .required(easyRandom.nextBoolean())
-      .url("http://www." + easyRandom.nextObject(String.class) + ".com");
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

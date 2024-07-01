@@ -1,7 +1,9 @@
 package org.folio.rspec.controller.handler;
 
 import static org.folio.rspec.controller.handler.ServiceExceptionHandler.fromErrorCode;
+import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_INDICATOR;
 import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_FIELD_TAG;
+import static org.folio.rspec.domain.dto.ErrorCode.DUPLICATE_INDICATOR_CODE;
 import static org.folio.rspec.domain.dto.ErrorCode.UNEXPECTED;
 
 import java.util.Map;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.ErrorCollection;
 import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.Indicator;
+import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.service.i18n.ExtendedTranslationService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +24,9 @@ import org.springframework.stereotype.Component;
 public class HibernateConstraintViolationExceptionHandler implements ServiceExceptionHandler {
 
   private static final Map<String, ErrorCode> DB_CONSTRAINTS_MAP = Map.of(
-    Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG
+    Field.TAG_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_TAG,
+    Indicator.ORDER_UNIQUE_CONSTRAINT, DUPLICATE_FIELD_INDICATOR,
+    IndicatorCode.CODE_UNIQUE_CONSTRAINT, DUPLICATE_INDICATOR_CODE
   );
 
   private final ExtendedTranslationService translationService;

@@ -1,0 +1,22 @@
+title: Indicator code definition DTO
+description: Describe indicator code definition that will be used for record validation
+type: object
+properties:
+  id:
+    description: Code ID
+    type: string
+    format: uuid
+  indicatorId:
+    description: Indicator ID
+    type: string
+    format: uuid
+  code:
+    description: Indicator Code
+    type: string
+  label:
+    description: Code description
+    type: string
+  scope:
+    $ref: 'scope.yaml'
+  metadata:
+    $ref: 'common/metadataDto.yaml'

@@ -336,7 +336,7 @@ class SpecificationStorageControllerTest {
 
   @Test
   void createSpecificationLocalField_return400_fieldLengthExceedLimit() throws Exception {
-    String label = "a".repeat(351);
+    var label = "a".repeat(351);
     var requestBuilder = post(specificationFieldsPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
       .content("{\"tag\": \"666\", \"label\": \"%s\"}".formatted(label));
@@ -344,7 +344,7 @@ class SpecificationStorageControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' field has exceeded 350 character limit"))));
+        hasItem(is("The 'label' field has exceeded 350 character limit."))));
   }
 
 }

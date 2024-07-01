@@ -4,39 +4,29 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="MRSPECS-6@@create-table:field" author="pavlo_smahin">
+  <changeSet id="MRSPECS-6@@create-table:indicator-code" author="viacheslav_kolesnyk">
     <preConditions onFail="MARK_RAN">
       <not>
-        <tableExists tableName="field"/>
+        <tableExists tableName="indicator_code"/>
       </not>
     </preConditions>
 
-    <comment>Create field table</comment>
+    <comment>Create indicator code table</comment>
 
-    <createTable tableName="field">
+    <createTable tableName="indicator_code">
       <column name="id" type="UUID">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_field"/>
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_indicator_code"/>
       </column>
-      <column name="tag" type="VARCHAR(5)">
+      <column name="code" type="CHAR(1)">
         <constraints nullable="false"/>
       </column>
       <column name="label" type="VARCHAR(350)">
         <constraints nullable="false"/>
       </column>
-      <column name="url" type="VARCHAR(350)"/>
-      <column name="repeatable" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="required" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="deprecated" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
       <column name="scope" type="scope_enum">
         <constraints nullable="false"/>
       </column>
-      <column name="specification_id" type="UUID">
+      <column name="indicator_id" type="UUID">
         <constraints nullable="false"/>
       </column>
       <column name="created_by_user_id" type="UUID">
@@ -53,15 +43,15 @@
       </column>
     </createTable>
 
-    <addUniqueConstraint columnNames="tag, specification_id"
-                         constraintName="uc_field_tag_specification_id"
-                         tableName="field"/>
+    <addUniqueConstraint columnNames="code, indicator_id"
+                         constraintName="uc_indicator_code_indicator_id"
+                         tableName="indicator_code"/>
 
-    <addForeignKeyConstraint baseColumnNames="specification_id"
-                             baseTableName="field"
-                             constraintName="fk_field_on_specification"
+    <addForeignKeyConstraint baseColumnNames="indicator_id"
+                             baseTableName="indicator_code"
+                             constraintName="fk_code_on_indicator"
                              referencedColumnNames="id"
-                             referencedTableName="specification"/>
+                             referencedTableName="indicator"/>
   </changeSet>
 
 </databaseChangeLog>

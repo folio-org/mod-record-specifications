@@ -1,0 +1,18 @@
+title: Indicator code definition change DTO
+description: Describe code definition that should be created or change to existed code definition
+type: object
+additionalProperties: false
+properties:
+  code:
+    description: Indicator code
+    type: string
+    pattern: ^[0-9\/]{1}$
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+  label:
+    description: Code description
+    type: string
+    maxLength: 350
+    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+required:
+  - code
+  - label

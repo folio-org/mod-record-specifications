@@ -4,8 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -25,6 +29,7 @@ public class SpecificationFieldService {
 
   private final FieldRepository fieldRepository;
   private final SpecificationFieldMapper specificationFieldMapper;
+  private final FieldIndicatorService indicatorService;
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
     log.debug("findSpecificationFields::specificationId={}", specificationId);
@@ -73,5 +78,27 @@ public class SpecificationFieldService {
       field.setSpecification(specification);
     }
     fieldRepository.saveAll(fieldByTags.values());
+  }
+
+  @Transactional
+  public FieldIndicatorDtoCollection findFieldIndicators(UUID fieldId) {
+    log.debug("findFieldIndicators::fieldId={}", fieldId);
+    return doForFieldOrFail(fieldId,
+      field -> indicatorService.findFieldIndicators(fieldId)
+    );
+  }
+
+  @Transactional
+  public FieldIndicatorDto createLocalIndicator(UUID fieldId, FieldIndicatorChangeDto createDto) {
+    log.debug("createLocalIndicator::fieldId={}, createDto={}", fieldId, createDto);
+    return doForFieldOrFail(fieldId,
+      field -> indicatorService.createLocalIndicator(field, createDto)
+    );
+  }
+
+  private <T> T doForFieldOrFail(UUID fieldId, Function<Field, T> action) {
+    return fieldRepository.findById(fieldId)
+      .map(action)
+      .orElseThrow(() -> ResourceNotFoundException.forField(fieldId));
   }
 }
