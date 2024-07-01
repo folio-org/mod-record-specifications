@@ -57,7 +57,7 @@ public class MarcSpecificationParser {
     fieldObject.set(SUBFIELDS_PROP, subfieldsBuilder.build(subfieldsBlock));
 
     var indicatorsLineNumber = fieldBlockSplitter.getIndicatorsLineNumber(block);
-    var indicatorsBlock = block.subList(indicatorsLineNumber, subfieldLineNumber);
+    var indicatorsBlock = block.subList(indicatorsLineNumber, subfieldLineNumber - 1);
     fieldObject.set(INDICATORS_PROP, indicatorsBuilder.build(indicatorsBlock));
 
     return fieldObject;

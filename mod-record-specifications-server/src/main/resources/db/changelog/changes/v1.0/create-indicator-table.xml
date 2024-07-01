@@ -48,7 +48,8 @@
                              baseTableName="indicator"
                              constraintName="fk_indicator_on_field"
                              referencedColumnNames="id"
-                             referencedTableName="field"/>
+                             referencedTableName="field"
+                             onDelete="CASCADE"/>
   </changeSet>
 
 </databaseChangeLog>

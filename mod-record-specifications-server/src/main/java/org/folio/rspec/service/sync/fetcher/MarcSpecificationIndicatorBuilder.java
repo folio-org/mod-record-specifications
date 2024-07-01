@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.removeStart;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.CODES_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.CODE_PROP;
+import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.DEPRECATED_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.LABEL_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.ORDER_PROP;
 
@@ -102,8 +103,13 @@ public class MarcSpecificationIndicatorBuilder {
 
   private ObjectNode toCodeObject(String code, String label) {
     var codeObject = objectMapper.createObjectNode();
+    boolean deprecated = label.contains(DEPRECATED_SIGN);
+    if (deprecated) {
+      label = label.replace("[OBSOLETE]", "").trim();
+    }
     codeObject.put(CODE_PROP, code);
     codeObject.put(LABEL_PROP, label);
+    codeObject.put(DEPRECATED_PROP, deprecated);
     return codeObject;
   }
 
