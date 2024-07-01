@@ -6,7 +6,7 @@ properties:
   code:
     description: Indicator code
     type: string
-    maxLength: 1
+    pattern: ^[0-9\/]{1}$
     x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   label:
     description: Code description

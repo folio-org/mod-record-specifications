@@ -7,6 +7,7 @@
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
+  "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or a '/'.",
   "Min": "{parameter} must be greater than or equal to {value}.",
   "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "The ''{parameter}'' field is required.",

@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -77,7 +78,7 @@ class SpecificationStorageIndicatorsControllerTest {
 
     var requestBuilder = post(indicatorCodesPath(indicatorId))
       .contentType(APPLICATION_JSON)
-      .content("{\"code\": \"a\", \"label\": \"Some code\"}");
+      .content("{\"code\": \"1\", \"label\": \"Some code\"}");
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isCreated())
@@ -96,7 +97,7 @@ class SpecificationStorageIndicatorsControllerTest {
 
     var requestBuilder = post(indicatorCodesPath(indicatorId))
       .contentType(APPLICATION_JSON)
-      .content("{\"code\": \"a\", \"label\": \"Some code\"}");
+      .content("{\"code\": \"1\", \"label\": \"Some code\"}");
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isNotFound())
@@ -119,19 +120,20 @@ class SpecificationStorageIndicatorsControllerTest {
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
-  @Test
-  void createIndicatorLocalCode_return400_longCode() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"f", "!", "1f", "11"})
+  void createIndicatorLocalCode_return400_invalidCode(String code) throws Exception {
     var requestBuilder = post(indicatorCodesPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
-      .content("{\"code\": \"aa\", \"label\": \"Some code\"}");
+      .content("{\"code\": \"%s\", \"label\": \"Some code\"}".formatted(code));
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'code' field has exceeded 1 character limit."))))
+        hasItem(is("A 'code' field must contain one character and can only accept numbers 0-9 or a '/'."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
-      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("aa"))));
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(code))));
   }
 
   @Test
