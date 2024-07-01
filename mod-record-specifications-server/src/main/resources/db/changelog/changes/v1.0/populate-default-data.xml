@@ -910,28 +910,9 @@
     </sql>
   </changeSet>
 
-  <changeSet id="MRSPECS-12@@default-data:specification-metadata-fields" labels="default-data"
-             author="pavlo_smahin">
-
-    <comment>Update default fields for specification-metadata</comment>
-
-    <!--Liquibase have some issues with loading valueClobFile into jsonb datatype so need to change type after loading json-->
-    <sql>
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE text;
-    </sql>
-
-    <update tableName="specification_metadata">
-      <column name="fields" type="jsonb" valueClobFile="data/specification-metadata-authority.json"/>
-      <where>id='8909dae5-534b-4e67-b352-1dad0238bd15'</where>
-    </update>
-    <update tableName="specification_metadata">
-      <column name="fields" type="jsonb" valueClobFile="data/specification-metadata-bibliographic.json"/>
-      <where>id='5c61f37e-e6a9-4226-8c68-2b9cd66e65c9'</where>
-    </update>
-
-    <sql dbms="postgresql">
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE JSONB USING fields::JSONB;
-    </sql>
+  <changeSet id="MRSPECS-12@@default-data:specification-metadata-fields-v1" author="pavlo_smahin" runOnChange="true">
+    <loadUpdateData tableName="specification_metadata" file="data/specification_metadata.csv"
+                    relativeToChangelogFile="true" primaryKey="id"/>
   </changeSet>
 
 
