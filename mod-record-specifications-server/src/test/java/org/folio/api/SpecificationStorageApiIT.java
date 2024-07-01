@@ -277,7 +277,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(status().isAccepted());
 
     doGet(specificationFieldsPath(specificationId))
-      .andExpect(jsonPath("$.fields.size()", allOf(is(createdFieldIds.size()), is(292))))
+      .andExpect(jsonPath("$.fields.size()", allOf(is(createdFieldIds.size()), is(293))))
       .andExpect(jsonPath("$.fields.[*].id", hasItems(createdFieldIds.toArray(String[]::new))));
   }
 

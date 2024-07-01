@@ -1,7 +1,12 @@
 {
   "000": {
-    "defaultValue": false,
+    "defaultValue": true,
+    "deprecated": false,
     "id": "bc48a2e9-fa4b-4a1d-a8a5-96cb2d206410",
+    "url": "https://www.loc.gov/marc/bibliographic/bdleader.html",
+    "label": "Leader",
+    "repeatable": false,
+    "required": true,
     "scope": "SYSTEM",
     "tag": "000"
   },
@@ -9,6 +14,7 @@
     "defaultValue": false,
     "id": "e50d17eb-bb1e-4d44-9fa4-d484f62bf59a",
     "scope": "SYSTEM",
+    "required": true,
     "tag": "001"
   },
   "005": {
@@ -33,12 +39,14 @@
     "defaultValue": false,
     "id": "09041b35-056f-428f-bf2b-7a65b35e1b3b",
     "scope": "SYSTEM",
+    "required": true,
     "tag": "008"
   },
   "245": {
     "defaultValue": false,
     "id": "f2b7ad73-8e82-4909-9e49-694c35b52454",
     "scope": "SYSTEM",
+    "required": true,
     "tag": "245"
   },
   "999": {
