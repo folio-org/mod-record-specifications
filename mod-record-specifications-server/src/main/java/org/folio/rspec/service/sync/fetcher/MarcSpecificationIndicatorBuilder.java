@@ -23,6 +23,8 @@ public class MarcSpecificationIndicatorBuilder {
   private static final String DEPRECATED_SIGN = "OBSOLETE";
   private static final String NUMBER_RANGE_SIGN = "0-9";
   private static final char DASH = '-';
+  private static final char UNDEFINED = '#';
+  private static final char SLASH = '/';
 
   private final ObjectMapper objectMapper;
 
@@ -74,7 +76,8 @@ public class MarcSpecificationIndicatorBuilder {
   }
 
   private String getCode(String line) {
-    return String.valueOf(line.charAt(0));
+    var code = line.charAt(0);
+    return String.valueOf(code == UNDEFINED ? SLASH : code);
   }
 
   private String getStandardCodeLabel(String line) {

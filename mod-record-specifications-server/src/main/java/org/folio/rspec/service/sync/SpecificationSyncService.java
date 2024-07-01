@@ -82,8 +82,12 @@ public class SpecificationSyncService {
     field.setLabel(getText(fieldElement, LABEL_PROP));
     field.setDeprecated(getBoolean(fieldElement, DEPRECATED_PROP));
     field.setRepeatable(getBoolean(fieldElement, REPEATABLE_PROP));
-    field.setRequired(getBoolean(fieldElement, REQUIRED_PROP));
+    field.setRequired(isRequired(fieldElement, fieldMetadata));
     return field;
+  }
+
+  private boolean isRequired(JsonNode fieldElement, FieldMetadata fieldMetadata) {
+    return fieldMetadata.required() != null ? fieldMetadata.required() : getBoolean(fieldElement, REQUIRED_PROP);
   }
 
   private String getText(JsonNode fieldElement, String fieldName) {
