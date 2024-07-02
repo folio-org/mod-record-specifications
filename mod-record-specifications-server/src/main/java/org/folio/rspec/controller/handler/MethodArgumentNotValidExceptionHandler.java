@@ -7,7 +7,6 @@ import jakarta.validation.ConstraintViolation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Error;
@@ -32,7 +31,7 @@ public class MethodArgumentNotValidExceptionHandler implements ServiceExceptionH
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var exception = (MethodArgumentNotValidException) e;
-    List<Error> errorList = new ArrayList<>();
+    var errorList = new ArrayList<Error>();
     for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
       errorList.addAll(createErrorsFromFieldError(fieldError));
     }

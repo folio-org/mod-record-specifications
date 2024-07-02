@@ -1,7 +1,12 @@
 {
   "000": {
-    "defaultValue": false,
+    "defaultValue": true,
+    "deprecated": false,
     "id": "382a87cd-b87a-4a68-ba1b-4fda78b2ad58",
+    "url": "https://www.loc.gov/marc/authority/adleader.html",
+    "label": "Leader",
+    "repeatable": false,
+    "required": true,
     "scope": "SYSTEM",
     "tag": "000"
   },
@@ -9,6 +14,7 @@
     "defaultValue": false,
     "id": "607e3bba-a0fd-4b3c-bbcb-1f914c110cd3",
     "scope": "SYSTEM",
+    "required": true,
     "tag": "001"
   },
   "005": {
@@ -21,6 +27,7 @@
     "defaultValue": false,
     "id": "829b1836-4ace-4a26-abf9-1280397c823c",
     "scope": "SYSTEM",
+    "required": true,
     "tag": "008"
   },
   "999": {

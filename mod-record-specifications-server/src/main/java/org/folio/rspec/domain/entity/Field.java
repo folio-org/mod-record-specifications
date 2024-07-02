@@ -13,8 +13,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.folio.rspec.domain.dto.Scope;
@@ -65,6 +69,10 @@ public class Field extends UuidPersistable {
   @ManyToOne(optional = false)
   @JoinColumn(name = SPECIFICATION_ID_COLUMN, nullable = false)
   private Specification specification;
+
+  @OneToMany(mappedBy = "field", orphanRemoval = true)
+  @OrderBy(Indicator.ORDER_COLUMN)
+  private List<Indicator> indicators = new ArrayList<>();
 
   @Embedded
   private Metadata metadata = new Metadata();

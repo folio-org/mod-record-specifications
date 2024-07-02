@@ -59,7 +59,7 @@
 
     <addForeignKeyConstraint baseColumnNames="specification_id"
                              baseTableName="field"
-                             constraintName="FK_FIELD_ON_SPECIFICATION"
+                             constraintName="fk_field_on_specification"
                              referencedColumnNames="id"
                              referencedTableName="specification"/>
   </changeSet>

@@ -1,0 +1,20 @@
+title: Field indicator definition DTO
+description: Describe field indicator definition that will be used for record validation
+type: object
+properties:
+  id:
+    description: Indicator ID
+    type: string
+    format: uuid
+  fieldId:
+    description: Field ID
+    type: string
+    format: uuid
+  order:
+    description: Indicator order
+    type: integer
+  label:
+    description: Indicator description
+    type: string
+  metadata:
+    $ref: 'common/metadataDto.yaml'
