@@ -70,8 +70,4 @@ public class IndicatorCode extends UuidPersistable {
     return super.equals(o);
   }
 
-  @Override
-  public String toString() {
-    return "id=" + getId() + "; code=" + getCode();
-  }
 }

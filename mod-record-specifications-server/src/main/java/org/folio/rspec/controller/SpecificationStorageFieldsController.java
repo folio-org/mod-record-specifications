@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
+import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
+import org.folio.rspec.domain.dto.FieldSubfieldDto;
+import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.rest.resource.SpecificationStorageFieldsApi;
@@ -43,5 +46,17 @@ public class SpecificationStorageFieldsController implements SpecificationStorag
                                                                      FieldIndicatorChangeDto createDto) {
     var indicatorDto = specificationFieldService.createLocalIndicator(fieldId, createDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(indicatorDto);
+  }
+
+  @Override
+  public ResponseEntity<FieldSubfieldDto> createFieldLocalSubfield(UUID fieldId,
+                                                                   FieldSubfieldChangeDto createDto) {
+    var fieldDto = specificationFieldService.createLocalSubfield(fieldId, createDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(fieldDto);
+  }
+
+  @Override
+  public ResponseEntity<FieldSubfieldDtoCollection> getFieldSubfields(UUID fieldId) {
+    return ResponseEntity.ok(specificationFieldService.findFieldSubfields(fieldId));
   }
 }

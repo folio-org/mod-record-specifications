@@ -1,4 +1,4 @@
-package org.folio.rspec;
+package org.folio.rspec.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.experimental.UtilityClass;

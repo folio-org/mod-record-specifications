@@ -82,6 +82,24 @@
           "methods": [
             "GET"
           ],
+          "pathPattern": "/specification-storage/fields/{fieldId}/subfields",
+          "permissionsRequired": [
+            "specification-storage.field.subfields.collection.get"
+          ]
+        },
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/specification-storage/fields/{fieldId}/subfields",
+          "permissionsRequired": [
+            "specification-storage.field.subfields.item.post"
+          ]
+        },
+        {
+          "methods": [
+            "GET"
+          ],
           "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
           "permissionsRequired": [
             "specification-storage.field.indicators.collection.get"
@@ -179,6 +197,16 @@
       "description": "Delete field definition"
     },
     {
+      "permissionName": "specification-storage.field.subfields.collection.get",
+      "displayName": "Specification Storage - Get field subfields definition collection",
+      "description": "Get field subfields collection"
+    },
+    {
+      "permissionName": "specification-storage.field.subfields.item.post",
+      "displayName": "Specification Storage - Create subfield definition for field",
+      "description": "Create field subfield definition"
+    },
+    {
       "permissionName": "specification-storage.field.indicators.collection.get",
       "displayName": "Specification Storage - Get field indicators definition collection",
       "description": "Get field indicators collection"
@@ -210,6 +238,8 @@
         "specification-storage.specification.fields.item.post",
         "specification-storage.fields.item.put",
         "specification-storage.fields.item.delete",
+        "specification-storage.field.subfields.collection.get",
+        "specification-storage.field.subfields.item.post",
         "specification-storage.field.indicators.collection.get",
         "specification-storage.field.indicators.item.post",
         "specification-storage.indicator.indicator-codes.collection.get",

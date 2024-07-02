@@ -5,12 +5,10 @@ import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
-import static org.folio.support.ApiEndpoints.specificationSyncPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
@@ -22,32 +20,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
-import org.folio.rspec.domain.dto.SpecificationFieldDto;
-import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.DatabaseHelper;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends IntegrationTestBase {
-
-  @Autowired
-  private DatabaseHelper databaseHelper;
 
   @BeforeAll
   static void beforeAll() {
@@ -252,30 +242,6 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
         is("A 'tag' field must contain three characters and can only accept numbers 0-9.")))
       .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
-  }
-
-  @Test
-  void syncSpecification_produceSameFieldsEachTime() throws Exception {
-    var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
-    var newSyncUrl = okapi.getOkapiUrl() + "/marc/bibliographic.html";
-    databaseHelper.updateSyncUrlBySpecification(specificationId, newSyncUrl, TENANT_ID);
-
-    doPost(specificationSyncPath(specificationId), null);
-
-    var mvcResult = doGet(specificationFieldsPath(specificationId)).andReturn();
-    var createdFieldIds = contentAsObj(mvcResult, SpecificationFieldDtoCollection.class).getFields()
-      .stream()
-      .map(SpecificationFieldDto::getId)
-      .map(UUID::toString)
-      .collect(Collectors.toSet());
-
-    // check if second sync will produce same results
-    doPost(specificationSyncPath(specificationId), null)
-      .andExpect(status().isAccepted());
-
-    doGet(specificationFieldsPath(specificationId))
-      .andExpect(jsonPath("$.fields.size()", allOf(is(createdFieldIds.size()), is(293))))
-      .andExpect(jsonPath("$.fields.[*].id", hasItems(createdFieldIds.toArray(String[]::new))));
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {

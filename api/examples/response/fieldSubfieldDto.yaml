@@ -1,8 +1,8 @@
 value:
-  id: ff0780f9-573d-46ba-8bf1-73181052f4c1
-  indicatorId: ff0780f9-573d-46ba-8bf1-73181052f4b5
-  code: '0'
-  label: Code 0
+  id: 1ee161ba-5d50-4687-95f4-8dc9c52fcd53
+  fieldId: 27ce6b65-f959-4a4b-89b6-a2be7d2e9fc1
+  code: a
+  label: Subfield A
   scope: local
   metadata:
     createdDate: 2024-05-22 14:55:06

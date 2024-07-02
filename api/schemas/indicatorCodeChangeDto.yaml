@@ -6,13 +6,17 @@ properties:
   code:
     description: Indicator code
     type: string
-    pattern: ^[0-9\/]{1}$
+    pattern: '[0-9/]'
     x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   label:
     description: Code description
     type: string
     maxLength: 350
     x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
+  deprecated:
+    description: Define if indicator code is deprecated
+    type: boolean
+    default: false
 required:
   - code
   - label

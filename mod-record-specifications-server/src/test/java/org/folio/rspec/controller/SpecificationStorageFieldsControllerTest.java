@@ -3,6 +3,7 @@ package org.folio.rspec.controller;
 import static java.util.UUID.randomUUID;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.fieldPath;
+import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -23,6 +24,8 @@ import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
+import org.folio.rspec.domain.dto.FieldSubfieldDto;
+import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
@@ -166,7 +169,7 @@ class SpecificationStorageFieldsControllerTest {
   }
 
   @Test
-  void getIndicators(@Random FieldIndicatorDto indicatorDto) throws Exception {
+  void getFieldIndicators(@Random FieldIndicatorDto indicatorDto) throws Exception {
     var fieldId = UUID.randomUUID();
     when(specificationFieldService.findFieldIndicators(fieldId))
       .thenReturn(new FieldIndicatorDtoCollection().totalRecords(1).addIndicatorsItem(indicatorDto));
@@ -294,4 +297,124 @@ class SpecificationStorageFieldsControllerTest {
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
   }
 
+  @Test
+  void getFieldSubfields(@Random FieldSubfieldDto subfieldDto) throws Exception {
+    var fieldId = UUID.randomUUID();
+    when(specificationFieldService.findFieldSubfields(fieldId))
+      .thenReturn(new FieldSubfieldDtoCollection().totalRecords(1).addSubfieldsItem(subfieldDto));
+
+    var requestBuilder = get(fieldSubfieldsPath(fieldId))
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.totalRecords", is(1)))
+      .andExpect(jsonPath("$.subfields.size()", is(1)))
+      .andExpect(jsonPath("$.subfields[0].id", is(subfieldDto.getId().toString())))
+      .andExpect(jsonPath("$.subfields[0].fieldId", is(subfieldDto.getFieldId().toString())))
+      .andExpect(jsonPath("$.subfields[0].code", is(subfieldDto.getCode())))
+      .andExpect(jsonPath("$.subfields[0].label", is(subfieldDto.getLabel())))
+      .andExpect(jsonPath("$.subfields[0].required", is(subfieldDto.getRequired())))
+      .andExpect(jsonPath("$.subfields[0].repeatable", is(subfieldDto.getRepeatable())))
+      .andExpect(jsonPath("$.subfields[0].deprecated", is(subfieldDto.getDeprecated())))
+      .andExpect(jsonPath("$.subfields[0].scope", is(subfieldDto.getScope().getValue())));
+  }
+
+  @Test
+  void createFieldLocalSubfield_createNewLocalSubfield(@Random FieldSubfieldDto subfieldDto) throws Exception {
+    var fieldId = UUID.randomUUID();
+    when(specificationFieldService.createLocalSubfield(eq(fieldId), any())).thenReturn(subfieldDto);
+
+    var requestBuilder = post(fieldSubfieldsPath(fieldId))
+      .contentType(APPLICATION_JSON)
+      .content("{\"code\": \"a\", \"label\": \"subfield a\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.id", is(subfieldDto.getId().toString())))
+      .andExpect(jsonPath("$.fieldId", is(subfieldDto.getFieldId().toString())))
+      .andExpect(jsonPath("$.code", is(subfieldDto.getCode())))
+      .andExpect(jsonPath("$.label", is(subfieldDto.getLabel())))
+      .andExpect(jsonPath("$.required", is(subfieldDto.getRequired())))
+      .andExpect(jsonPath("$.repeatable", is(subfieldDto.getRepeatable())))
+      .andExpect(jsonPath("$.deprecated", is(subfieldDto.getDeprecated())))
+      .andExpect(jsonPath("$.scope", is(subfieldDto.getScope().getValue())));
+  }
+
+  @Test
+  void createFieldLocalSubfield_return404_notExistingField() throws Exception {
+    var fieldId = UUID.randomUUID();
+    when(specificationFieldService.createLocalSubfield(eq(fieldId), any()))
+      .thenThrow(ResourceNotFoundException.forField(fieldId));
+
+    var requestBuilder = post(fieldSubfieldsPath(fieldId))
+      .contentType(APPLICATION_JSON)
+      .content("{\"code\": \"a\", \"label\": \"Ind 1\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("field definition with ID [%s] was not found."
+        .formatted(fieldId)))));
+  }
+
+  @CsvSource(delimiter = '|', value = {
+    "{\"label\": \"Subfield 1m\"}  | code",
+    "{\"code\": 1}                 | label"
+  })
+  @ParameterizedTest
+  void createFieldLocalSubfield_return400_missingFieldInPayload(String content, String field) throws Exception {
+    var requestBuilder = post(fieldSubfieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content(content);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
+  }
+
+  @ValueSource(strings = {"#", "/", "A", "aa", "ä"})
+  @ParameterizedTest
+  void createFieldLocalSubfield_return400_invalidCode(String invalidCode) throws Exception {
+    var requestBuilder = post(fieldSubfieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"code\": \"%s\", \"label\": \"Subfield ?\"}".formatted(invalidCode));
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("A 'code' field must contain one character and can only accept numbers 0-9 or letters a-z."))))
+      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(invalidCode))));
+  }
+
+  @Test
+  void createFieldLocalSubfield_return400_blankLabel() throws Exception {
+    var requestBuilder = post(fieldSubfieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"code\": \"1\", \"label\": \"\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The 'label' must be not blank."))))
+      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));
+  }
+
+  @Test
+  void createFieldLocalSubfield_return400_longLabel() throws Exception {
+    var label = "a".repeat(351);
+    var requestBuilder = post(fieldSubfieldsPath(UUID.randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"code\": \"1\", \"label\": \"%s\"}".formatted(label));
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The 'label' field has exceeded 350 character limit."))))
+      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
+  }
 }

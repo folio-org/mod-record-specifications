@@ -1,0 +1,53 @@
+get:
+  summary: Get Field Subfields Definitions
+  description: Get a collection of subfields definitions that are defined in the field.
+  operationId: getFieldSubfields
+  parameters:
+    - $ref: '../../parameters/fieldId-param.yaml'
+  tags:
+    - specification-storage-fields
+  responses:
+    '200':
+      description: Collection of subfields definitions
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/fieldSubfieldDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/fieldSubfieldDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+post:
+  summary: Create Local Subfield Definition
+  description: Create new local subfield definition for the field
+  operationId: createFieldLocalSubfield
+  parameters:
+    - $ref: '../../parameters/fieldId-param.yaml'
+  tags:
+    - specification-storage-fields
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/fieldSubfieldChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/fieldSubfieldChangeDto.yaml'
+  responses:
+    '201':
+      description: Local subfield definition was created
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/fieldSubfieldDto.yaml'
+          examples:
+            Created:
+              $ref: '../../examples/response/fieldSubfieldDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

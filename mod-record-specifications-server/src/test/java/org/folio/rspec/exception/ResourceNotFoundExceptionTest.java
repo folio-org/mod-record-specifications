@@ -7,36 +7,16 @@ import static org.folio.rspec.exception.ResourceNotFoundException.forSpecificati
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
 import org.folio.spring.testing.type.UnitTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @UnitTest
 class ResourceNotFoundExceptionTest {
-
-  @Test
-  void name() {
-    String temnplate = """
-      "%s": {
-              "id": "%s",
-              "code": "%s",
-              "label": "Undefined",
-              "scope": "STANDARD",
-              "defaultValue": true
-            }
-      """;
-    for (char c = '0'; c <= '9'; c++) {
-      System.out.println(temnplate.formatted(c, UUID.randomUUID(), c));
-      System.out.println(", ");
-    }
-    System.out.println(temnplate.formatted('/', UUID.randomUUID(), '/'));
-  }
 
   @MethodSource("testSource")
   @ParameterizedTest

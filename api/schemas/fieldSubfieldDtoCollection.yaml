@@ -1,0 +1,12 @@
+title: Field Subfields DTO Collection
+description: Collection of field subfield DTOs
+type: object
+properties:
+  subfields:
+    description: Collection of field subfields
+    type: array
+    items:
+      $ref: 'fieldSubfieldDto.yaml'
+  totalRecords:
+    description: Total number of field subfields in collection
+    type: integer

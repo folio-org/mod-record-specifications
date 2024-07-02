@@ -14,6 +14,7 @@ public class ApiEndpoints {
   public static final String SPECIFICATION_RULE_PATH = SPECIFICATION_RULES_PATH + "/%s";
   public static final String SPECIFICATION_FIELDS_PATH = SPECIFICATIONS_PATH + "/%s/fields";
   public static final String FIELD_PATH = SPECIFICATION_STORAGE_PATH + "/fields/%s";
+  public static final String FIELD_SUBFIELDS_PATH = FIELD_PATH + "/subfields";
   public static final String FIELD_INDICATORS_PATH = FIELD_PATH + "/indicators";
   public static final String INDICATOR_PATH = SPECIFICATION_STORAGE_PATH + "/indicators/%s";
   public static final String INDICATOR_CODES_PATH = INDICATOR_PATH + "/indicator-codes";
@@ -64,6 +65,14 @@ public class ApiEndpoints {
 
   public static String fieldPath(UUID fieldId) {
     return fieldPath(fieldId.toString());
+  }
+
+  public static String fieldSubfieldsPath(String fieldId) {
+    return FIELD_SUBFIELDS_PATH.formatted(fieldId);
+  }
+
+  public static String fieldSubfieldsPath(UUID fieldId) {
+    return fieldSubfieldsPath(fieldId.toString());
   }
 
   public static String fieldIndicatorsPath(String fieldId) {

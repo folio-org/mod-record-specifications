@@ -4,6 +4,7 @@ import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.rspec.domain.entity.Indicator.INDICATOR_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.fieldPath;
+import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.ErrorCode;
@@ -31,6 +33,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.web.servlet.MvcResult;
 
 @IntegrationTest
 @DatabaseCleanup(tables = {INDICATOR_TABLE_NAME, FIELD_TABLE_NAME}, tenants = TENANT_ID)
@@ -126,7 +129,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("$.metadata.updatedByUserId", is(USER_ID)))
       .andReturn();
 
-    var createdIndicatorId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+    var createdIndicatorId = getRecordId(result);
 
     doGet(fieldIndicatorsPath(fieldId))
       .andExpect(jsonPath("$.indicators.[*].id", hasItem(createdIndicatorId)));
@@ -153,6 +156,75 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .deprecated(false)
       .required(false)
       .label("Local Test Field");
+  }
+
+  @Test
+  void getFieldSubfields_shouldReturn200AndAllSubfieldsForField() throws Exception {
+    var fieldId = createLocalField("103");
+    var sub1 = localTestSubfield("a", "Subfield a");
+    var sub2 = localTestSubfield("1", "Subfield 1");
+    doPost(fieldSubfieldsPath(fieldId), sub1);
+    doPost(fieldSubfieldsPath(fieldId), sub2);
+
+
+    doGet(fieldSubfieldsPath(fieldId))
+      .andExpect(jsonPath("totalRecords", is(2)))
+      .andExpect(jsonPath("subfields.size()", is(2)))
+      .andExpect(jsonPath("subfields.[*].id", everyItem(notNullValue())))
+      .andExpect(jsonPath("subfields.[*].fieldId", everyItem(is(fieldId))))
+      .andExpect(jsonPath("subfields.[*].code", hasItems(sub1.getCode(), sub2.getCode())))
+      .andExpect(jsonPath("subfields.[*].label", hasItems(sub1.getLabel(), sub2.getLabel())))
+      .andExpect(jsonPath("subfields.[*].required", everyItem(notNullValue())))
+      .andExpect(jsonPath("subfields.[*].repeatable", everyItem(notNullValue())))
+      .andExpect(jsonPath("subfields.[*].deprecated", everyItem(notNullValue())))
+      .andExpect(jsonPath("subfields.[*].metadata.createdDate", everyItem(notNullValue())))
+      .andExpect(jsonPath("subfields.[*].metadata.createdByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("subfields.[*].metadata.updatedByUserId", everyItem(is(USER_ID))))
+      .andExpect(jsonPath("subfields.[*].metadata.updatedDate", everyItem(notNullValue())));
+  }
+
+  @Test
+  void createFieldLocalSubfield_shouldReturn201AndCreatedSubfield() throws Exception {
+    var fieldId = createLocalField("104");
+    var dto = localTestSubfield("a", "Subfield a");
+
+    var result = doPost(fieldSubfieldsPath(fieldId), dto)
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.id", notNullValue()))
+      .andExpect(jsonPath("$.fieldId", is(fieldId)))
+      .andExpect(jsonPath("$.code", is(dto.getCode())))
+      .andExpect(jsonPath("$.label", is(dto.getLabel())))
+      .andExpect(jsonPath("$.required", is(dto.getRequired())))
+      .andExpect(jsonPath("$.repeatable", is(dto.getRepeatable())))
+      .andExpect(jsonPath("$.deprecated", is(dto.getDeprecated())))
+      .andExpect(jsonPath("$.metadata.createdDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.createdByUserId", is(USER_ID)))
+      .andExpect(jsonPath("$.metadata.updatedDate", notNullValue()))
+      .andExpect(jsonPath("$.metadata.updatedByUserId", is(USER_ID)))
+      .andReturn();
+
+    var createdSubfieldId = getRecordId(result);
+
+    doGet(fieldSubfieldsPath(fieldId))
+      .andExpect(jsonPath("$.subfields.[*].id", hasItem(createdSubfieldId)));
+  }
+
+  private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {
+    return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+  }
+
+  @Test
+  void createFieldLocalSubfield_shouldReturn400_whenDuplicateSubfieldCode() throws Exception {
+    var fieldId = createLocalField("104");
+    var dto = localTestSubfield("a", "Subfield a");
+
+    doPost(fieldSubfieldsPath(fieldId), dto).andExpect(status().isCreated());
+
+    tryPost(fieldSubfieldsPath(fieldId), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(DataIntegrityViolationException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SUBFIELD.getType())))
+      .andExpect(errorMessageMatch(is("The 'code' must be unique.")));
   }
 
 }

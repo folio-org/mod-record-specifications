@@ -1,7 +1,5 @@
 package org.folio.support;
 
-import static org.folio.spring.integration.XOkapiHeaders.TENANT;
-import static org.folio.spring.integration.XOkapiHeaders.URL;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
@@ -20,21 +18,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 import lombok.SneakyThrows;
 import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.integration.XOkapiHeaders;
-import org.folio.spring.testing.extension.EnableOkapi;
 import org.folio.spring.testing.extension.EnablePostgres;
-import org.folio.spring.testing.extension.impl.OkapiConfiguration;
 import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.jeasy.random.EasyRandom;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,7 +50,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-@EnableOkapi
 @EnablePostgres
 @SpringBootTest(classes = RecordSpecificationsApp.class)
 @ActiveProfiles("dev")
@@ -60,7 +58,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 public class IntegrationTestBase {
 
   protected static MockMvc mockMvc;
-  protected static OkapiConfiguration okapi;
   protected static ObjectMapper objectMapper = new ObjectMapper();
 
   protected static EasyRandom easyRandom = new EasyRandom();
@@ -83,20 +80,32 @@ public class IntegrationTestBase {
     httpHeaders.setContentType(APPLICATION_JSON);
     httpHeaders.add(XOkapiHeaders.TENANT, tenantId);
     httpHeaders.add(XOkapiHeaders.USER_ID, USER_ID);
-    httpHeaders.add(XOkapiHeaders.URL, okapi.getOkapiUrl());
 
     var tenantAttributes = new TenantAttributes().moduleTo("mod-record-specifications")
       .addParametersItem(new Parameter("loadReference").value(String.valueOf(loadReference)));
     doPost("/_/tenant", tenantAttributes, httpHeaders);
   }
 
+  @SneakyThrows
+  protected static void removeTenant() {
+    removeTenant(TENANT_ID);
+  }
+
+  @SneakyThrows
+  protected static void removeTenant(String tenantId) {
+    var httpHeaders = defaultHeaders();
+    httpHeaders.set(XOkapiHeaders.TENANT, tenantId);
+    var tenantAttributes = new TenantAttributes().moduleFrom("mod-record-specifications").purge(true);
+    doPost("/_/tenant", tenantAttributes, httpHeaders, UUID.randomUUID().toString())
+      .andExpect(status().isNoContent());
+  }
+
   protected static HttpHeaders defaultHeaders() {
     var httpHeaders = new HttpHeaders();
 
     httpHeaders.setContentType(APPLICATION_JSON);
-    httpHeaders.add(TENANT, TENANT_ID);
+    httpHeaders.add(XOkapiHeaders.TENANT, TENANT_ID);
     httpHeaders.add(XOkapiHeaders.USER_ID, USER_ID);
-    httpHeaders.add(URL, okapi.getOkapiUrl());
 
     return httpHeaders;
   }
@@ -240,6 +249,10 @@ public class IntegrationTestBase {
       .label("Ind " + order);
   }
 
+  protected FieldSubfieldChangeDto localTestSubfield(String code, String label) {
+    return new FieldSubfieldChangeDto().label(label).code(code);
+  }
+
   protected String createLocalField(SpecificationFieldChangeDto localTestField) throws UnsupportedEncodingException {
     return JsonPath.read(
       doPost(specificationFieldsPath(TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID), localTestField)
@@ -251,6 +264,11 @@ public class IntegrationTestBase {
   protected String createLocalField(String tag) throws UnsupportedEncodingException {
     var dto = localTestField(tag);
     return createLocalField(dto);
+  }
+
+  @AfterAll
+  static void cleanUp() {
+    removeTenant();
   }
 
   @NotNull
