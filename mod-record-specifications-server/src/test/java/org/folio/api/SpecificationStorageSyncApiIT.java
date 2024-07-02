@@ -103,7 +103,7 @@ class SpecificationStorageSyncApiIT extends IntegrationTestBase {
       .containsExactlyInAnyOrder(createdIndicatorIds);
 
     assertThat(recreatedIndicatorCodes)
-      .hasSize(1129)
+      .hasSize(1181)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorCodeIds);
   }

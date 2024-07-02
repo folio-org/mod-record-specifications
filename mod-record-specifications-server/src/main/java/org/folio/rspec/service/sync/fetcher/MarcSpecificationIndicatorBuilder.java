@@ -25,7 +25,7 @@ public class MarcSpecificationIndicatorBuilder {
   private static final String NUMBER_RANGE_SIGN = "0-9";
   private static final char DASH = '-';
   private static final char UNDEFINED = '#';
-  private static final char SLASH = '/';
+  private static final char SLASH = '\\';
 
   private final ObjectMapper objectMapper;
 

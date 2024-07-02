@@ -422,7 +422,6 @@
             "label": "Undefined",
             "scope": "SYSTEM",
             "deprecated": false,
-            "deprecated": false,
             "defaultValue": true
           },
           "1": {
@@ -497,9 +496,217 @@
             "deprecated": false,
             "defaultValue": true
           },
-          "/": {
+          "\\": {
             "id": "af66166f-f801-411e-932d-1b6d4885768e",
-            "code": "/",
+            "code": "\\",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "a": {
+            "id": "9ee178fd-5dad-4781-a59a-07f8ef803dba",
+            "code": "a",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "b": {
+            "id": "94e61b12-36c5-4519-94be-875820f3ac7e",
+            "code": "b",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "c": {
+            "id": "be8d9d3b-5cdf-4c2b-8867-f742a1645ff5",
+            "code": "c",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "d": {
+            "id": "aba6e6e4-5323-420b-9b5a-f0ad66c62775",
+            "code": "d",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "e": {
+            "id": "143cd69b-22dc-4752-84b2-2b1b72236c51",
+            "code": "e",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "f": {
+            "id": "1bbe58ae-bd4d-40f5-92ce-2e3e6ba7fab5",
+            "code": "f",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "g": {
+            "id": "e1fe3bd0-7afb-47d8-8fdd-98e455bd4e20",
+            "code": "g",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "h": {
+            "id": "7feca1d1-904b-4a9d-9b18-c9eab0b6aca3",
+            "code": "h",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "i": {
+            "id": "6fe7efea-6a5d-4812-83be-8c593fb7a6db",
+            "code": "i",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "j": {
+            "id": "9effa693-879a-4213-b7d5-8272316b1b60",
+            "code": "j",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "k": {
+            "id": "93b9266a-6b82-40b0-979a-141d5371027c",
+            "code": "k",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "l": {
+            "id": "62e55366-7ae6-4586-9feb-5611c6e1d8bc",
+            "code": "l",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "m": {
+            "id": "729861df-6967-408f-bc4b-7299a5a5e9d0",
+            "code": "m",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "n": {
+            "id": "95bfcb29-c738-426a-9cc2-fb74372308b7",
+            "code": "n",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "o": {
+            "id": "b9f48289-4c6a-4140-a9f1-df015479a051",
+            "code": "o",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "p": {
+            "id": "807467b2-a776-4143-959a-915495dd5f93",
+            "code": "p",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "q": {
+            "id": "84134cf1-0511-4757-9ca6-5176e8002b94",
+            "code": "q",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "r": {
+            "id": "b2816438-4e36-440d-9b1f-9caa798878da",
+            "code": "r",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "s": {
+            "id": "06a47ec1-4f28-4635-915c-feb50d504a86",
+            "code": "s",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "t": {
+            "id": "f94dd544-e7f6-41f4-8cc5-7148b8d58e5f",
+            "code": "t",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "u": {
+            "id": "6fcfbc15-b454-40a5-a45c-0a0af46b4d7e",
+            "code": "u",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "v": {
+            "id": "e4509ec5-7d7a-4115-9e44-8372e32d9927",
+            "code": "v",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "w": {
+            "id": "e37fd44a-84de-48b4-9ea9-e18420c58db5",
+            "code": "w",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "x": {
+            "id": "2ffebc9c-fa5c-4d06-98a9-c141368ae05b",
+            "code": "x",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "y": {
+            "id": "7acfc929-b04c-4cd7-be9a-5e7af9e34518",
+            "code": "y",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "z": {
+            "id": "42f17335-3480-415f-a47e-2b7a158ab01b",
+            "code": "z",
             "label": "Undefined",
             "scope": "SYSTEM",
             "deprecated": false,
@@ -593,9 +800,217 @@
             "deprecated": false,
             "defaultValue": true
           },
-          "/": {
+          "\\": {
             "id": "db30de81-f8e0-414a-9a8a-1d5afbb5f1d6",
-            "code": "/",
+            "code": "\\",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "a": {
+            "id": "cdfd8b36-1083-4371-b072-caf4a2566420",
+            "code": "a",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "b": {
+            "id": "27a5b6a4-2280-486a-82ea-a717215c197e",
+            "code": "b",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "c": {
+            "id": "d9643bb6-77fb-463b-aa4e-4ff3979c309a",
+            "code": "c",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "d": {
+            "id": "f0b8de3d-d8cf-43ce-99cd-f79951ff02ad",
+            "code": "d",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "e": {
+            "id": "035261f3-ac71-4b49-899a-7c95b0140015",
+            "code": "e",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "f": {
+            "id": "3145dea8-839e-4a87-9bce-1c32725d2832",
+            "code": "f",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "g": {
+            "id": "ab110374-1134-4c84-8780-561c3cf78ea8",
+            "code": "g",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "h": {
+            "id": "7a0c7815-42d7-4f1b-bacd-47b31673fafb",
+            "code": "h",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "i": {
+            "id": "dd3d7d34-a7a0-4d32-bfc9-efcd45830b71",
+            "code": "i",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "j": {
+            "id": "4b2988fa-b59f-4fd0-9354-400ecc84854f",
+            "code": "j",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "k": {
+            "id": "c81b2472-fe51-41fc-aaed-e4d91100b36c",
+            "code": "k",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "l": {
+            "id": "b75dfb6a-3389-4358-8e08-70b394dae46f",
+            "code": "l",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "m": {
+            "id": "4d24bc37-2eab-4bb6-8342-a3424e5daf60",
+            "code": "m",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "n": {
+            "id": "23cec6f8-4705-4d30-8abd-fbc342cf7e6b",
+            "code": "n",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "o": {
+            "id": "734f72f9-2de8-41e3-b3c4-2dc4e5194765",
+            "code": "o",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "p": {
+            "id": "aff8df10-58c6-44cd-9788-a04bc901bab3",
+            "code": "p",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "q": {
+            "id": "a8230637-c0bf-41fc-a5ea-6b96c8f4a02f",
+            "code": "q",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "r": {
+            "id": "8a57e759-c2f5-4fc8-98c1-ba891c3a733f",
+            "code": "r",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "s": {
+            "id": "cfafe2c6-f838-4455-8f1e-6dce61e0ef0b",
+            "code": "s",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "t": {
+            "id": "680e1c91-f3ff-42b1-b3c0-d0dbdacf7532",
+            "code": "t",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "u": {
+            "id": "03ee57c6-8705-435a-b5b7-f3197f5645ef",
+            "code": "u",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "v": {
+            "id": "fba9403b-e321-4499-a7b0-00ba7a64323d",
+            "code": "v",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "w": {
+            "id": "a19dacfa-04b6-42d8-af8b-ff6bcd3969be",
+            "code": "w",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "x": {
+            "id": "7af1da74-1d2e-48e0-a82b-51c9dffb80ac",
+            "code": "x",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "y": {
+            "id": "c6246890-a4e7-4be1-928f-a7f9c2ca294f",
+            "code": "y",
+            "label": "Undefined",
+            "scope": "SYSTEM",
+            "deprecated": false,
+            "defaultValue": true
+          },
+          "z": {
+            "id": "c9e2de0c-9ad2-4668-96c6-5ac9cf63fca6",
+            "code": "z",
             "label": "Undefined",
             "scope": "SYSTEM",
             "deprecated": false,
