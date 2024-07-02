@@ -1,0 +1,17 @@
+{
+    "specification.field.tag.duplicate": "A 'tag' deve ser única.",
+    "specification.resource.not-found": "{resourceName} com ID [{resourceId}] não foi encontrado.",
+    "specification.fetch.failed": "Falha na busca da especificação.",
+    "invalid.request.query-param.enum": "Valor inesperado [{invalidValue}]. Valores possíveis: [{possibleValues}].",
+    "Pattern.SpecificationFieldChangeDto.tag": "Um campo ''{parameter}'' deve conter três caracteres e só pode aceitar números de 0 a 9.",
+    "Min": "{parameter} deve ser maior ou igual a {value}.",
+    "Max": "{parameter} deve ser menor ou igual a {value}.",
+    "NotNull": "O campo ''{parameter}'' é obrigatório.",
+    "NotBlank": "O ''{parameter}'' não deve ficar em branco.",
+    "Size": "O campo ''{parameter}'' excedeu o limite de {max} caracteres.",
+    "URL": "O campo ''{parameter}'' deve ser uma URL válido.",
+    "unexpected": "Erro inesperado: {errorMessage}.",
+    "field.indicator.order.duplicate": "A 'pedido' deve ser único.",
+    "indicator.code.code.duplicate": "O 'código' deve ser único.",
+    "Pattern.IndicatorCodeChangeDto.code": "Um campo ''{parameter}'' deve conter um caractere e só pode aceitar números de 0 a 9 ou um '/'."
+}

@@ -1,0 +1,17 @@
+{
+    "specification.field.tag.duplicate": "The 'tag' must be unique.",
+    "specification.resource.not-found": "{resourceName} s ID [{resourceId}] nebyl nalezen.",
+    "specification.fetch.failed": "Načítání specifikace se nezdařilo.",
+    "invalid.request.query-param.enum": "Neočekávaná hodnota [{invalidValue}]. Možné hodnoty: [{possibleValues}].",
+    "Pattern.SpecificationFieldChangeDto.tag": "Tag musí obsahovat tři znaky.",
+    "Min": "{parameter} musí být větší nebo roven {value}.",
+    "Max": "{parameter} musí být menší nebo roven {value}.",
+    "NotNull": "Pole ''{parameter}'' je povinné.",
+    "NotBlank": "''{parameter}'' nesmí být prázdný.",
+    "Size": "Pole ''{parameter}'' překročilo limit {max} znaků",
+    "URL": "Pole ''{parameter}'' by mělo být platná adresa URL.",
+    "unexpected": "Neočekávaná chyba: {errorMessage}.",
+    "field.indicator.order.duplicate": "The 'order' must be unique.",
+    "indicator.code.code.duplicate": "The 'code' must be unique.",
+    "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or a '/'."
+}

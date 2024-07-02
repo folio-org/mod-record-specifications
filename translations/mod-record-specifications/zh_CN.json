@@ -1,0 +1,17 @@
+{
+    "specification.field.tag.duplicate": "“字段名”必须唯一。",
+    "specification.resource.not-found": "未找到 ID 为 [ {resourceId} ] 的{resourceName} 。",
+    "specification.fetch.failed": "规范提取失败。",
+    "invalid.request.query-param.enum": "意外值 [ {invalidValue} ]。可能的值：[ {possibleValues} ]。",
+    "Pattern.SpecificationFieldChangeDto.tag": "字段名必须包含三个字符。",
+    "Min": "{parameter}必须大于等于{value} 。",
+    "Max": "{parameter}必须小于等于{value} ",
+    "NotNull": "“ {parameter} ”字段必备。",
+    "NotBlank": "'' {parameter} '' 不能为空。",
+    "Size": "“ {parameter} ”字段已超出{max}个字符的限制",
+    "URL": "'' {parameter} '' 字段应该是有效的 URL。",
+    "unexpected": "意外错误： {errorMessage} 。",
+    "field.indicator.order.duplicate": "The 'order' must be unique.",
+    "indicator.code.code.duplicate": "The 'code' must be unique.",
+    "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or a '/'."
+}
