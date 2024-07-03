@@ -5,6 +5,7 @@
   "indicator.code.code.duplicate": "The 'code' must be unique.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
   "specification.fetch.failed": "Specification fetching failed.",
+  "scope.modification.not-allowed": "The ''{parameter}'' modification is not allowed for {scope} scope.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
