@@ -8,13 +8,13 @@ import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
@@ -83,14 +83,14 @@ public class SpecificationFieldService {
     );
   }
 
-  public FieldSubfieldDtoCollection findFieldSubfields(UUID fieldId) {
+  public SubfieldDtoCollection findFieldSubfields(UUID fieldId) {
     log.debug("findFieldSubfields::fieldId={}", fieldId);
     return doForFieldOrFail(fieldId,
       field -> subfieldService.findFieldSubfields(fieldId)
     );
   }
 
-  public FieldSubfieldDto createLocalSubfield(UUID fieldId, FieldSubfieldChangeDto createDto) {
+  public SubfieldDto createLocalSubfield(UUID fieldId, SubfieldChangeDto createDto) {
     log.debug("createLocalSubfield::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
       field -> subfieldService.createLocalSubfield(field, createDto)

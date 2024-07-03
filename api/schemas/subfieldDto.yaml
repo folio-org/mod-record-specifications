@@ -1,4 +1,4 @@
-title: Field subfield definition DTO
+title: Subfield definition DTO
 description: Describe field subfield definition that will be used for record validation
 type: object
 properties:

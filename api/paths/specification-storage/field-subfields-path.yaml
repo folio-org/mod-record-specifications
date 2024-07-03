@@ -12,10 +12,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/fieldSubfieldDtoCollection.yaml'
+            $ref: '../../schemas/subfieldDtoCollection.yaml'
           examples:
             Collection:
-              $ref: '../../examples/response/fieldSubfieldDtoCollection.yaml'
+              $ref: '../../examples/response/subfieldDtoCollection.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':
@@ -33,20 +33,20 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/fieldSubfieldChangeDto.yaml'
+          $ref: '../../schemas/subfieldChangeDto.yaml'
         examples:
           RequestExample:
-            $ref: '../../examples/request/fieldSubfieldChangeDto.yaml'
+            $ref: '../../examples/request/subfieldChangeDto.yaml'
   responses:
     '201':
       description: Local subfield definition was created
       content:
         application/json:
           schema:
-            $ref: '../../schemas/fieldSubfieldDto.yaml'
+            $ref: '../../schemas/subfieldDto.yaml'
           examples:
             Created:
-              $ref: '../../examples/response/fieldSubfieldDto.yaml'
+              $ref: '../../examples/response/subfieldDto.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':

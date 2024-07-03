@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Subfield;
 import org.folio.rspec.domain.repository.SubfieldRepository;
@@ -39,8 +39,8 @@ class SubfieldServiceTest {
   private UUID id;
   private Field field;
   private Subfield subfield;
-  private FieldSubfieldDto fieldSubfieldDto;
-  private FieldSubfieldChangeDto changeDto;
+  private SubfieldDto fieldSubfieldDto;
+  private SubfieldChangeDto changeDto;
 
   @BeforeEach
   void setUp() {
@@ -52,8 +52,8 @@ class SubfieldServiceTest {
     subfield = new Subfield();
     subfield.setField(field);
 
-    fieldSubfieldDto = new FieldSubfieldDto();
-    changeDto = new FieldSubfieldChangeDto();
+    fieldSubfieldDto = new SubfieldDto();
+    changeDto = new SubfieldChangeDto();
   }
 
   @Test
@@ -72,7 +72,7 @@ class SubfieldServiceTest {
 
   @Test
   void testCreateLocalSubfield() {
-    when(subfieldMapper.toEntity(any(FieldSubfieldChangeDto.class))).thenReturn(subfield);
+    when(subfieldMapper.toEntity(any(SubfieldChangeDto.class))).thenReturn(subfield);
     when(subfieldRepository.save(any(Subfield.class))).thenReturn(subfield);
     when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(fieldSubfieldDto);
 

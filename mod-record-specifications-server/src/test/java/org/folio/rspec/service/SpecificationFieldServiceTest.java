@@ -15,12 +15,12 @@ import java.util.UUID;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
@@ -151,7 +151,7 @@ class SpecificationFieldServiceTest {
     var fieldId = UUID.randomUUID();
     var field = new Field();
     field.setId(fieldId);
-    var expected = new FieldSubfieldDtoCollection().subfields(List.of(new FieldSubfieldDto().fieldId(fieldId)));
+    var expected = new SubfieldDtoCollection().subfields(List.of(new SubfieldDto().fieldId(fieldId)));
 
     when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
     when(subfieldService.findFieldSubfields(fieldId)).thenReturn(expected);
@@ -180,8 +180,8 @@ class SpecificationFieldServiceTest {
     var fieldId = UUID.randomUUID();
     var field = new Field();
     field.setId(fieldId);
-    var createDto = new FieldSubfieldChangeDto();
-    var expected = new FieldSubfieldDto().fieldId(fieldId);
+    var createDto = new SubfieldChangeDto();
+    var expected = new SubfieldDto().fieldId(fieldId);
 
     when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
     when(subfieldService.createLocalSubfield(field, createDto)).thenReturn(expected);
@@ -194,7 +194,7 @@ class SpecificationFieldServiceTest {
   @Test
   void testCreateLocalSubfield_absentField() {
     var fieldId = UUID.randomUUID();
-    var createDto = new FieldSubfieldChangeDto();
+    var createDto = new SubfieldChangeDto();
 
     var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalSubfield(fieldId, createDto));
 

@@ -24,10 +24,10 @@ import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.SpecificationFieldService;
 import org.folio.spring.testing.extension.Random;
@@ -298,10 +298,10 @@ class SpecificationStorageFieldsControllerTest {
   }
 
   @Test
-  void getFieldSubfields(@Random FieldSubfieldDto subfieldDto) throws Exception {
+  void getFieldSubfields(@Random SubfieldDto subfieldDto) throws Exception {
     var fieldId = UUID.randomUUID();
     when(specificationFieldService.findFieldSubfields(fieldId))
-      .thenReturn(new FieldSubfieldDtoCollection().totalRecords(1).addSubfieldsItem(subfieldDto));
+      .thenReturn(new SubfieldDtoCollection().totalRecords(1).addSubfieldsItem(subfieldDto));
 
     var requestBuilder = get(fieldSubfieldsPath(fieldId))
       .contentType(APPLICATION_JSON);
@@ -321,7 +321,7 @@ class SpecificationStorageFieldsControllerTest {
   }
 
   @Test
-  void createFieldLocalSubfield_createNewLocalSubfield(@Random FieldSubfieldDto subfieldDto) throws Exception {
+  void createFieldLocalSubfield_createNewLocalSubfield(@Random SubfieldDto subfieldDto) throws Exception {
     var fieldId = UUID.randomUUID();
     when(specificationFieldService.createLocalSubfield(eq(fieldId), any())).thenReturn(subfieldDto);
 

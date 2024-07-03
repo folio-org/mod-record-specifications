@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.rest.resource.SpecificationStorageFieldsApi;
 import org.folio.rspec.service.SpecificationFieldService;
 import org.springframework.http.HttpStatus;
@@ -49,14 +49,14 @@ public class SpecificationStorageFieldsController implements SpecificationStorag
   }
 
   @Override
-  public ResponseEntity<FieldSubfieldDto> createFieldLocalSubfield(UUID fieldId,
-                                                                   FieldSubfieldChangeDto createDto) {
+  public ResponseEntity<SubfieldDto> createFieldLocalSubfield(UUID fieldId,
+                                                                   SubfieldChangeDto createDto) {
     var fieldDto = specificationFieldService.createLocalSubfield(fieldId, createDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(fieldDto);
   }
 
   @Override
-  public ResponseEntity<FieldSubfieldDtoCollection> getFieldSubfields(UUID fieldId) {
+  public ResponseEntity<SubfieldDtoCollection> getFieldSubfields(UUID fieldId) {
     return ResponseEntity.ok(specificationFieldService.findFieldSubfields(fieldId));
   }
 }

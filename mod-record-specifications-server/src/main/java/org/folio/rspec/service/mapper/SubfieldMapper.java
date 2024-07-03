@@ -1,7 +1,7 @@
 package org.folio.rspec.service.mapper;
 
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.entity.Subfield;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,12 +13,12 @@ import org.mapstruct.ReportingPolicy;
 public interface SubfieldMapper {
 
   @Mapping(target = "fieldId", source = "field.id")
-  FieldSubfieldDto toDto(Subfield subfield);
+  SubfieldDto toDto(Subfield subfield);
 
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "field", ignore = true)
   @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "id", ignore = true)
-  Subfield toEntity(FieldSubfieldChangeDto createDto);
+  Subfield toEntity(SubfieldChangeDto createDto);
 
 }

@@ -22,8 +22,8 @@ import java.util.UUID;
 import lombok.SneakyThrows;
 import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
-import org.folio.rspec.domain.dto.FieldSubfieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.integration.XOkapiHeaders;
 import org.folio.spring.testing.extension.EnablePostgres;
@@ -249,8 +249,8 @@ public class IntegrationTestBase {
       .label("Ind " + order);
   }
 
-  protected FieldSubfieldChangeDto localTestSubfield(String code, String label) {
-    return new FieldSubfieldChangeDto().label(label).code(code);
+  protected SubfieldChangeDto localTestSubfield(String code, String label) {
+    return new SubfieldChangeDto().label(label).code(code);
   }
 
   protected String createLocalField(SpecificationFieldChangeDto localTestField) throws UnsupportedEncodingException {
