@@ -12,7 +12,7 @@ public enum ErrorCode {
   SPECIFICATION_FETCH_FAILED("specification-fetch-failed", "105", "specification.fetch.failed"),
   DUPLICATE_FIELD_INDICATOR("duplicate-field-indicator", "106", "field.indicator.order.duplicate"),
   DUPLICATE_INDICATOR_CODE("duplicate-indicator-code", "107", "indicator.code.code.duplicate"),
-  DUPLICATE_SUBFIELD("duplicate-subfield-code", "107", "field.subfield.code.duplicate"),
+  DUPLICATE_SUBFIELD("duplicate-subfield-code", "108", "field.subfield.code.duplicate"),
   RESOURCE_NOT_FOUND("resource-not-found", "404", "specification.resource.not-found"),
   UNEXPECTED("unexpected", "500", "unexpected"),
 

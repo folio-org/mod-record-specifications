@@ -40,7 +40,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
   void getIndicatorCodes_shouldReturn200AndAllCodesForIndicator() throws Exception {
     var fieldId = createLocalField("101");
     var indId = createLocalIndicator(fieldId);
-    var code1 = localTestCode("/");
+    var code1 = localTestCode("#");
     var code2 = localTestCode("1");
     doPost(indicatorCodesPath(indId), code1);
     doPost(indicatorCodesPath(indId), code2);

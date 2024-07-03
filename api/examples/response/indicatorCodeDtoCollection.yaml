@@ -22,8 +22,8 @@ value:
         updatedByUserId: 00000000-0000-0000-0000-000000000000
     - id: ff0780f9-573d-46ba-8bf1-73181052f4c4
       indicatorId: ff0780f9-573d-46ba-8bf1-73181052f4b5
-      code: '\'
-      label: Code \
+      code: '#'
+      label: 'Code #'
       scope: system
       metadata:
         createdDate: 2024-05-22 14:55:06
