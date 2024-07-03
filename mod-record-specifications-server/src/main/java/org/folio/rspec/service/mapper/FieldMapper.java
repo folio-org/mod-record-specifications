@@ -18,6 +18,7 @@ public interface FieldMapper {
   @Mapping(target = "specificationId", source = "specification.id")
   SpecificationFieldDto toDto(Field field);
 
+  @Mapping(target = "subfields", ignore = true)
   @Mapping(target = "indicators", ignore = true)
   @Mapping(target = "specification", ignore = true)
   @Mapping(target = "scope", ignore = true)
@@ -26,6 +27,7 @@ public interface FieldMapper {
   @Mapping(target = "url", expression = "java(createDto.getUrl() == null ? null : createDto.getUrl().trim())")
   Field toEntity(SpecificationFieldChangeDto createDto);
 
+  @Mapping(target = "subfields", ignore = true)
   @Mapping(target = "indicators", ignore = true)
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "metadata", ignore = true)

@@ -1,13 +1,12 @@
 package org.folio.rspec.service;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
@@ -41,7 +40,7 @@ public class SpecificationFieldService {
   private final FieldIndicatorService indicatorService;
   private final SubfieldService subfieldService;
 
-  private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new HashMap<>();
+  private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new EnumMap<>(Scope.class);
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
     log.debug("findSpecificationFields::specificationId={}", specificationId);
@@ -123,8 +122,7 @@ public class SpecificationFieldService {
 
   @Autowired
   public void setFieldValidators(List<ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators) {
-    this.fieldValidators = fieldValidators.stream()
-      .collect(Collectors.toMap(ScopeValidator::scope, Function.identity()));
+    fieldValidators.forEach(validator -> this.fieldValidators.put(validator.scope(), validator));
   }
 
   private <T> T doForFieldOrFail(UUID fieldId, Function<Field, T> action) {
