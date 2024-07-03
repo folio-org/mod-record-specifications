@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface IndicatorCodeRepository extends JpaRepository<IndicatorCode, UUID> {
 
-  @Query("select c from IndicatorCode c where c.indicator.id = ?1 order by code")
+  @Query("select c from IndicatorCode c where c.indicator.id = ?1 order by c.code")
   List<IndicatorCode> findByIndicatorId(UUID indicatorId);
 
 }

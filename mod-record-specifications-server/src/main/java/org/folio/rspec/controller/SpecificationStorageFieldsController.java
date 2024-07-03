@@ -7,6 +7,9 @@ import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.rest.resource.SpecificationStorageFieldsApi;
 import org.folio.rspec.service.SpecificationFieldService;
 import org.springframework.http.HttpStatus;
@@ -43,5 +46,17 @@ public class SpecificationStorageFieldsController implements SpecificationStorag
                                                                      FieldIndicatorChangeDto createDto) {
     var indicatorDto = specificationFieldService.createLocalIndicator(fieldId, createDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(indicatorDto);
+  }
+
+  @Override
+  public ResponseEntity<SubfieldDto> createFieldLocalSubfield(UUID fieldId,
+                                                                   SubfieldChangeDto createDto) {
+    var fieldDto = specificationFieldService.createLocalSubfield(fieldId, createDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(fieldDto);
+  }
+
+  @Override
+  public ResponseEntity<SubfieldDtoCollection> getFieldSubfields(UUID fieldId) {
+    return ResponseEntity.ok(specificationFieldService.findFieldSubfields(fieldId));
   }
 }

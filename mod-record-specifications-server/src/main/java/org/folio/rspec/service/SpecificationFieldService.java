@@ -1,8 +1,6 @@
 package org.folio.rspec.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,9 @@ import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
@@ -30,6 +31,7 @@ public class SpecificationFieldService {
   private final FieldRepository fieldRepository;
   private final SpecificationFieldMapper specificationFieldMapper;
   private final FieldIndicatorService indicatorService;
+  private final SubfieldService subfieldService;
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
     log.debug("findSpecificationFields::specificationId={}", specificationId);
@@ -66,21 +68,6 @@ public class SpecificationFieldService {
   }
 
   @Transactional
-  public void syncFields(UUID specificationId, List<Field> fields) {
-    log.info("syncFields::specificationId={}, fields number={}", specificationId, fields.size());
-    log.trace("syncFields::specificationId={}, fields={}", specificationId, fields);
-    fieldRepository.deleteBySpecificationId(specificationId);
-    Map<String, Field> fieldByTags = new HashMap<>();
-    for (Field field : fields) {
-      fieldByTags.merge(field.getTag(), field, (field1, field2) -> field1.isDeprecated() ? field2 : field1);
-      var specification = new Specification();
-      specification.setId(specificationId);
-      field.setSpecification(specification);
-    }
-    fieldRepository.saveAll(fieldByTags.values());
-  }
-
-  @Transactional
   public FieldIndicatorDtoCollection findFieldIndicators(UUID fieldId) {
     log.debug("findFieldIndicators::fieldId={}", fieldId);
     return doForFieldOrFail(fieldId,
@@ -94,6 +81,28 @@ public class SpecificationFieldService {
     return doForFieldOrFail(fieldId,
       field -> indicatorService.createLocalIndicator(field, createDto)
     );
+  }
+
+  public SubfieldDtoCollection findFieldSubfields(UUID fieldId) {
+    log.debug("findFieldSubfields::fieldId={}", fieldId);
+    return doForFieldOrFail(fieldId,
+      field -> subfieldService.findFieldSubfields(fieldId)
+    );
+  }
+
+  public SubfieldDto createLocalSubfield(UUID fieldId, SubfieldChangeDto createDto) {
+    log.debug("createLocalSubfield::fieldId={}, createDto={}", fieldId, createDto);
+    return doForFieldOrFail(fieldId,
+      field -> subfieldService.createLocalSubfield(field, createDto)
+    );
+  }
+
+  @Transactional
+  public void syncFields(Specification specification, Collection<Field> fields) {
+    log.info("syncFields::specificationId={}, fields number={}", specification.getId(), fields.size());
+    log.trace("syncFields::specificationId={}, fields={}", specification.getId(), fields);
+    fieldRepository.deleteBySpecificationId(specification.getId());
+    fieldRepository.saveAll(fields);
   }
 
   private <T> T doForFieldOrFail(UUID fieldId, Function<Field, T> action) {

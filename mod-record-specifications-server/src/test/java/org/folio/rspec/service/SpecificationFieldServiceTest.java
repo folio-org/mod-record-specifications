@@ -18,6 +18,9 @@ import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
@@ -45,6 +48,8 @@ class SpecificationFieldServiceTest {
   private SpecificationFieldMapper specificationFieldMapper;
   @Mock
   private FieldIndicatorService indicatorService;
+  @Mock
+  private SubfieldService subfieldService;
 
   @Test
   void testFindSpecificationFields() {
@@ -134,6 +139,64 @@ class SpecificationFieldServiceTest {
     var createDto = new FieldIndicatorChangeDto();
 
     var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalIndicator(fieldId, createDto));
+
+    verifyNoInteractions(indicatorService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testFindFieldSubfields() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var expected = new SubfieldDtoCollection().subfields(List.of(new SubfieldDto().fieldId(fieldId)));
+
+    when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
+    when(subfieldService.findFieldSubfields(fieldId)).thenReturn(expected);
+
+    var actual = service.findFieldSubfields(fieldId);
+
+    assertThat(actual.getTotalRecords()).isNull();
+    assertThat(actual.getSubfields()).hasSize(1);
+    assertThat(actual.getSubfields().get(0)).isEqualTo(expected.getSubfields().get(0));
+  }
+
+  @Test
+  void testFindFieldSubfields_absentField() {
+    var fieldId = UUID.randomUUID();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.findFieldSubfields(fieldId));
+
+    verifyNoInteractions(subfieldService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testCreateLocalSubfield() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var createDto = new SubfieldChangeDto();
+    var expected = new SubfieldDto().fieldId(fieldId);
+
+    when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
+    when(subfieldService.createLocalSubfield(field, createDto)).thenReturn(expected);
+
+    var actual = service.createLocalSubfield(fieldId, createDto);
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void testCreateLocalSubfield_absentField() {
+    var fieldId = UUID.randomUUID();
+    var createDto = new SubfieldChangeDto();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalSubfield(fieldId, createDto));
 
     verifyNoInteractions(indicatorService);
 

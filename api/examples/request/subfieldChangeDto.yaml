@@ -1,0 +1,5 @@
+value:
+  code: 'a'
+  label: Subfield A
+  repeatable: true
+  required: true

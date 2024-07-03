@@ -4,6 +4,7 @@ import static org.folio.rspec.domain.entity.Indicator.FIELD_ID_COLUMN;
 import static org.folio.rspec.domain.entity.Indicator.INDICATOR_TABLE_NAME;
 import static org.folio.rspec.domain.entity.Indicator.ORDER_COLUMN;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -42,16 +43,21 @@ public class Indicator extends UuidPersistable {
   @Column(name = LABEL_COLUMN, nullable = false)
   private String label;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
   @JoinColumn(name = FIELD_ID_COLUMN, nullable = false)
   private Field field;
 
-  @OneToMany(mappedBy = "indicator", orphanRemoval = true)
+  @OneToMany(mappedBy = INDICATOR_TABLE_NAME, orphanRemoval = true, cascade = {CascadeType.ALL})
   @OrderBy(IndicatorCode.CODE_COLUMN)
   private List<IndicatorCode> codes = new ArrayList<>();
 
   @Embedded
   private Metadata metadata = new Metadata();
+
+  public void setCodes(List<IndicatorCode> codes) {
+    codes.forEach(code -> code.setIndicator(this));
+    this.codes = codes;
+  }
 
   @Override
   public int hashCode() {

@@ -35,8 +35,8 @@ class MarcSpecificationIndicatorBuilderTest {
     );
     var expected1 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("/", "Undefined"))),
-        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("/", "Undefined")))
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
+        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("#", "Undefined")))
       );
 
     var lines2 = List.of(
@@ -50,7 +50,7 @@ class MarcSpecificationIndicatorBuilderTest {
       newArrayNode(
         newObjectNode(1, "Indicator With Codes",
           newArrayNode(newObjectNode("a", "Code a"), newObjectNode("b", "Code b"))),
-        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("/", "Undefined")))
+        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("#", "Undefined")))
       );
 
     var lines3 = List.of(
@@ -62,7 +62,7 @@ class MarcSpecificationIndicatorBuilderTest {
     );
     var expected3 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("/", "Undefined"))),
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
         newObjectNode(2, "Indicator With Codes",
           newArrayNode(newObjectNode("a", "Code a"), newObjectNode("b", "Code b")))
       );
@@ -94,7 +94,7 @@ class MarcSpecificationIndicatorBuilderTest {
       "Second - Indicator [OBSOLETE]",
       "# - Undefined",
       "Second - Indicator With Codes2",
-      "c - Code c",
+      "c - Code c [OBSOLETE]",
       "d - Code d",
       "Second - Indicator [OBSOLETE]",
       "# - Undefined"
@@ -104,7 +104,7 @@ class MarcSpecificationIndicatorBuilderTest {
         newObjectNode(1, "Indicator With Codes1",
           newArrayNode(newObjectNode("a", "Code a"), newObjectNode("b", "Code b"))),
         newObjectNode(2, "Indicator With Codes2",
-          newArrayNode(newObjectNode("c", "Code c"), newObjectNode("d", "Code d")))
+          newArrayNode(newObjectNode("c", "Code c", true), newObjectNode("d", "Code d")))
       );
 
     var lines6 = List.of(
@@ -115,7 +115,7 @@ class MarcSpecificationIndicatorBuilderTest {
     );
     var expected6 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("/", "Undefined"))),
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
         newObjectNode(2, "Indicator With Codes", newArrayNode(IntStream.range(0, 10).boxed()
           .map(num -> newObjectNode(String.valueOf(num), "Code x"))
           .toArray(ObjectNode[]::new)))
@@ -147,6 +147,14 @@ class MarcSpecificationIndicatorBuilderTest {
     var node = newObjectNode();
     node.put("code", code);
     node.put("label", label);
+    return newObjectNode(code, label, false);
+  }
+
+  private static ObjectNode newObjectNode(String code, String label, boolean deprecated) {
+    var node = newObjectNode();
+    node.put("code", code);
+    node.put("label", label);
+    node.put("deprecated", deprecated);
     return node;
   }
 

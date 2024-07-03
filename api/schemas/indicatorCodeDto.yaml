@@ -16,6 +16,10 @@ properties:
   label:
     description: Code description
     type: string
+  deprecated:
+    description: Define if code is deprecated
+    type: boolean
+    default: false
   scope:
     $ref: 'scope.yaml'
   metadata:

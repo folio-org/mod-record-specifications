@@ -75,7 +75,7 @@ class MarcSpecificationParserTest {
     when(fieldBlockSplitter.getIndicatorsLineNumber(anyList())).thenReturn(1);
     when(fieldBlockSplitter.getSubfieldLineNumber(anyList())).thenReturn(3);
     when(fieldBuilder.build("Line1")).thenReturn(getObjectNode());
-    when(indicatorsBuilder.build(List.of("Indicator line", "Line 3"))).thenReturn(getArrayNode());
+    when(indicatorsBuilder.build(List.of("Indicator line"))).thenReturn(getArrayNode());
     when(subfieldsBuilder.build(List.of("Subfields line", "Line5"))).thenReturn(getArrayNode());
 
     ArrayNode result = marcSpecificationParser.parse(mockDocument);

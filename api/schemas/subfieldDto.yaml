@@ -1,0 +1,34 @@
+title: Subfield definition DTO
+description: Describe field subfield definition that will be used for record validation
+type: object
+properties:
+  id:
+    description: Subfield ID
+    type: string
+    format: uuid
+  fieldId:
+    description: Field ID
+    type: string
+    format: uuid
+  code:
+    description: Subfield code
+    type: string
+  label:
+    description: Subfield description
+    type: string
+  repeatable:
+    description: Define if subfield is repeatable
+    type: boolean
+    default: true
+  required:
+    description: Define if subfield is required
+    type: boolean
+    default: false
+  deprecated:
+    description: Define if subfield is deprecated
+    type: boolean
+    default: false
+  scope:
+    $ref: 'scope.yaml'
+  metadata:
+    $ref: 'common/metadataDto.yaml'

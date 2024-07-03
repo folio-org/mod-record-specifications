@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.removeStart;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.CODES_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.CODE_PROP;
+import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.DEPRECATED_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.LABEL_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.ORDER_PROP;
 
@@ -23,8 +24,6 @@ public class MarcSpecificationIndicatorBuilder {
   private static final String DEPRECATED_SIGN = "OBSOLETE";
   private static final String NUMBER_RANGE_SIGN = "0-9";
   private static final char DASH = '-';
-  private static final char UNDEFINED = '#';
-  private static final char SLASH = '/';
 
   private final ObjectMapper objectMapper;
 
@@ -76,8 +75,7 @@ public class MarcSpecificationIndicatorBuilder {
   }
 
   private String getCode(String line) {
-    var code = line.charAt(0);
-    return String.valueOf(code == UNDEFINED ? SLASH : code);
+    return String.valueOf(line.charAt(0));
   }
 
   private String getStandardCodeLabel(String line) {
@@ -102,8 +100,13 @@ public class MarcSpecificationIndicatorBuilder {
 
   private ObjectNode toCodeObject(String code, String label) {
     var codeObject = objectMapper.createObjectNode();
+    boolean deprecated = label.contains(DEPRECATED_SIGN);
+    if (deprecated) {
+      label = label.replace("[OBSOLETE]", "").trim();
+    }
     codeObject.put(CODE_PROP, code);
     codeObject.put(LABEL_PROP, label);
+    codeObject.put(DEPRECATED_PROP, deprecated);
     return codeObject;
   }
 

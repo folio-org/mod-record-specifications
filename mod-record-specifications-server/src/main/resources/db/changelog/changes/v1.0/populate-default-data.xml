@@ -842,78 +842,14 @@
     </insert>
   </changeSet>
 
-  <changeSet id="MRSPECS-12@@default-data:specification-metadata-bibliographic" labels="default-data"
-             author="pavlo_smahin">
-    <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">
-        SELECT COUNT(*)
-        FROM specification_metadata
-        WHERE id = '5c61f37e-e6a9-4226-8c68-2b9cd66e65c9';
-      </sqlCheck>
-    </preConditions>
-
-    <comment>Populate default data for bibliographic specification-metadata</comment>
-
-    <insert tableName="specification_metadata">
-      <column name="id" value="5c61f37e-e6a9-4226-8c68-2b9cd66e65c9"/>
-      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
-      <column name="sync_url" value="https://www.loc.gov/marc/bibliographic/ecbdlist.html"/>
-      <column name="url_format" value="https://www.loc.gov/marc/bibliographic/bd%s.html"/>
-    </insert>
-
-    <!--Liquibase have some issues with loading valueClobFile into jsonb datatype so need to change type after loading json-->
-    <sql>
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE text;
-    </sql>
-
-    <update tableName="specification_metadata">
-      <column name="fields" type="jsonb" valueClobFile="data/specification-metadata-bibliographic.json"/>
-      <where>id='5c61f37e-e6a9-4226-8c68-2b9cd66e65c9'</where>
-    </update>
-
-    <sql dbms="postgresql">
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE JSONB USING fields::JSONB;
-    </sql>
-  </changeSet>
-
-  <changeSet id="MRSPECS-12@@default-data:specification-metadata-authority" labels="default-data"
-             author="pavlo_smahin">
-    <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">
-        SELECT COUNT(*)
-        FROM specification_metadata
-        WHERE id = '8909dae5-534b-4e67-b352-1dad0238bd15';
-      </sqlCheck>
-    </preConditions>
-
-    <comment>Populate default data for bibliographic specification-metadata</comment>
-
-    <insert tableName="specification_metadata">
-      <column name="id" value="8909dae5-534b-4e67-b352-1dad0238bd15"/>
-      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
-      <column name="sync_url" value="https://www.loc.gov/marc/authority/ecadlist.html"/>
-      <column name="url_format" value="https://www.loc.gov/marc/authority/ad%s.html"/>
-    </insert>
-
-    <!--Liquibase have some issues with loading valueClobFile into jsonb datatype so need to change type after loading json-->
-    <sql>
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE text;
-    </sql>
-
-    <update tableName="specification_metadata">
-      <column name="fields" type="jsonb" valueClobFile="data/specification-metadata-authority.json"/>
-      <where>id='8909dae5-534b-4e67-b352-1dad0238bd15'</where>
-    </update>
-
-    <sql dbms="postgresql">
-      ALTER TABLE specification_metadata ALTER COLUMN fields TYPE JSONB USING fields::JSONB;
-    </sql>
-  </changeSet>
-
-  <changeSet id="MRSPECS-12@@default-data:specification-metadata-fields-v1" author="pavlo_smahin" runOnChange="true">
+  <changeSet id="MRSPECS-12@@default-data:specification-metadata-fields-v1" author="pavlo_smahin" labels="default-data">
     <loadUpdateData tableName="specification_metadata" file="data/specification_metadata.csv"
                     relativeToChangelogFile="true" primaryKey="id"/>
   </changeSet>
 
+  <changeSet id="MRSPECS-12@@default-data:specification-metadata-fields-v2" author="pavlo_smahin" labels="default-data">
+    <loadUpdateData tableName="specification_metadata" file="data/specification_metadata_v2.csv"
+                    relativeToChangelogFile="true" primaryKey="id"/>
+  </changeSet>
 
 </databaseChangeLog>

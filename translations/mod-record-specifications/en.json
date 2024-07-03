@@ -1,5 +1,6 @@
 {
   "specification.field.tag.duplicate": "The 'tag' must be unique.",
+  "field.subfield.code.duplicate": "The 'code' must be unique.",
   "field.indicator.order.duplicate": "The 'order' must be unique.",
   "indicator.code.code.duplicate": "The 'code' must be unique.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
@@ -7,7 +8,8 @@
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
-  "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or a '/'.",
+  "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
+  "Pattern.SubfieldChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or letters a-z.",
   "Min": "{parameter} must be greater than or equal to {value}.",
   "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "The ''{parameter}'' field is required.",

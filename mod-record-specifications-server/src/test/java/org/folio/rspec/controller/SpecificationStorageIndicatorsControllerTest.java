@@ -121,7 +121,7 @@ class SpecificationStorageIndicatorsControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"f", "!", "1f", "11"})
+  @ValueSource(strings = {"!", "1f", "11"})
   void createIndicatorLocalCode_return400_invalidCode(String code) throws Exception {
     var requestBuilder = post(indicatorCodesPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
@@ -130,7 +130,8 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("A 'code' field must contain one character and can only accept numbers 0-9 or a '/'."))))
+        hasItem(is("A 'code' field must contain one character and can only accept "
+                   + "numbers 0-9, letters a-z or a '#'."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(code))));
