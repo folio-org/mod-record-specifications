@@ -1,5 +1,7 @@
 package org.folio.rspec.domain.entity.metadata;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public record FieldMetadata(
@@ -11,11 +13,14 @@ public record FieldMetadata(
   Boolean repeatable,
   Boolean required,
   Boolean deprecated,
-  String url
+  String url,
+  Map<String, SubfieldMetadata> subfields,
+  Map<String, IndicatorMetadata> indicators
 ) {
 
   public FieldMetadata(String tag, String scope) {
-    this(UUID.randomUUID().toString(), tag, scope, false, null, null, null, null, null);
+    this(UUID.randomUUID().toString(), tag, scope, false, null, null, null,
+      null, null, new HashMap<>(), new HashMap<>());
   }
 
 }

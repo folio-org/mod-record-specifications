@@ -1,0 +1,7 @@
+in: path
+name: fieldId
+description: Specification Field ID
+required: true
+schema:
+  type: string
+  format: uuid

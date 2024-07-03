@@ -5,6 +5,7 @@ import static org.folio.rspec.domain.entity.Field.SPECIFICATION_ID_COLUMN;
 import static org.folio.rspec.domain.entity.Field.TAG_COLUMN;
 import static org.folio.rspec.domain.entity.Field.TAG_UNIQUE_CONSTRAINT;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -13,8 +14,14 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.folio.rspec.domain.dto.Scope;
@@ -62,12 +69,30 @@ public class Field extends UuidPersistable {
   @JdbcTypeCode(SqlTypes.NAMED_ENUM)
   private Scope scope;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, cascade = CascadeType.MERGE)
   @JoinColumn(name = SPECIFICATION_ID_COLUMN, nullable = false)
   private Specification specification;
 
+  @OneToMany(mappedBy = FIELD_TABLE_NAME, orphanRemoval = true, cascade = {CascadeType.ALL})
+  @OrderBy(Indicator.ORDER_COLUMN)
+  private List<Indicator> indicators = new ArrayList<>();
+
+  @OneToMany(mappedBy = FIELD_TABLE_NAME, orphanRemoval = true, cascade = {CascadeType.ALL})
+  @OrderBy(Subfield.CODE_COLUMN)
+  private Set<Subfield> subfields = new LinkedHashSet<>();
+
   @Embedded
   private Metadata metadata = new Metadata();
+
+  public void setIndicators(List<Indicator> indicators) {
+    indicators.forEach(indicator -> indicator.setField(this));
+    this.indicators = indicators;
+  }
+
+  public void setSubfields(Set<Subfield> subfields) {
+    subfields.forEach(subfield -> subfield.setField(this));
+    this.subfields = subfields;
+  }
 
   @Override
   public int hashCode() {

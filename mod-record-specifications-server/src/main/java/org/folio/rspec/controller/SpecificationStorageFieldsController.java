@@ -2,10 +2,17 @@ package org.folio.rspec.controller;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.rest.resource.SpecificationStorageFieldsApi;
 import org.folio.rspec.service.SpecificationFieldService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,5 +34,29 @@ public class SpecificationStorageFieldsController implements SpecificationStorag
   public ResponseEntity<SpecificationFieldDto> updateField(UUID id,
                                                            SpecificationFieldChangeDto specificationFieldChangeDto) {
     return ResponseEntity.accepted().body(specificationFieldService.updateField(id, specificationFieldChangeDto));
+  }
+
+  @Override
+  public ResponseEntity<FieldIndicatorDtoCollection> getFieldIndicators(UUID fieldId) {
+    return ResponseEntity.ok(specificationFieldService.findFieldIndicators(fieldId));
+  }
+
+  @Override
+  public ResponseEntity<FieldIndicatorDto> createFieldLocalIndicator(UUID fieldId,
+                                                                     FieldIndicatorChangeDto createDto) {
+    var indicatorDto = specificationFieldService.createLocalIndicator(fieldId, createDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(indicatorDto);
+  }
+
+  @Override
+  public ResponseEntity<SubfieldDto> createFieldLocalSubfield(UUID fieldId,
+                                                                   SubfieldChangeDto createDto) {
+    var fieldDto = specificationFieldService.createLocalSubfield(fieldId, createDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(fieldDto);
+  }
+
+  @Override
+  public ResponseEntity<SubfieldDtoCollection> getFieldSubfields(UUID fieldId) {
+    return ResponseEntity.ok(specificationFieldService.findFieldSubfields(fieldId));
   }
 }

@@ -1,0 +1,53 @@
+get:
+  summary: Get Indicator Code Definitions
+  description: Get a collection of codes definitions that are defined in the indicator.
+  operationId: getIndicatorCodes
+  parameters:
+    - $ref: '../../parameters/indicatorId-param.yaml'
+  tags:
+    - specification-storage-indicators
+  responses:
+    '200':
+      description: Collection of codes definitions
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/indicatorCodeDtoCollection.yaml'
+          examples:
+            Collection:
+              $ref: '../../examples/response/indicatorCodeDtoCollection.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+post:
+  summary: Create Local Code Definition
+  description: Create new local code definition for the indicator
+  operationId: createIndicatorLocalCode
+  parameters:
+    - $ref: '../../parameters/indicatorId-param.yaml'
+  tags:
+    - specification-storage-indicators
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/indicatorCodeChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/indicatorCodeChangeDto.yaml'
+  responses:
+    '201':
+      description: Local code definition was created
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/indicatorCodeDto.yaml'
+          examples:
+            Created:
+              $ref: '../../examples/response/indicatorCodeDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

@@ -1,0 +1,11 @@
+value:
+  id: 1ee161ba-5d50-4687-95f4-8dc9c52fcd53
+  fieldId: 27ce6b65-f959-4a4b-89b6-a2be7d2e9fc1
+  code: a
+  label: Subfield A
+  scope: local
+  metadata:
+    createdDate: 2024-05-22 14:55:06
+    createdByUserId: 00000000-0000-0000-0000-000000000000
+    updatedDate: 2024-05-22 15:30:42
+    updatedByUserId: 00000000-0000-0000-0000-000000000000

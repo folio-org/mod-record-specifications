@@ -1,18 +1,31 @@
 package org.folio.rspec.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentCaptor.captor;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
+import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
+import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.rspec.exception.ResourceNotFoundException.Resource;
 import org.folio.rspec.service.mapper.SpecificationFieldMapper;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
@@ -31,9 +44,12 @@ class SpecificationFieldServiceTest {
 
   @Mock
   private FieldRepository fieldRepository;
-
   @Mock
   private SpecificationFieldMapper specificationFieldMapper;
+  @Mock
+  private FieldIndicatorService indicatorService;
+  @Mock
+  private SubfieldService subfieldService;
 
   @Test
   void testFindSpecificationFields() {
@@ -66,5 +82,125 @@ class SpecificationFieldServiceTest {
 
     assertEquals(Scope.LOCAL, fieldCaptor.getValue().getScope());
     assertEquals(specification, fieldCaptor.getValue().getSpecification());
+  }
+
+  @Test
+  void testFindFieldIndicators() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var expected = new FieldIndicatorDtoCollection().indicators(List.of(new FieldIndicatorDto().fieldId(fieldId)));
+
+    when(fieldRepository.findById(fieldId))
+      .thenReturn(Optional.of(field));
+    when(indicatorService.findFieldIndicators(fieldId))
+      .thenReturn(expected);
+
+    var actual = service.findFieldIndicators(fieldId);
+
+    assertThat(actual.getTotalRecords()).isNull();
+    assertThat(actual.getIndicators()).hasSize(1);
+    assertThat(actual.getIndicators().get(0)).isEqualTo(expected.getIndicators().get(0));
+  }
+
+  @Test
+  void testFindFieldIndicators_absentField() {
+    var fieldId = UUID.randomUUID();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.findFieldIndicators(fieldId));
+
+    verifyNoInteractions(indicatorService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testCreateLocalIndicator() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var createDto = new FieldIndicatorChangeDto();
+    var expected = new FieldIndicatorDto().fieldId(fieldId);
+
+    when(fieldRepository.findById(fieldId))
+      .thenReturn(Optional.of(field));
+    when(indicatorService.createLocalIndicator(field, createDto))
+      .thenReturn(expected);
+
+    var actual = service.createLocalIndicator(fieldId, createDto);
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void testCreateLocalIndicator_absentField() {
+    var fieldId = UUID.randomUUID();
+    var createDto = new FieldIndicatorChangeDto();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalIndicator(fieldId, createDto));
+
+    verifyNoInteractions(indicatorService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testFindFieldSubfields() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var expected = new SubfieldDtoCollection().subfields(List.of(new SubfieldDto().fieldId(fieldId)));
+
+    when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
+    when(subfieldService.findFieldSubfields(fieldId)).thenReturn(expected);
+
+    var actual = service.findFieldSubfields(fieldId);
+
+    assertThat(actual.getTotalRecords()).isNull();
+    assertThat(actual.getSubfields()).hasSize(1);
+    assertThat(actual.getSubfields().get(0)).isEqualTo(expected.getSubfields().get(0));
+  }
+
+  @Test
+  void testFindFieldSubfields_absentField() {
+    var fieldId = UUID.randomUUID();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.findFieldSubfields(fieldId));
+
+    verifyNoInteractions(subfieldService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testCreateLocalSubfield() {
+    var fieldId = UUID.randomUUID();
+    var field = new Field();
+    field.setId(fieldId);
+    var createDto = new SubfieldChangeDto();
+    var expected = new SubfieldDto().fieldId(fieldId);
+
+    when(fieldRepository.findById(fieldId)).thenReturn(Optional.of(field));
+    when(subfieldService.createLocalSubfield(field, createDto)).thenReturn(expected);
+
+    var actual = service.createLocalSubfield(fieldId, createDto);
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void testCreateLocalSubfield_absentField() {
+    var fieldId = UUID.randomUUID();
+    var createDto = new SubfieldChangeDto();
+
+    var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalSubfield(fieldId, createDto));
+
+    verifyNoInteractions(indicatorService);
+
+    assertThat(actual.getId()).isEqualTo(fieldId);
+    assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
   }
 }

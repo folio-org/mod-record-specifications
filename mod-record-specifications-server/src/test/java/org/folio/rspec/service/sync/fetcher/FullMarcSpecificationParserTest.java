@@ -33,7 +33,7 @@ class FullMarcSpecificationParserTest {
     var result = doParseForFile("__files/marc/bibliographic.html");
 
     assertThat(result).hasSize(293);
-    assertAllFieldsExist(result);
+    assertAllFieldsExist(result, 2803, 1130);
   }
 
   @SneakyThrows
@@ -42,15 +42,18 @@ class FullMarcSpecificationParserTest {
     var result = doParseForFile("__files/marc/authority.html");
 
     assertThat(result).hasSize(147);
-    assertAllFieldsExist(result);
+    assertAllFieldsExist(result, 1668, 521);
   }
 
-  private void assertAllFieldsExist(ArrayNode result) {
+  private void assertAllFieldsExist(ArrayNode result, int expectedSubfieldCount, int expectedIndicatorCodeCount) {
+    int subfieldsCount = 0;
+    int indicatorCodeCount = 0;
     for (JsonNode jsonNode : result) {
       assertFieldFields(jsonNode);
 
       if (jsonNode.has("subfields")) {
         var subfields = jsonNode.get("subfields");
+        subfieldsCount = subfieldsCount + subfields.size();
         for (JsonNode subfield : subfields) {
           assertSubfieldFields(subfield);
         }
@@ -58,18 +61,21 @@ class FullMarcSpecificationParserTest {
         for (JsonNode indicator : indicators) {
           assertIndicatorFields(indicator);
           var codes = indicator.get("codes");
+          indicatorCodeCount = indicatorCodeCount + codes.size();
           for (JsonNode code : codes) {
             assertIndicatorCodeFields(code);
           }
         }
       }
     }
+    assertThat(subfieldsCount).isEqualTo(expectedSubfieldCount);
+    assertThat(indicatorCodeCount).isEqualTo(expectedIndicatorCodeCount);
   }
 
   private void assertIndicatorCodeFields(JsonNode code) {
     assertThat(code.fieldNames()).toIterable()
       .describedAs("Failed for indicator code: %s", code)
-      .containsExactlyInAnyOrder("code", "label");
+      .containsExactlyInAnyOrder("code", "label", "deprecated");
   }
 
   private void assertIndicatorFields(JsonNode indicator) {

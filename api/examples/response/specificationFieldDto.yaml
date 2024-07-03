@@ -7,7 +7,7 @@ value:
   repeatable: false
   required: true
   deprecated: false
-  scope: custom
+  scope: local
   metadata:
     createdDate: 2024-05-22 14:55:06
     createdByUserId: 00000000-0000-0000-0000-000000000000
