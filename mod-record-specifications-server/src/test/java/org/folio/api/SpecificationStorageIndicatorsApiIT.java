@@ -42,6 +42,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
     var indId = createLocalIndicator(fieldId);
     var code1 = localTestCode("#");
     var code2 = localTestCode("1");
+    code2.deprecated(false);
     doPost(indicatorCodesPath(indId), code1);
     doPost(indicatorCodesPath(indId), code2);
 
@@ -52,6 +53,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("codes.[*].indicatorId", everyItem(is(indId))))
       .andExpect(jsonPath("codes.[*].code", hasItems(code1.getCode(), code2.getCode())))
       .andExpect(jsonPath("codes.[*].label", hasItems(code1.getLabel(), code2.getLabel())))
+      .andExpect(jsonPath("codes.[*].deprecated", hasItems(code1.getDeprecated(), code2.getDeprecated())))
       .andExpect(jsonPath("codes.[*].scope", everyItem(is(Scope.LOCAL.getValue()))))
       .andExpect(jsonPath("codes.[*].metadata.createdDate", everyItem(notNullValue())))
       .andExpect(jsonPath("codes.[*].metadata.createdByUserId", everyItem(is(USER_ID))))
@@ -71,6 +73,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("$.indicatorId", is(indId)))
       .andExpect(jsonPath("$.code", is(code.getCode())))
       .andExpect(jsonPath("$.label", is(code.getLabel())))
+      .andExpect(jsonPath("$.deprecated", is(code.getDeprecated())))
       .andExpect(jsonPath("$.scope", is(Scope.LOCAL.getValue())))
       .andExpect(jsonPath("$.metadata.createdDate", notNullValue()))
       .andExpect(jsonPath("$.metadata.createdByUserId", is(USER_ID)))
@@ -107,6 +110,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
   protected IndicatorCodeChangeDto localTestCode(String code) {
     return new IndicatorCodeChangeDto()
       .code(code)
+      .deprecated(true)
       .label(easyRandom.nextObject(String.class));
   }
 

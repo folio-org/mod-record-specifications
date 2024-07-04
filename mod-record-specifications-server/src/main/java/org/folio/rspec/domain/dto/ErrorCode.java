@@ -14,6 +14,7 @@ public enum ErrorCode {
   DUPLICATE_INDICATOR_CODE("duplicate-indicator-code", "107", "indicator.code.code.duplicate"),
   DUPLICATE_SUBFIELD("duplicate-subfield-code", "108", "field.subfield.code.duplicate"),
   SCOPE_MODIFICATION_NOT_ALLOWED("scope-modification-not-allowed", "109", "scope.modification.not-allowed"),
+  BAD_REQUEST("bad-request", "400", null),
   RESOURCE_NOT_FOUND("resource-not-found", "404", "specification.resource.not-found"),
   UNEXPECTED("unexpected", "500", "unexpected"),
 
