@@ -69,7 +69,7 @@ public class Field extends UuidPersistable {
   @JdbcTypeCode(SqlTypes.NAMED_ENUM)
   private Scope scope;
 
-  @ManyToOne(optional = false, cascade = CascadeType.MERGE)
+  @ManyToOne(optional = false)
   @JoinColumn(name = SPECIFICATION_ID_COLUMN, nullable = false)
   private Specification specification;
 

@@ -19,13 +19,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import lombok.SneakyThrows;
 import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldChangeDto;
+import org.folio.spring.FolioExecutionContext;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.integration.XOkapiHeaders;
+import org.folio.spring.scope.FolioExecutionContextSetter;
 import org.folio.spring.testing.extension.EnablePostgres;
 import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
@@ -59,8 +62,9 @@ public class IntegrationTestBase {
 
   protected static MockMvc mockMvc;
   protected static ObjectMapper objectMapper = new ObjectMapper();
-
   protected static EasyRandom easyRandom = new EasyRandom();
+  @Autowired
+  protected FolioModuleMetadata moduleMetadata;
 
   @BeforeAll
   protected static void setUpBeans(@Autowired MockMvc mockMvc) {
@@ -264,6 +268,28 @@ public class IntegrationTestBase {
   protected String createLocalField(String tag) throws UnsupportedEncodingException {
     var dto = localTestField(tag);
     return createLocalField(dto);
+  }
+
+  @SneakyThrows
+  protected <T> T executeInContext(Callable<T> callable) {
+    return executeInContext(TENANT_ID, callable);
+  }
+
+  @SneakyThrows
+  protected <T> T executeInContext(String tenantId, Callable<T> callable) {
+    try (var fex = new FolioExecutionContextSetter(new FolioExecutionContext() {
+      @Override
+      public String getTenantId() {
+        return tenantId;
+      }
+
+      @Override
+      public FolioModuleMetadata getFolioModuleMetadata() {
+        return moduleMetadata;
+      }
+    })) {
+      return callable.call();
+    }
   }
 
   @AfterAll

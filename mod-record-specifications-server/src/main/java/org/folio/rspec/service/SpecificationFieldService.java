@@ -1,6 +1,10 @@
 package org.folio.rspec.service;
 
 import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +23,10 @@ import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
-import org.folio.rspec.service.mapper.SpecificationFieldMapper;
+import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.service.mapper.FieldMapper;
+import org.folio.rspec.service.validation.scope.ScopeValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +36,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class SpecificationFieldService {
 
   private final FieldRepository fieldRepository;
-  private final SpecificationFieldMapper specificationFieldMapper;
+  private final FieldMapper fieldMapper;
   private final FieldIndicatorService indicatorService;
   private final SubfieldService subfieldService;
+
+  private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new EnumMap<>(Scope.class);
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
     log.debug("findSpecificationFields::specificationId={}", specificationId);
     var specificationFieldDtos = fieldRepository.findBySpecificationId(specificationId).stream()
-      .map(specificationFieldMapper::toDto)
+      .map(fieldMapper::toDto)
       .toList();
     return new SpecificationFieldDtoCollection()
       .fields(specificationFieldDtos)
@@ -45,16 +54,19 @@ public class SpecificationFieldService {
 
   public SpecificationFieldDto createLocalField(Specification specification, SpecificationFieldChangeDto createDto) {
     log.info("createLocalField::specificationId={}, dto={}", specification.getId(), createDto);
-    var fieldEntity = specificationFieldMapper.toEntity(createDto);
+    var fieldEntity = fieldMapper.toEntity(createDto);
     fieldEntity.setSpecification(specification);
     fieldEntity.setScope(Scope.LOCAL);
-    return specificationFieldMapper.toDto(fieldRepository.save(fieldEntity));
+    return fieldMapper.toDto(fieldRepository.save(fieldEntity));
   }
 
   @Transactional
   public void deleteField(UUID id) {
     log.info("deleteField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
+    if (fieldEntity.getScope() != Scope.LOCAL) {
+      throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope());
+    }
     fieldRepository.delete(fieldEntity);
   }
 
@@ -62,9 +74,12 @@ public class SpecificationFieldService {
   public SpecificationFieldDto updateField(UUID id, SpecificationFieldChangeDto changeDto) {
     log.info("updateField::id={}, dto={}", id, changeDto);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
-    specificationFieldMapper.update(fieldEntity, changeDto);
+    var scope = fieldEntity.getScope();
+    Optional.ofNullable(fieldValidators.get(scope))
+      .ifPresent(validator -> validator.validateChange(changeDto, fieldEntity));
+    fieldMapper.update(fieldEntity, changeDto);
 
-    return specificationFieldMapper.toDto(fieldRepository.save(fieldEntity));
+    return fieldMapper.toDto(fieldRepository.save(fieldEntity));
   }
 
   @Transactional
@@ -103,6 +118,11 @@ public class SpecificationFieldService {
     log.trace("syncFields::specificationId={}, fields={}", specification.getId(), fields);
     fieldRepository.deleteBySpecificationId(specification.getId());
     fieldRepository.saveAll(fields);
+  }
+
+  @Autowired
+  public void setFieldValidators(List<ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators) {
+    fieldValidators.forEach(validator -> this.fieldValidators.put(validator.scope(), validator));
   }
 
   private <T> T doForFieldOrFail(UUID fieldId, Function<Field, T> action) {

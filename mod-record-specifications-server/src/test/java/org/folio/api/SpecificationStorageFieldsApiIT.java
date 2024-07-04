@@ -9,6 +9,8 @@ import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.folio.support.builders.FieldBuilder.local;
+import static org.folio.support.builders.FieldBuilder.standard;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItem;
@@ -21,23 +23,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.ErrorCode;
-import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
+import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.web.servlet.MvcResult;
 
 @IntegrationTest
 @DatabaseCleanup(tables = {INDICATOR_TABLE_NAME, FIELD_TABLE_NAME}, tenants = TENANT_ID)
 class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
+
+  @Autowired
+  private FieldRepository fieldRepository;
+  @Autowired
+  private FolioModuleMetadata moduleMetadata;
 
   @BeforeAll
   static void beforeAll() {
@@ -46,7 +56,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
   @Test
   void deleteField_shouldReturn204AndDeleteLocalField() throws Exception {
-    var createdFieldId = createLocalField(getLocalFieldDto());
+    var createdFieldId = createLocalField(local().buildChangeDto());
 
     doDelete(fieldPath(createdFieldId));
 
@@ -65,7 +75,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
   @Test
   void updateField_shouldReturn201AndUpdateLocalField() throws Exception {
-    var localTestField = getLocalFieldDto();
+    var localTestField = local().buildChangeDto();
     var createdFieldId = createLocalField(localTestField);
 
     localTestField.setDeprecated(true);
@@ -82,9 +92,41 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
   }
 
   @Test
+  void updateField_shouldReturn400WhenFieldIsNotAllowedToUpdate() throws Exception {
+    var createdFieldId = executeInContext(
+      () -> fieldRepository.save(standard().specificationId(BIBLIOGRAPHIC_SPECIFICATION_ID).buildEntity()))
+      .getId();
+
+    tryPut(fieldPath(createdFieldId), standard().label("changed").buildChangeDto())
+      .andExpect(status().isBadRequest())
+      .andExpect(errorMessageMatch(is("The 'label' modification is not allowed for standard scope.")));
+  }
+
+  @Test
+  void updateField_shouldReturn400WhenFieldForTagAlreadyExist() throws Exception {
+    var field1Tag = "105";
+    var field2Tag = "205";
+    var field2Id = executeInContext(
+      () -> {
+        var entity1 = standard().id(UUID.randomUUID())
+          .tag(field1Tag)
+          .specificationId(BIBLIOGRAPHIC_SPECIFICATION_ID).buildEntity();
+        var entity2 = local().id(UUID.randomUUID())
+          .tag(field2Tag)
+          .specificationId(BIBLIOGRAPHIC_SPECIFICATION_ID).buildEntity();
+        fieldRepository.saveAll(List.of(entity1, entity2));
+        return entity2.getId();
+      });
+
+    tryPut(fieldPath(field2Id), local().tag(field1Tag).buildChangeDto())
+      .andExpect(status().isBadRequest())
+      .andExpect(errorMessageMatch(is("The 'tag' must be unique.")));
+  }
+
+  @Test
   void updateField_shouldReturn404WhenFieldNotExist() throws Exception {
     var notExistId = UUID.randomUUID();
-    tryPut(fieldPath(notExistId), getLocalFieldDto())
+    tryPut(fieldPath(notExistId), local().buildChangeDto())
       .andExpect(status().isNotFound())
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
       .andExpect(errorMessageMatch(is("field definition with ID [%s] was not found.".formatted(notExistId))));
@@ -97,7 +139,6 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
     var ind2 = localTestIndicator(2);
     doPost(fieldIndicatorsPath(fieldId), ind1);
     doPost(fieldIndicatorsPath(fieldId), ind2);
-
 
     doGet(fieldIndicatorsPath(fieldId))
       .andExpect(jsonPath("totalRecords", is(2)))
@@ -149,15 +190,6 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .andExpect(errorMessageMatch(is("The 'order' must be unique.")));
   }
 
-  private SpecificationFieldChangeDto getLocalFieldDto() {
-    return new SpecificationFieldChangeDto()
-      .tag("998")
-      .required(true)
-      .deprecated(false)
-      .required(false)
-      .label("Local Test Field");
-  }
-
   @Test
   void getFieldSubfields_shouldReturn200AndAllSubfieldsForField() throws Exception {
     var fieldId = createLocalField("103");
@@ -165,7 +197,6 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
     var sub2 = localTestSubfield("1", "Subfield 1");
     doPost(fieldSubfieldsPath(fieldId), sub1);
     doPost(fieldSubfieldsPath(fieldId), sub2);
-
 
     doGet(fieldSubfieldsPath(fieldId))
       .andExpect(jsonPath("totalRecords", is(2)))
@@ -209,10 +240,6 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("$.subfields.[*].id", hasItem(createdSubfieldId)));
   }
 
-  private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {
-    return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-  }
-
   @Test
   void createFieldLocalSubfield_shouldReturn400_whenDuplicateSubfieldCode() throws Exception {
     var fieldId = createLocalField("104");
@@ -225,6 +252,10 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
       .andExpect(exceptionMatch(DataIntegrityViolationException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SUBFIELD.getType())))
       .andExpect(errorMessageMatch(is("The 'code' must be unique.")));
+  }
+
+  private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {
+    return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
   }
 
 }

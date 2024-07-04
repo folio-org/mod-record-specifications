@@ -9,17 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import lombok.SneakyThrows;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.domain.repository.SpecificationMetadataRepository;
 import org.folio.rspec.domain.repository.SubfieldRepository;
-import org.folio.spring.FolioExecutionContext;
-import org.folio.spring.FolioModuleMetadata;
-import org.folio.spring.scope.FolioExecutionContextSetter;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.extension.EnableOkapi;
 import org.folio.spring.testing.extension.impl.OkapiConfiguration;
@@ -38,8 +33,6 @@ class SpecificationStorageSyncApiIT extends IntegrationTestBase {
 
   protected static OkapiConfiguration okapi;
 
-  @Autowired
-  private FolioModuleMetadata moduleMetadata;
   @Autowired
   private SpecificationMetadataRepository metadataRepository;
   @Autowired
@@ -110,23 +103,6 @@ class SpecificationStorageSyncApiIT extends IntegrationTestBase {
 
   private UUID @NotNull [] toIdArray(List<? extends UuidPersistable> all) {
     return all.stream().map(UuidPersistable::getId).toArray(UUID[]::new);
-  }
-
-  @SneakyThrows
-  private <T> T executeInContext(Callable<T> callable) {
-    try (var fex = new FolioExecutionContextSetter(new FolioExecutionContext() {
-      @Override
-      public String getTenantId() {
-        return TENANT_ID;
-      }
-
-      @Override
-      public FolioModuleMetadata getFolioModuleMetadata() {
-        return moduleMetadata;
-      }
-    })) {
-      return callable.call();
-    }
   }
 
 }
