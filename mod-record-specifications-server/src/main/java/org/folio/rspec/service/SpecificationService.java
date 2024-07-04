@@ -44,14 +44,17 @@ public class SpecificationService {
       family, profile, include, limit, offset);
     var specificationCollection = new SpecificationDtoCollection();
 
-    var page = specificationRepository.findByFamilyAndProfile(family, profile, OffsetRequest.of(offset, limit));
+    var page = specificationRepository.findByFamilyAndProfile(family, profile, OffsetRequest.of(offset, limit))
+      .map(specification -> switch (include) {
+        case ALL -> specificationMapper.toFullDto(specification);
+        case NONE -> specificationMapper.toDto(specification);
+        case FIELDS_REQUIRED -> {
+          var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
+          yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
+        }
+      });
 
-    page.map(specification -> switch (include) {
-      case ALL -> specificationMapper.toFullDto(specification);
-      default -> specificationMapper.toDto(specification);
-    }).forEach(specificationCollection::addSpecificationsItem);
-
-    return specificationCollection.totalRecords(toIntExact(page.getTotalElements()));
+    return specificationCollection.specifications(page.toList()).totalRecords(toIntExact(page.getTotalElements()));
   }
 
   @Transactional

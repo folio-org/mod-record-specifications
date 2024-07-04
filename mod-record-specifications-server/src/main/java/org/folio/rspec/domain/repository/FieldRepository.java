@@ -13,6 +13,9 @@ public interface FieldRepository extends JpaRepository<Field, UUID> {
   @Query("select f from Field f where f.specification.id = ?1 order by f.tag")
   List<Field> findBySpecificationId(UUID specificationId);
 
+  @Query("select f from Field f where f.specification.id = ?1 and f.required = ?2 order by f.tag")
+  List<Field> findBySpecificationIdAndRequired(UUID specificationId, boolean required);
+
   @Transactional
   @Modifying
   @Query("delete from Field f where f.specification.id = ?1")

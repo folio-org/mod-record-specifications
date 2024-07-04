@@ -9,6 +9,7 @@ import static org.folio.support.ApiEndpoints.specificationsPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.folio.support.builders.FieldBuilder.local;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
@@ -62,8 +63,10 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
   void getSpecifications_shouldReturn200AndCollectionWithAllFields() throws Exception {
     var queryParams = new QueryParams()
       .addQueryParam("family", "MARC")
-      .addQueryParam("profile", "authority")
+      .addQueryParam("profile", "bibliographic")
       .addQueryParam("include", "all");
+
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto());
 
     doGet(specificationsPath(queryParams))
       .andExpect(jsonPath("totalRecords", is(1)))
@@ -73,9 +76,31 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("specifications.[0].family", notNullValue()))
       .andExpect(jsonPath("specifications.[0].profile", notNullValue()))
       .andExpect(jsonPath("specifications.[0].url", notNullValue()))
-      .andExpect(jsonPath("specifications.[0].metadata.createdDate", notNullValue()))
-      .andExpect(jsonPath("specifications.[0].metadata.updatedDate", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].fields.size()", is(1)))
       .andExpect(jsonPath("specifications.[0].rules.size()", greaterThan(1)));
+  }
+
+  @Test
+  void getSpecifications_shouldReturn200AndCollectionWithRequiredFields() throws Exception {
+    var queryParams = new QueryParams()
+      .addQueryParam("family", "MARC")
+      .addQueryParam("profile", "bibliographic")
+      .addQueryParam("include", "fields.required");
+
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto());
+    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID),
+      local().tag("101").required(false).buildChangeDto());
+
+    doGet(specificationsPath(queryParams))
+      .andExpect(jsonPath("totalRecords", is(1)))
+      .andExpect(jsonPath("specifications.size()", is(1)))
+      .andExpect(jsonPath("specifications.[0].id", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].title", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].family", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].profile", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].url", notNullValue()))
+      .andExpect(jsonPath("specifications.[0].fields.size()", is(1)))
+      .andExpect(jsonPath("specifications.[0].rules.size()", is(0)));
   }
 
   @Test

@@ -5,6 +5,7 @@ import org.folio.rspec.domain.entity.SpecificationRule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, componentModel = MappingConstants.ComponentModel.SPRING,
@@ -18,5 +19,12 @@ public interface SpecificationRuleMapper {
   @Mapping(target = "description", source = "rule.description")
   @Mapping(target = "metadata", source = "rule.metadata")
   SpecificationRuleDto toDto(SpecificationRule specificationRule);
+
+  @Mapping(target = "id", source = "rule.id")
+  @Mapping(target = "code", source = "rule.code")
+  @Mapping(target = "name", source = "rule.name")
+  @Mapping(target = "description", source = "rule.description")
+  @Named("ruleFulDto")
+  SpecificationRuleDto toFullDto(SpecificationRule specificationRule);
 
 }
