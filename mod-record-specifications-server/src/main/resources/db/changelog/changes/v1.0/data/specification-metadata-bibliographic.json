@@ -47,7 +47,8 @@
     "id": "f2b7ad73-8e82-4909-9e49-694c35b52454",
     "scope": "SYSTEM",
     "required": true,
-    "tag": "245"
+    "tag": "245",
+    "subfields": {}, "indicators": {}
   },
   "999": {
     "defaultValue": true,
