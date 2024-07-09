@@ -13,14 +13,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ScopeModificationNotAllowedExceptionHandler implements ServiceExceptionHandler {
 
+  private static final String PARAMETER_MSG_ARG = "parameter";
+  private static final String SCOPE_MSG_ARG = "scope";
+
   private final TranslationService translationService;
 
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var exception = (ScopeModificationNotAllowedException) e;
+    var messageKey = SCOPE_MODIFICATION_NOT_ALLOWED.getMessageKey()
+      .formatted(exception.getModificationType().name().toLowerCase());
+    var errorMessage = translationService.format(messageKey,
+      PARAMETER_MSG_ARG, exception.getFieldName(), SCOPE_MSG_ARG, exception.getScope().getValue());
     var error = ServiceExceptionHandler.fromErrorCode(SCOPE_MODIFICATION_NOT_ALLOWED)
-      .message(translationService.format(SCOPE_MODIFICATION_NOT_ALLOWED.getMessageKey(),
-        "parameter", exception.getFieldName(), "scope", exception.getScope().getValue()));
+      .message(errorMessage);
     return ResponseEntity.badRequest().body(new ErrorCollection().addErrorsItem(error));
   }
 
