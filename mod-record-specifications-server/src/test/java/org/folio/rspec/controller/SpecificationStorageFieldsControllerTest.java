@@ -237,34 +237,20 @@ class SpecificationStorageFieldsControllerTest {
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
-  @Test
-  void createFieldLocalIndicator_return400_highOrder() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "3"})
+  void createFieldLocalIndicator_return400_invalidOrder(String order) throws Exception {
     var requestBuilder = post(fieldIndicatorsPath(UUID.randomUUID()))
       .contentType(APPLICATION_JSON)
-      .content("{\"order\": 3, \"label\": \"Ind 3\"}");
+      .content("{\"order\": %s, \"label\": \"Ind\"}".formatted(order));
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("order must be less than or equal to 2."))))
+        hasItem(is("The indicator 'order' field can only accept numbers 1-2."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("order"))))
-      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("3"))));
-  }
-
-  @Test
-  void createFieldLocalIndicator_return400_lowOrder() throws Exception {
-    var requestBuilder = post(fieldIndicatorsPath(UUID.randomUUID()))
-      .contentType(APPLICATION_JSON)
-      .content("{\"order\": 0, \"label\": \"Ind 0\"}");
-
-    mockMvc.perform(requestBuilder)
-      .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("order must be greater than or equal to 1."))))
-      .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
-      .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("order"))))
-      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is("0"))));
+      .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(order))));
   }
 
   @Test

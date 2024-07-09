@@ -12,7 +12,7 @@ public class HttpMessageNotReadableExceptionHandler implements ServiceExceptionH
   @Override
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var errorCollection = new ErrorCollection();
-    errorCollection.addErrorsItem(ServiceExceptionHandler.fromErrorCode(ErrorCode.UNEXPECTED).message(e.getMessage()));
+    errorCollection.addErrorsItem(ServiceExceptionHandler.fromErrorCode(ErrorCode.BAD_REQUEST).message(e.getMessage()));
     return ResponseEntity.badRequest().body(errorCollection);
   }
 

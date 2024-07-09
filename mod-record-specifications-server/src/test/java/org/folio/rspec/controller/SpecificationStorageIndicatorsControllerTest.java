@@ -71,14 +71,16 @@ class SpecificationStorageIndicatorsControllerTest {
     verify(fieldIndicatorService).findIndicatorCodes(indicatorId);
   }
 
-  @Test
-  void createIndicatorLocalCode_createNewLocalCode(@Random IndicatorCodeDto codeDto) throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"#", "5", "c"})
+  void createIndicatorLocalCode_createNewLocalCode(String code, @Random IndicatorCodeDto codeDto) throws Exception {
     var indicatorId = UUID.randomUUID();
+    codeDto.setCode(code);
     when(fieldIndicatorService.createLocalCode(eq(indicatorId), any())).thenReturn(codeDto);
 
     var requestBuilder = post(indicatorCodesPath(indicatorId))
       .contentType(APPLICATION_JSON)
-      .content("{\"code\": \"1\", \"label\": \"Some code\"}");
+      .content("{\"code\": \"%s\", \"label\": \"Some code\"}".formatted(codeDto.getCode()));
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isCreated())
