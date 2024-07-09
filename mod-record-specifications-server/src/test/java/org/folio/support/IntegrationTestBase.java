@@ -300,8 +300,16 @@ public class IntegrationTestBase {
   @NotNull
   private static ResultActions tryDoHttpMethod(MockHttpServletRequestBuilder builder, Object body,
                                                HttpHeaders headers) throws Exception {
+    String content;
+    if (body == null) {
+      content = "";
+    } else if (body instanceof String stringBody) {
+      content = stringBody;
+    } else {
+      content = asJson(body);
+    }
     return mockMvc.perform(builder
-        .content(body == null ? "" : asJson(body))
+        .content(content)
         .headers(headers))
       .andDo(log());
   }

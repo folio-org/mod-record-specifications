@@ -2,6 +2,7 @@ package org.folio.support.builders;
 
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
@@ -9,6 +10,7 @@ import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FieldBuilder {
 

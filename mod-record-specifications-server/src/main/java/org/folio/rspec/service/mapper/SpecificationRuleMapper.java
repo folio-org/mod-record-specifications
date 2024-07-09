@@ -20,11 +20,13 @@ public interface SpecificationRuleMapper {
   @Mapping(target = "metadata", source = "rule.metadata")
   SpecificationRuleDto toDto(SpecificationRule specificationRule);
 
+  @Mapping(target = "specificationId", ignore = true)
+  @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "id", source = "rule.id")
   @Mapping(target = "code", source = "rule.code")
   @Mapping(target = "name", source = "rule.name")
   @Mapping(target = "description", source = "rule.description")
-  @Named("ruleFulDto")
+  @Named("ruleFullDto")
   SpecificationRuleDto toFullDto(SpecificationRule specificationRule);
 
 }

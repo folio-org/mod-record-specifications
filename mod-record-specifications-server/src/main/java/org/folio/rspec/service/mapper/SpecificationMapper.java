@@ -22,7 +22,7 @@ public interface SpecificationMapper {
   SpecificationDto toDto(Specification specification);
 
   @Mapping(target = "fields", qualifiedByName = "fieldFullDto")
-  @Mapping(target = "rules", source = "specificationRules", qualifiedByName = "ruleFulDto")
+  @Mapping(target = "rules", source = "specificationRules", qualifiedByName = "ruleFullDto")
   @Mapping(target = "metadata", ignore = true)
   SpecificationDto toFullDto(Specification specification);
 

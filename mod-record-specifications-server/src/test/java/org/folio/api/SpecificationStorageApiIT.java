@@ -2,6 +2,9 @@ package org.folio.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
+import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
+import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
+import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
@@ -66,7 +69,27 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .addQueryParam("profile", "bibliographic")
       .addQueryParam("include", "all");
 
-    doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto());
+    var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto()).andReturn();
+    var createdFieldId = JsonPath.read(result.getResponse().getContentAsString(), "$.id").toString();
+    doPost(fieldSubfieldsPath(createdFieldId), """
+      {
+      "code": "a",
+      "label": "Subfield a"
+      }
+      """);
+    var indicatorResult = doPost(fieldIndicatorsPath(createdFieldId), """
+      {
+      "order": "1",
+      "label": "Indicator 1"
+      }
+      """).andReturn();
+    var createdIndicatorId = JsonPath.read(indicatorResult.getResponse().getContentAsString(), "$.id").toString();
+    doPost(indicatorCodesPath(createdIndicatorId), """
+      {
+      "code": "a",
+      "label": "Subfield a"
+      }
+      """);
 
     doGet(specificationsPath(queryParams))
       .andExpect(jsonPath("totalRecords", is(1)))
@@ -77,6 +100,9 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("specifications.[0].profile", notNullValue()))
       .andExpect(jsonPath("specifications.[0].url", notNullValue()))
       .andExpect(jsonPath("specifications.[0].fields.size()", is(1)))
+      .andExpect(jsonPath("specifications.[0].fields.[0].subfields.size()", is(1)))
+      .andExpect(jsonPath("specifications.[0].fields.[0].indicators.size()", is(1)))
+      .andExpect(jsonPath("specifications.[0].fields.[0].indicators.[0].codes.size()", is(1)))
       .andExpect(jsonPath("specifications.[0].rules.size()", greaterThan(1)));
   }
 
