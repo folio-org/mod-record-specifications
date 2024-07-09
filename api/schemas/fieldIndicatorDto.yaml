@@ -16,5 +16,10 @@ properties:
   label:
     description: Indicator description
     type: string
+  codes:
+    description: Indicator codes definitions
+    type: array
+    items:
+      $ref: 'indicatorCodeDto.yaml'
   metadata:
     $ref: 'common/metadataDto.yaml'

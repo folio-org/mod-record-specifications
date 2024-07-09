@@ -34,5 +34,15 @@ properties:
     default: false
   scope:
     $ref: 'scope.yaml'
+  subfields:
+    description: Subfields definitions
+    type: array
+    items:
+      $ref: 'subfieldDto.yaml'
+  indicators:
+    description: Indicators definitions
+    type: array
+    items:
+      $ref: 'fieldIndicatorDto.yaml'
   metadata:
     $ref: 'common/metadataDto.yaml'

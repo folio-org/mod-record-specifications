@@ -52,6 +52,17 @@ public class SpecificationFieldService {
       .totalRecords(specificationFieldDtos.size());
   }
 
+  public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId, boolean requiredFilter) {
+    log.debug("findSpecificationFields::specificationId={}, requiredFilter={}", specificationId, requiredFilter);
+    var specificationFieldDtos = fieldRepository.findBySpecificationIdAndRequired(specificationId, requiredFilter)
+      .stream()
+      .map(fieldMapper::toDto)
+      .toList();
+    return new SpecificationFieldDtoCollection()
+      .fields(specificationFieldDtos)
+      .totalRecords(specificationFieldDtos.size());
+  }
+
   public SpecificationFieldDto createLocalField(Specification specification, SpecificationFieldChangeDto createDto) {
     log.info("createLocalField::specificationId={}, dto={}", specification.getId(), createDto);
     var fieldEntity = fieldMapper.toEntity(createDto);

@@ -17,5 +17,15 @@ properties:
   url:
     description: Help url for the specification
     type: string
+  fields:
+    description: Specification field definitions
+    type: array
+    items:
+      $ref: 'specificationFieldDto.yaml'
+  rules:
+    description: Specification rules
+    type: array
+    items:
+      $ref: 'specificationRuleDto.yaml'
   metadata:
     $ref: 'common/metadataDto.yaml'

@@ -52,9 +52,6 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   public ResponseEntity<SpecificationDtoCollection> getSpecifications(Family family, FamilyProfile profile,
                                                                       IncludeParam include, Integer limit,
                                                                       Integer offset) {
-    if (IncludeParam.REQUIRED_FIELDS == include) {
-      return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
     var specifications = specificationService.findSpecifications(family, profile, include, limit, offset);
     return ResponseEntity.ok(specifications);
   }

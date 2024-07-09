@@ -3,5 +3,5 @@ description: define what to include in response
 enum:
   - all
   - none
-  - required-fields
+  - fields.required
 default: none

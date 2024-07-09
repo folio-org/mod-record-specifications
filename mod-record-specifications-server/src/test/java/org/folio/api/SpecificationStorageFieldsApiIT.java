@@ -103,6 +103,17 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
   }
 
   @Test
+  void deleteField_shouldReturn400WhenFieldIsNotAllowedToDelete() throws Exception {
+    var createdFieldId = executeInContext(
+      () -> fieldRepository.save(standard().specificationId(BIBLIOGRAPHIC_SPECIFICATION_ID).buildEntity()))
+      .getId();
+
+    tryDelete(fieldPath(createdFieldId))
+      .andExpect(status().isBadRequest())
+      .andExpect(errorMessageMatch(is("Deletion is not allowed for standard scope.")));
+  }
+
+  @Test
   void updateField_shouldReturn400WhenFieldForTagAlreadyExist() throws Exception {
     var field1Tag = "105";
     var field2Tag = "205";

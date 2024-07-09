@@ -6,6 +6,7 @@ import org.folio.rspec.domain.entity.IndicatorCode;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, componentModel = MappingConstants.ComponentModel.SPRING,
@@ -14,6 +15,11 @@ public interface IndicatorCodeMapper {
 
   @Mapping(target = "indicatorId", source = "indicator.id")
   IndicatorCodeDto toDto(IndicatorCode code);
+
+  @Mapping(target = "indicatorId", ignore = true)
+  @Mapping(target = "metadata", ignore = true)
+  @Named("indicatorCodeFullDto")
+  IndicatorCodeDto toFullDto(IndicatorCode code);
 
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "indicator", ignore = true)

@@ -11,7 +11,6 @@ import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
-import org.folio.rspec.domain.dto.SpecificationFullDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.domain.entity.Specification;
@@ -57,7 +56,7 @@ class SpecificationServiceTest {
   }
 
   @Test
-  void testFindSpecifications_withIncludeAll(@Random SpecificationFullDto specificationDto) {
+  void testFindSpecifications_withIncludeAll(@Random SpecificationDto specificationDto) {
     var family = Family.MARC;
     var profile = FamilyProfile.AUTHORITY;
     var page = new PageImpl<>(List.of(new Specification()));

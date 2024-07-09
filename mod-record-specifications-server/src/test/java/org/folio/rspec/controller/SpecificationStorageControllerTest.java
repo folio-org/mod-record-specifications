@@ -13,7 +13,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -127,18 +126,6 @@ class SpecificationStorageControllerTest {
       .andExpect(jsonPath("$.specifications[0].profile", is(specificationDto.getProfile().getValue())));
 
     verify(specificationService).findSpecifications(null, null, IncludeParam.NONE, 100, 0);
-  }
-
-  @Test
-  void getSpecifications_notImplemented_whenIncludeValueIsNotSupported() throws Exception {
-    var requestBuilder = get(specificationsPath())
-      .queryParam("include", "required-fields")
-      .contentType(APPLICATION_JSON);
-
-    mockMvc.perform(requestBuilder)
-      .andExpect(status().isNotImplemented());
-
-    verifyNoInteractions(specificationService);
   }
 
   @CsvSource(delimiter = '|', value = {

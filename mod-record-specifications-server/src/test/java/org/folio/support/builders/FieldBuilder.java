@@ -2,6 +2,7 @@ package org.folio.support.builders;
 
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
@@ -9,10 +10,11 @@ import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FieldBuilder {
 
-  private UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111");
+  private UUID id = UUID.randomUUID();
   private UUID specificationId = UUID.fromString("22222222-2222-2222-2222-222222222222");
   private String tag = "100";
   private String label = "Default label";

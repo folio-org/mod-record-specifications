@@ -6,9 +6,7 @@ properties:
     description: Collection of specifications
     type: array
     items:
-      oneOf:
-        - $ref: 'specificationDto.yaml'
-        - $ref: 'specificationFullDto.yaml'
+      $ref: 'specificationDto.yaml'
   totalRecords:
     description: Total number of specification in collection
     type: integer

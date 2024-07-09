@@ -166,20 +166,22 @@ public class SpecificationSyncService {
   }
 
   private Set<Subfield> prepareSubfields(JsonNode jsonNode, FieldMetadata fieldMetadata) {
-    if (jsonNode == null || jsonNode.isEmpty() || fieldMetadata.subfields() == null) {
+    if (jsonNode == null || jsonNode.isEmpty()) {
       return Collections.emptySet();
     }
     Set<Subfield> subfields = new HashSet<>();
 
-    var metadataMap = fieldMetadata.subfields();
+    var subfieldsMetadata = fieldMetadata.subfields() == null
+                            ? new HashMap<String, SubfieldMetadata>()
+                            : fieldMetadata.subfields();
     for (JsonNode subfieldElement : jsonNode) {
       var code = getText(subfieldElement, CODE_PROP);
-      var subfieldMetadata =
-        metadataMap.computeIfAbsent(code, definedCode -> new SubfieldMetadata(code, Scope.STANDARD.name()));
+      var subfieldMetadata = subfieldsMetadata.computeIfAbsent(code,
+        definedCode -> new SubfieldMetadata(code, Scope.STANDARD.name()));
       subfields.add(toSubfield(subfieldElement, subfieldMetadata));
     }
 
-    for (SubfieldMetadata subfieldMetadata : metadataMap.values()) {
+    for (SubfieldMetadata subfieldMetadata : subfieldsMetadata.values()) {
       if (Boolean.TRUE.equals(subfieldMetadata.defaultValue())) {
         subfields.add(toSubfield(subfieldMetadata));
       }
@@ -188,14 +190,16 @@ public class SpecificationSyncService {
   }
 
   private List<Indicator> prepareIndicators(JsonNode jsonNode, FieldMetadata fieldMetadata) {
-    if (jsonNode == null || jsonNode.isEmpty() || !jsonNode.isArray() || fieldMetadata.indicators() == null) {
+    if (jsonNode == null || jsonNode.isEmpty() || !jsonNode.isArray()) {
       return Collections.emptyList();
     }
     List<Indicator> indicators = new ArrayList<>();
-    var metadataMap = fieldMetadata.indicators();
+    var indicatorsMetadata = fieldMetadata.indicators() == null
+                             ? new HashMap<String, IndicatorMetadata>()
+                             : fieldMetadata.indicators();
     for (JsonNode indicatorElement : jsonNode) {
-      var indicatorMetadata =
-        metadataMap.computeIfAbsent(String.valueOf(getInt(indicatorElement, ORDER_PROP)), IndicatorMetadata::new);
+      var order = String.valueOf(getInt(indicatorElement, ORDER_PROP));
+      var indicatorMetadata = indicatorsMetadata.computeIfAbsent(order, IndicatorMetadata::new);
       var indicator = new Indicator();
       indicator.setId(UUID.fromString(indicatorMetadata.id()));
       indicator.setOrder(indicatorMetadata.order());
