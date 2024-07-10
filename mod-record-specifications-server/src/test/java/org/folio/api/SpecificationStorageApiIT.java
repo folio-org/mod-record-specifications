@@ -126,7 +126,7 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
       .andExpect(jsonPath("specifications.[0].profile", notNullValue()))
       .andExpect(jsonPath("specifications.[0].url", notNullValue()))
       .andExpect(jsonPath("specifications.[0].fields.size()", is(1)))
-      .andExpect(jsonPath("specifications.[0].rules.size()", is(0)));
+      .andExpect(jsonPath("specifications.[0].rules").doesNotExist());
   }
 
   @Test

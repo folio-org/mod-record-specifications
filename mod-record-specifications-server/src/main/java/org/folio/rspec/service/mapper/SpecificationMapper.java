@@ -1,10 +1,13 @@
 package org.folio.rspec.service.mapper;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.entity.Specification;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, componentModel = MappingConstants.ComponentModel.SPRING,
@@ -26,4 +29,13 @@ public interface SpecificationMapper {
   @Mapping(target = "metadata", ignore = true)
   SpecificationDto toFullDto(Specification specification);
 
+  @AfterMapping
+  default void resetCollections(@MappingTarget SpecificationDto target) {
+    if (CollectionUtils.isEmpty(target.getFields())) {
+      target.setFields(null);
+    }
+    if (CollectionUtils.isEmpty(target.getRules())) {
+      target.setRules(null);
+    }
+  }
 }
