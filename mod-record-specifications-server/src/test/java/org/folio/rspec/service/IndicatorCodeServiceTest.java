@@ -1,9 +1,16 @@
 package org.folio.rspec.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
@@ -11,10 +18,13 @@ import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
+import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.service.mapper.IndicatorCodeMapper;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -81,5 +91,77 @@ class IndicatorCodeServiceTest {
     assertThat(actual).isEqualTo(expected);
     assertThat(captured.getScope()).isEqualTo(Scope.LOCAL);
     assertThat(captured.getIndicator()).isEqualTo(indicator);
+  }
+
+  @Test
+  void testDeleteCode() {
+    var codeId = UUID.randomUUID();
+    var code = new IndicatorCode();
+    code.setId(codeId);
+    code.setScope(Scope.LOCAL);
+
+    when(repository.findById(codeId)).thenReturn(Optional.of(code));
+
+    service.deleteCode(codeId);
+
+    verify(repository).delete(code);
+  }
+
+  @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
+  @ParameterizedTest
+  void testDeleteCode_throwExceptionForUnsupportedScope(Scope scope) {
+    var codeId = UUID.randomUUID();
+    var code = new IndicatorCode();
+    code.setId(codeId);
+    code.setScope(scope);
+
+    when(repository.findById(codeId)).thenReturn(Optional.of(code));
+
+    var exception = assertThrows(ScopeModificationNotAllowedException.class, () -> service.deleteCode(codeId));
+    assertThat(exception)
+      .extracting(ScopeModificationNotAllowedException::getScope,
+        ScopeModificationNotAllowedException::getModificationType)
+      .containsExactly(scope, ScopeModificationNotAllowedException.ModificationType.DELETE);
+
+    verifyNoMoreInteractions(repository);
+  }
+
+  @Test
+  void testUpdateCode() {
+    var codeId = UUID.randomUUID();
+    var existed = new IndicatorCode();
+    existed.setId(codeId);
+    existed.setScope(Scope.LOCAL);
+    var changeDto = new IndicatorCodeChangeDto();
+    doNothing().when(mapper).update(existed, changeDto);
+    when(repository.save(any())).thenReturn(existed);
+    when(mapper.toDto(existed)).thenReturn(new IndicatorCodeDto());
+
+    when(repository.findById(codeId)).thenReturn(Optional.of(existed));
+
+    service.updateCode(codeId, changeDto);
+
+    verify(repository).save(existed);
+  }
+
+  @ParameterizedTest
+  @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
+  void testUpdateCode_throwExceptionForUnsupportedScope(Scope scope) {
+    var codeId = UUID.randomUUID();
+    var existed = new IndicatorCode();
+    existed.setId(codeId);
+    existed.setScope(scope);
+    var changeDto = new IndicatorCodeChangeDto();
+
+    when(repository.findById(codeId)).thenReturn(Optional.of(existed));
+
+    var exception =
+      assertThrows(ScopeModificationNotAllowedException.class, () -> service.updateCode(codeId, changeDto));
+    assertThat(exception)
+      .extracting(ScopeModificationNotAllowedException::getFieldName)
+      .isEqualTo(IndicatorCode.INDICATOR_CODE_TABLE_NAME);
+
+    verifyNoInteractions(mapper);
+    verifyNoMoreInteractions(repository);
   }
 }

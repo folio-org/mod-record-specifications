@@ -116,6 +116,24 @@
         },
         {
           "methods": [
+            "PUT"
+          ],
+          "pathPattern": "/specification-storage/indicators/{indicatorId}",
+          "permissionsRequired": [
+            "specification-storage.indicators.item.put"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/specification-storage/indicators/{indicatorId}",
+          "permissionsRequired": [
+            "specification-storage.indicators.item.delete"
+          ]
+        },
+        {
+          "methods": [
             "GET"
           ],
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
@@ -130,6 +148,24 @@
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
             "specification-storage.indicator.indicator-codes.item.post"
+          ]
+        },
+        {
+          "methods": [
+            "PUT"
+          ],
+          "pathPattern": "/specification-storage/indicator-codes/{indicatorCodeId}",
+          "permissionsRequired": [
+            "specification-storage.indicator-codes.item.put"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/specification-storage/indicator-codes/{indicatorCodeId}",
+          "permissionsRequired": [
+            "specification-storage.indicator-codes.item.delete"
           ]
         }
       ]
@@ -217,6 +253,16 @@
       "description": "Create field indicator definition"
     },
     {
+      "permissionName": "specification-storage.indicators.item.put",
+      "displayName": "Specification Storage - Update indicator definition",
+      "description": "Update indicator definition"
+    },
+    {
+      "permissionName": "specification-storage.indicators.item.delete",
+      "displayName": "Specification Storage - Delete indicator definition",
+      "description": "Delete indicator definition"
+    },
+    {
       "permissionName": "specification-storage.indicator.indicator-codes.collection.get",
       "displayName": "Specification Storage - Get indicator code definition collection",
       "description": "Get indicator codes collection"
@@ -225,6 +271,16 @@
       "permissionName": "specification-storage.indicator.indicator-codes.item.post",
       "displayName": "Specification Storage - Create code definition for indicator",
       "description": "Create indicator code definition"
+    },
+    {
+      "permissionName": "specification-storage.indicator-codes.item.put",
+      "displayName": "Specification Storage - Update indicator code definition",
+      "description": "Update indicator code definition"
+    },
+    {
+      "permissionName": "specification-storage.indicator-codes.item.delete",
+      "displayName": "Specification Storage - Delete indicator code definition",
+      "description": "Delete indicator code definition"
     },
     {
       "permissionName": "specification-storage.all",
@@ -242,6 +298,8 @@
         "specification-storage.field.subfields.item.post",
         "specification-storage.field.indicators.collection.get",
         "specification-storage.field.indicators.item.post",
+        "specification-storage.indicators.item.put",
+        "specification-storage.indicators.item.delete",
         "specification-storage.indicator.indicator-codes.collection.get",
         "specification-storage.indicator.indicator-codes.item.post"
       ]

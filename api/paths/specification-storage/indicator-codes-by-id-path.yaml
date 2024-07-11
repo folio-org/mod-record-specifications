@@ -1,0 +1,46 @@
+put:
+  summary: Update Indicator Codes
+  description: Update an indicator code definition.
+  operationId: updateIndicatorCode
+  parameters:
+    - $ref: '../../parameters/indicatorCodeId-param.yaml'
+  tags:
+    - specification-storage-indicators
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/indicatorCodeChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/indicatorCodeChangeDto.yaml'
+  responses:
+    '202':
+      description: Indicator code definition was updated
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/indicatorCodeDto.yaml'
+          examples:
+            RequestExample:
+              $ref: '../../examples/request/indicatorCodeChangeDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+delete:
+  summary: Delete Indicator Code Definition
+  description: Delete indicator code definition
+  operationId: deleteIndicatorCode
+  parameters:
+    - $ref: '../../parameters/indicatorCodeId-param.yaml'
+  tags:
+    - specification-storage-indicators
+  responses:
+    '204':
+      description: Indicator code definition was deleted
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

@@ -10,10 +10,13 @@ import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
+import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
+import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.service.mapper.FieldIndicatorMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,8 +59,39 @@ public class FieldIndicatorService {
   public IndicatorCodeDto createLocalCode(UUID indicatorId, IndicatorCodeChangeDto createDto) {
     log.debug("createLocalCode::indicatorId={}, createDto={}", indicatorId, createDto);
     return doForIndicatorOrFail(indicatorId,
-      indicator -> codeService.createLocalCode(indicator, createDto)
+      indicator -> {
+        var field = indicator.getField();
+        if (field.getScope() == Scope.SYSTEM) {
+          throw ScopeModificationNotAllowedException.forCreate(field.getScope(),
+            IndicatorCode.INDICATOR_CODE_TABLE_NAME);
+        }
+        return codeService.createLocalCode(indicator, createDto);
+      }
     );
+  }
+
+  @Transactional
+  public void deleteIndicator(UUID id) {
+    log.info("deleteIndicator::id={}", id);
+    var indicatorEntity = repository.findById(id).orElseThrow(() -> ResourceNotFoundException.forIndicator(id));
+    var field = indicatorEntity.getField();
+    if (field.getScope() != Scope.LOCAL) {
+      throw ScopeModificationNotAllowedException.forDelete(field.getScope());
+    }
+    repository.delete(indicatorEntity);
+  }
+
+  @Transactional
+  public FieldIndicatorDto updateIndicator(UUID id, FieldIndicatorChangeDto changeDto) {
+    log.info("updateIndicator::id={}, dto={}", id, changeDto);
+    var indicatorEntity = repository.findById(id).orElseThrow(() -> ResourceNotFoundException.forIndicator(id));
+    var field = indicatorEntity.getField();
+    if (field.getScope() != Scope.LOCAL) {
+      throw ScopeModificationNotAllowedException.forUpdate(field.getScope(), Indicator.INDICATOR_TABLE_NAME);
+    }
+    mapper.update(indicatorEntity, changeDto);
+
+    return mapper.toDto(repository.save(indicatorEntity));
   }
 
   private <T> T doForIndicatorOrFail(UUID indicatorId, Function<Indicator, T> action) {

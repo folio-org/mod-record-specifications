@@ -20,6 +20,7 @@ import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
@@ -105,7 +106,12 @@ public class SpecificationFieldService {
   public FieldIndicatorDto createLocalIndicator(UUID fieldId, FieldIndicatorChangeDto createDto) {
     log.debug("createLocalIndicator::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
-      field -> indicatorService.createLocalIndicator(field, createDto)
+      field -> {
+        if (field.getScope() != Scope.LOCAL) {
+          throw ScopeModificationNotAllowedException.forCreate(field.getScope(), Indicator.INDICATOR_TABLE_NAME);
+        }
+        return indicatorService.createLocalIndicator(field, createDto);
+      }
     );
   }
 

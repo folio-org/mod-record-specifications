@@ -3,10 +3,13 @@ package org.folio.rspec.service.mapper;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.entity.Indicator;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, componentModel = MappingConstants.ComponentModel.SPRING,
@@ -30,5 +33,12 @@ public interface FieldIndicatorMapper {
   @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "id", ignore = true)
   Indicator toEntity(FieldIndicatorChangeDto createDto);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "field", ignore = true)
+  @Mapping(target = "codes", ignore = true)
+  @Mapping(target = "metadata", ignore = true)
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+  void update(@MappingTarget Indicator indicator, FieldIndicatorChangeDto changeDto);
 
 }

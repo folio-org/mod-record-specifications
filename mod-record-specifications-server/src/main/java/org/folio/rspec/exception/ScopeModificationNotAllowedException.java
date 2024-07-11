@@ -17,6 +17,10 @@ public final class ScopeModificationNotAllowedException extends RuntimeException
     this.fieldName = fieldName;
   }
 
+  public static ScopeModificationNotAllowedException forCreate(Scope scope, String fieldName) {
+    return new ScopeModificationNotAllowedException(scope, ModificationType.CREATE, fieldName);
+  }
+
   public static ScopeModificationNotAllowedException forUpdate(Scope scope, String fieldName) {
     return new ScopeModificationNotAllowedException(scope, ModificationType.UPDATE, fieldName);
   }
@@ -26,6 +30,6 @@ public final class ScopeModificationNotAllowedException extends RuntimeException
   }
 
   public enum ModificationType {
-    UPDATE, DELETE
+    CREATE, UPDATE, DELETE
   }
 }
