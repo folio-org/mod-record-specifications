@@ -47,7 +47,8 @@ public class IndicatorCodeService {
     log.info("deleteCode::id={}", id);
     var codeEntity = repository.findById(id).orElseThrow(() -> ResourceNotFoundException.forIndicatorCode(id));
     if (codeEntity.getScope() != Scope.LOCAL) {
-      throw ScopeModificationNotAllowedException.forDelete(codeEntity.getScope(), IndicatorCode.INDICATOR_CODE_TABLE_NAME);
+      throw ScopeModificationNotAllowedException.forDelete(codeEntity.getScope(),
+        IndicatorCode.INDICATOR_CODE_TABLE_NAME);
     }
     repository.delete(codeEntity);
   }
