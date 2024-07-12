@@ -12,7 +12,6 @@ properties:
     description: Indicator description
     type: string
     maxLength: 350
-    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
 required:
   - order
   - label

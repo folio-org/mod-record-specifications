@@ -284,7 +284,8 @@ class SpecificationStorageControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' must be not blank.".formatted(field)))));
+      .andExpect(jsonPath("$.errors.size()", is(1)))
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("The '%s' field is required.".formatted(field)))));
   }
 
   @ValueSource(strings = {

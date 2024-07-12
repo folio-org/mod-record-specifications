@@ -110,7 +110,7 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     tryDelete(fieldPath(createdFieldId))
       .andExpect(status().isBadRequest())
-      .andExpect(errorMessageMatch(is("Deletion is not allowed for standard scope.")));
+      .andExpect(errorMessageMatch(is("A standard scope field cannot be deleted.")));
   }
 
   @Test
