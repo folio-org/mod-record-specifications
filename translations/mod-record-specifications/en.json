@@ -17,7 +17,6 @@
   "Min": "{parameter} must be greater than or equal to {value}.",
   "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "The ''{parameter}'' field is required.",
-  "NotBlank": "The ''{parameter}'' must be not blank.",
   "Size": "The ''{parameter}'' field has exceeded {max} character limit.",
   "URL": "The ''{parameter}'' field should be valid URL.",
 

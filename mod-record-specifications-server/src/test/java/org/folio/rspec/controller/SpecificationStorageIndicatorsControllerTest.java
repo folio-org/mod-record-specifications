@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
+import org.folio.rspec.config.ValidationConfig;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
@@ -45,7 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageIndicatorsController.class)
-@Import({ApiExceptionHandler.class, TranslationConfig.class})
+@Import({ApiExceptionHandler.class, TranslationConfig.class, ValidationConfig.class})
 @ComponentScan(basePackages = {"org.folio.rspec.controller.handler",
                                "org.folio.rspec.service.i18n",
                                "org.folio.spring.i18n"})
@@ -159,7 +160,7 @@ class SpecificationStorageIndicatorsControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'code' must be not blank."))))
+        hasItem(is("The 'code' field is required."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));
@@ -173,8 +174,9 @@ class SpecificationStorageIndicatorsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.size()", is(1)))
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' must be not blank."))))
+        hasItem(is("The 'label' field is required."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));

@@ -7,12 +7,10 @@ properties:
     description: Indicator code
     type: string
     pattern: '[0-9a-z#]'
-    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   label:
     description: Code description
     type: string
     maxLength: 350
-    x-field-extra-annotation: '@jakarta.validation.constraints.NotBlank'
   deprecated:
     description: Define if indicator code is deprecated
     type: boolean
