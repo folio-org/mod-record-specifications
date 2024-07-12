@@ -125,15 +125,6 @@
         },
         {
           "methods": [
-            "DELETE"
-          ],
-          "pathPattern": "/specification-storage/indicators/{indicatorId}",
-          "permissionsRequired": [
-            "specification-storage.indicators.item.delete"
-          ]
-        },
-        {
-          "methods": [
             "GET"
           ],
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
@@ -258,11 +249,6 @@
       "description": "Update indicator definition"
     },
     {
-      "permissionName": "specification-storage.indicators.item.delete",
-      "displayName": "Specification Storage - Delete indicator definition",
-      "description": "Delete indicator definition"
-    },
-    {
       "permissionName": "specification-storage.indicator.indicator-codes.collection.get",
       "displayName": "Specification Storage - Get indicator code definition collection",
       "description": "Get indicator codes collection"
@@ -299,7 +285,6 @@
         "specification-storage.field.indicators.collection.get",
         "specification-storage.field.indicators.item.post",
         "specification-storage.indicators.item.put",
-        "specification-storage.indicators.item.delete",
         "specification-storage.indicator.indicator-codes.collection.get",
         "specification-storage.indicator.indicator-codes.item.post"
       ]
