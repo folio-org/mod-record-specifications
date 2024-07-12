@@ -20,7 +20,6 @@ import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
-import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
@@ -77,7 +76,7 @@ public class SpecificationFieldService {
     log.info("deleteField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     if (fieldEntity.getScope() != Scope.LOCAL) {
-      throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope());
+      throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope(), Field.FIELD_TABLE_NAME);
     }
     fieldRepository.delete(fieldEntity);
   }
@@ -106,12 +105,7 @@ public class SpecificationFieldService {
   public FieldIndicatorDto createLocalIndicator(UUID fieldId, FieldIndicatorChangeDto createDto) {
     log.debug("createLocalIndicator::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
-      field -> {
-        if (field.getScope() != Scope.LOCAL) {
-          throw ScopeModificationNotAllowedException.forCreate(field.getScope(), Indicator.INDICATOR_TABLE_NAME);
-        }
-        return indicatorService.createLocalIndicator(field, createDto);
-      }
+      field -> indicatorService.createLocalIndicator(field, createDto)
     );
   }
 

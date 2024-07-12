@@ -23,7 +23,6 @@ import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
-import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
@@ -148,28 +147,6 @@ class FieldIndicatorServiceTest {
   }
 
   @Test
-  void testCreateLocalCode_invalidScope() {
-    var field = new Field();
-    field.setScope(Scope.SYSTEM);
-    var indicatorId = UUID.randomUUID();
-    var indicator = new Indicator();
-    indicator.setField(field);
-    var createDto = new IndicatorCodeChangeDto();
-
-    when(repository.findById(indicatorId))
-      .thenReturn(Optional.of(indicator));
-
-    var actual = assertThrows(ScopeModificationNotAllowedException.class,
-      () -> service.createLocalCode(indicatorId, createDto));
-
-    verifyNoInteractions(codeService);
-
-    assertThat(actual.getFieldName()).isEqualTo(IndicatorCode.INDICATOR_CODE_TABLE_NAME);
-    assertThat(actual.getModificationType()).isEqualTo(ScopeModificationNotAllowedException.ModificationType.CREATE);
-    assertThat(actual.getScope()).isEqualTo(Scope.SYSTEM);
-  }
-
-  @Test
   void testCreateLocalIndicator_absentField() {
     var indicatorId = UUID.randomUUID();
     var createDto = new IndicatorCodeChangeDto();
@@ -180,41 +157,6 @@ class FieldIndicatorServiceTest {
 
     assertThat(actual.getId()).isEqualTo(indicatorId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_INDICATOR);
-  }
-
-  @Test
-  void testDeleteIndicator() {
-    var field = local().buildEntity();
-    var indicator = basic().buildEntity();
-    indicator.setField(field);
-    var indicatorId = Objects.requireNonNull(indicator.getId());
-
-    when(repository.findById(indicatorId)).thenReturn(Optional.of(indicator));
-
-    service.deleteIndicator(indicatorId);
-
-    verify(repository).delete(indicator);
-  }
-
-  @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
-  @ParameterizedTest
-  void testDeleteIndicator_throwExceptionForUnsupportedScope(Scope scope) {
-    var field = new Field();
-    field.setScope(scope);
-    var indicator = basic().buildEntity();
-    indicator.setField(field);
-    var indicatorId = Objects.requireNonNull(indicator.getId());
-
-    when(repository.findById(indicatorId)).thenReturn(Optional.of(indicator));
-
-    var exception = assertThrows(ScopeModificationNotAllowedException.class,
-      () -> service.deleteIndicator(indicatorId));
-    assertThat(exception)
-      .extracting(ScopeModificationNotAllowedException::getScope,
-        ScopeModificationNotAllowedException::getModificationType)
-      .containsExactly(scope, ScopeModificationNotAllowedException.ModificationType.DELETE);
-
-    verifyNoMoreInteractions(repository);
   }
 
   @Test

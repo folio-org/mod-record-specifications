@@ -5,9 +5,8 @@
   "indicator.code.code.duplicate": "The 'code' must be unique.",
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
   "specification.fetch.failed": "Specification fetching failed.",
-  "scope.create.not-allowed": "Creation of ''{parameter}'' is not allowed for {scope} scope.",
   "scope.update.not-allowed": "The ''{parameter}'' modification is not allowed for {scope} scope.",
-  "scope.delete.not-allowed": "Deletion is not allowed for {scope} scope.",
+  "scope.delete.not-allowed": "A {scope} scope {parameter} cannot be deleted.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",

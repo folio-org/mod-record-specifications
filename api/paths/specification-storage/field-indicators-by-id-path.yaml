@@ -29,18 +29,3 @@ put:
       $ref: '../../responses/badRequestResponse.yaml'
     '500':
       $ref: '../../responses/internalServerErrorResponse.yaml'
-delete:
-  summary: Delete Indicator Definition
-  description: Delete indicator definition
-  operationId: deleteIndicator
-  parameters:
-    - $ref: '../../parameters/indicatorId-param.yaml'
-  tags:
-    - specification-storage-indicators
-  responses:
-    '204':
-      description: Indicator definition was deleted
-    '400':
-      $ref: '../../responses/badRequestResponse.yaml'
-    '500':
-      $ref: '../../responses/internalServerErrorResponse.yaml'

@@ -128,40 +128,6 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
   }
 
   @Test
-  void deleteIndicator_shouldReturn204AndDeleteLocalIndicator() throws Exception {
-    var fieldId = createLocalField("103");
-    var indId = createLocalIndicator(fieldId);
-
-    doDelete(indicatorPath(indId));
-
-    doGet(fieldIndicatorsPath(fieldId))
-      .andExpect(jsonPath("$.indicators.[*].id", not(hasItem(indId))));
-  }
-
-  @Test
-  void deleteIndicator_shouldReturn404WhenIndicatorNotExist() throws Exception {
-    var notExistId = UUID.randomUUID();
-    tryDelete(indicatorPath(notExistId))
-      .andExpect(status().isNotFound())
-      .andExpect(exceptionMatch(ResourceNotFoundException.class))
-      .andExpect(errorMessageMatch(is("field indicator with ID [%s] was not found.".formatted(notExistId))));
-  }
-
-  @Test
-  void deleteIndicator_shouldReturn400WhenIndicatorIsNotAllowedToDelete() throws Exception {
-    var createdFieldId = executeInContext(
-      () -> fieldRepository.save(standard().specificationId(BIBLIOGRAPHIC_SPECIFICATION_ID).buildEntity()))
-      .getId();
-    var createdIndicatorId = Objects.requireNonNull(executeInContext(
-      () -> indicatorRepository.save(basic().fieldId(createdFieldId).buildEntity()))
-      .getId());
-
-    tryDelete(indicatorPath(createdIndicatorId))
-      .andExpect(status().isBadRequest())
-      .andExpect(errorMessageMatch(is("Deletion is not allowed for standard scope.")));
-  }
-
-  @Test
   void updateIndicator_shouldReturn201AndUpdateLocalIndicator() throws Exception {
     var localTestField = local().buildChangeDto();
     var createdFieldId = createLocalField(localTestField);
@@ -260,7 +226,7 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
 
     tryDelete(codePath(createdCodeId))
       .andExpect(status().isBadRequest())
-      .andExpect(errorMessageMatch(is("Deletion is not allowed for standard scope.")));
+      .andExpect(errorMessageMatch(is("A standard scope indicator_code cannot be deleted.")));
   }
 
   @Test

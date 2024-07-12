@@ -32,7 +32,6 @@ import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
-import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
@@ -49,7 +48,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -224,29 +222,6 @@ class SpecificationFieldServiceTest {
     var actual = service.createLocalIndicator(fieldId, createDto);
 
     assertThat(actual).isEqualTo(expected);
-  }
-
-  @NullSource
-  @ParameterizedTest
-  @EnumSource(value = Scope.class, mode = EnumSource.Mode.EXCLUDE, names = "LOCAL")
-   void testCreateLocalIndicator_invalidScope(Scope scope) {
-    var fieldId = UUID.randomUUID();
-    var field = new Field();
-    field.setScope(scope);
-    field.setId(fieldId);
-    var createDto = new FieldIndicatorChangeDto();
-
-    when(fieldRepository.findById(fieldId))
-      .thenReturn(Optional.of(field));
-
-    var actual = assertThrows(ScopeModificationNotAllowedException.class,
-      () -> service.createLocalIndicator(fieldId, createDto));
-
-    verifyNoInteractions(indicatorService);
-
-    assertThat(actual.getFieldName()).isEqualTo(Indicator.INDICATOR_TABLE_NAME);
-    assertThat(actual.getModificationType()).isEqualTo(ModificationType.CREATE);
-    assertThat(actual.getScope()).isEqualTo(scope);
   }
 
   @Test

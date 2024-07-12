@@ -13,7 +13,6 @@ import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
-import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
@@ -59,26 +58,8 @@ public class FieldIndicatorService {
   public IndicatorCodeDto createLocalCode(UUID indicatorId, IndicatorCodeChangeDto createDto) {
     log.debug("createLocalCode::indicatorId={}, createDto={}", indicatorId, createDto);
     return doForIndicatorOrFail(indicatorId,
-      indicator -> {
-        var field = indicator.getField();
-        if (field.getScope() == Scope.SYSTEM) {
-          throw ScopeModificationNotAllowedException.forCreate(field.getScope(),
-            IndicatorCode.INDICATOR_CODE_TABLE_NAME);
-        }
-        return codeService.createLocalCode(indicator, createDto);
-      }
+      indicator -> codeService.createLocalCode(indicator, createDto)
     );
-  }
-
-  @Transactional
-  public void deleteIndicator(UUID id) {
-    log.info("deleteIndicator::id={}", id);
-    var indicatorEntity = repository.findById(id).orElseThrow(() -> ResourceNotFoundException.forIndicator(id));
-    var field = indicatorEntity.getField();
-    if (field.getScope() != Scope.LOCAL) {
-      throw ScopeModificationNotAllowedException.forDelete(field.getScope());
-    }
-    repository.delete(indicatorEntity);
   }
 
   @Transactional

@@ -8,11 +8,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -195,16 +193,6 @@ class SpecificationStorageIndicatorsControllerTest {
         hasItem(is("The 'label' field has exceeded 350 character limit."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
-  }
-
-  @Test
-  void deleteIndicator_returnNoContent() throws Exception {
-    var id = randomUUID();
-    doNothing().when(fieldIndicatorService).deleteIndicator(id);
-
-    mockMvc.perform(delete(indicatorPath(id))
-        .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isNoContent());
   }
 
   @Test

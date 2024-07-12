@@ -42,12 +42,6 @@ public class SpecificationStorageIndicatorsController implements SpecificationSt
   }
 
   @Override
-  public ResponseEntity<Void> deleteIndicator(UUID indicatorId) {
-    fieldIndicatorService.deleteIndicator(indicatorId);
-    return ResponseEntity.noContent().build();
-  }
-
-  @Override
   public ResponseEntity<IndicatorCodeDto> updateIndicatorCode(UUID indicatorCodeId,
                                                               IndicatorCodeChangeDto indicatorCodeChangeDto) {
     return ResponseEntity.accepted().body(indicatorCodeService.updateCode(indicatorCodeId, indicatorCodeChangeDto));
