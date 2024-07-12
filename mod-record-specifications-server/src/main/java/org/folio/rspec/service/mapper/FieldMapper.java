@@ -1,8 +1,10 @@
 package org.folio.rspec.service.mapper;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.entity.Field;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -51,4 +53,13 @@ public interface FieldMapper {
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
   void update(@MappingTarget Field field, SpecificationFieldChangeDto changeDto);
 
+  @AfterMapping
+  default void resetCollections(@MappingTarget SpecificationFieldDto target) {
+    if (CollectionUtils.isEmpty(target.getIndicators())) {
+      target.setIndicators(null);
+    }
+    if (CollectionUtils.isEmpty(target.getSubfields())) {
+      target.setSubfields(null);
+    }
+  }
 }
