@@ -1,7 +1,10 @@
 package org.folio.rspec.controller;
 
+import static java.util.UUID.randomUUID;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
+import static org.folio.support.ApiEndpoints.indicatorPath;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -10,16 +13,20 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
 import org.folio.rspec.config.ValidationConfig;
+import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.service.FieldIndicatorService;
+import org.folio.rspec.service.IndicatorCodeService;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
 import org.folio.spring.testing.type.UnitTest;
@@ -33,6 +40,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @UnitTest
@@ -49,6 +57,9 @@ class SpecificationStorageIndicatorsControllerTest {
 
   @MockBean
   private FieldIndicatorService fieldIndicatorService;
+
+  @MockBean
+  private IndicatorCodeService indicatorCodeService;
 
   @Test
   void getIndicatorCodes(@Random IndicatorCodeDto codeDto) throws Exception {
@@ -184,6 +195,76 @@ class SpecificationStorageIndicatorsControllerTest {
         hasItem(is("The 'label' field has exceeded 350 character limit."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))));
+  }
+
+  @Test
+  void updateIndicator_returnAccepted() throws Exception {
+    var id = randomUUID();
+    var fieldIndicatorDto = new FieldIndicatorDto();
+
+    when(fieldIndicatorService.updateIndicator(eq(id), any(FieldIndicatorChangeDto.class))).thenReturn(
+      fieldIndicatorDto);
+
+    mockMvc.perform(put(indicatorPath(id))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{\"order\": 1, \"label\": \"Ind 1\"}"))
+      .andExpect(status().isAccepted());
+  }
+
+  @Test
+  void updateIndicator_return400_invalidJson() throws Exception {
+    var requestBuilder = put(indicatorPath(randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"order\": \"a\", \"label\": \"Ind 1\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(containsString("JSON parse error"))));
+  }
+
+  @ValueSource(ints = {0, 3})
+  @ParameterizedTest
+  void updateIndicator_return400_invalidOrder(Integer orderValue) throws Exception {
+    var requestBuilder = put(indicatorPath(randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content("{\"order\": " + orderValue + ", \"label\": \"Ind 1\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The indicator 'order' field can only accept numbers 1-2."))));
+  }
+
+  @CsvSource(delimiter = '|', value = {
+    "{\"label\": \"Ind 1\"}  | order",
+    "{\"order\": 1}          | label"
+  })
+  @ParameterizedTest
+  void updateIndicator_return400_missingFieldInPayload(String content, String field) throws Exception {
+    var requestBuilder = put(indicatorPath(randomUUID()))
+      .contentType(APPLICATION_JSON)
+      .content(content);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.[*].message",
+        hasItem(is("The '%s' field is required.".formatted(field)))));
+  }
+
+  @Test
+  void updateIndicator_return404_notExistedIndicator() throws Exception {
+    var indicatorId = UUID.randomUUID();
+    when(fieldIndicatorService.updateIndicator(eq(indicatorId), any()))
+      .thenThrow(ResourceNotFoundException.forIndicator(indicatorId));
+
+    var requestBuilder = put(indicatorPath(indicatorId))
+      .contentType(APPLICATION_JSON)
+      .content("{\"order\": 1, \"label\": \"Ind 1\"}");
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("field indicator with ID [%s] was not found."
+        .formatted(indicatorId)))));
   }
 
 }

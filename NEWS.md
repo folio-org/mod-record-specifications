@@ -14,6 +14,7 @@
 * implement GET/POST endpoints to manage subfield definitions ([MRSPECS-8](https://folio-org.atlassian.net//browse/MRSPECS-8))
 * add limitations for modifying and deleting system/standard field definition ([MRSPECS-11](https://folio-org.atlassian.net//browse/MRSPECS-11))
 * add include parameter for GET specifications endpoint ([MRSPECS-28](https://folio-org.atlassian.net//browse/MRSPECS-28))
+* implement PUT/DELETE endpoints for indicators, indicator codes ([MRSPECS-28](https://folio-org.atlassian.net//browse/MRSPECS-28))
 
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))

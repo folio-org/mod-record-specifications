@@ -5,6 +5,14 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
   <changeSet id="MRSPECS-@@create-table:subfield" author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="subfield"/>
+      </not>
+    </preConditions>
+
+    <comment>Create subfield table</comment>
+
     <createTable tableName="subfield">
       <column name="id" type="UUID">
         <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subfield"/>

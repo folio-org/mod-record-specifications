@@ -37,6 +37,7 @@ import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.exception.ScopeModificationNotAllowedException.ModificationType;
 import org.folio.rspec.service.mapper.FieldMapper;
 import org.folio.rspec.service.validation.scope.ScopeValidator;
 import org.folio.spring.testing.type.UnitTest;
@@ -134,7 +135,7 @@ class SpecificationFieldServiceTest {
     assertThat(exception)
       .extracting(ScopeModificationNotAllowedException::getScope,
         ScopeModificationNotAllowedException::getModificationType)
-      .containsExactly(scope, ScopeModificationNotAllowedException.ModificationType.DELETE);
+      .containsExactly(scope, ModificationType.DELETE);
 
     verifyNoMoreInteractions(fieldRepository);
   }
@@ -209,6 +210,7 @@ class SpecificationFieldServiceTest {
     var fieldId = UUID.randomUUID();
     var field = new Field();
     field.setId(fieldId);
+    field.setScope(Scope.LOCAL);
     var createDto = new FieldIndicatorChangeDto();
     var expected = new FieldIndicatorDto().fieldId(fieldId);
 
