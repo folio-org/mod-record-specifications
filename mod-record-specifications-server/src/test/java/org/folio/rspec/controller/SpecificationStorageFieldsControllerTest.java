@@ -154,19 +154,19 @@ class SpecificationStorageFieldsControllerTest {
   }
 
   @Test
-  void updateField_return404_notExistedSpecification() throws Exception {
-    var specificationId = UUID.randomUUID();
-    when(specificationFieldService.updateField(eq(specificationId), any()))
-      .thenThrow(ResourceNotFoundException.forSpecification(specificationId));
+  void updateField_return404_notExistedField() throws Exception {
+    var fieldId = UUID.randomUUID();
+    when(specificationFieldService.updateField(eq(fieldId), any()))
+      .thenThrow(ResourceNotFoundException.forField(fieldId));
 
-    var requestBuilder = put(fieldPath(specificationId))
+    var requestBuilder = put(fieldPath(fieldId))
       .contentType(APPLICATION_JSON)
       .content("{\"tag\": \"666\", \"label\": \"Mystic field\"}");
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("specification with ID [%s] was not found."
-        .formatted(specificationId)))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("field definition with ID [%s] was not found."
+        .formatted(fieldId)))));
   }
 
   @Test

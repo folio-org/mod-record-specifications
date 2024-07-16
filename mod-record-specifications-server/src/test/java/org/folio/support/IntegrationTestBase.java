@@ -1,5 +1,7 @@
 package org.folio.support;
 
+import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
+import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
@@ -23,6 +25,9 @@ import java.util.concurrent.Callable;
 import lombok.SneakyThrows;
 import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
+import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
+import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.spring.FolioExecutionContext;
@@ -257,6 +262,13 @@ public class IntegrationTestBase {
     return new SubfieldChangeDto().label(label).code(code);
   }
 
+  protected IndicatorCodeChangeDto localTestCode(String code) {
+    return new IndicatorCodeChangeDto()
+      .code(code)
+      .deprecated(true)
+      .label(easyRandom.nextObject(String.class));
+  }
+
   protected String createLocalField(SpecificationFieldChangeDto localTestField) throws UnsupportedEncodingException {
     return JsonPath.read(
       doPost(specificationFieldsPath(TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID), localTestField)
@@ -268,6 +280,26 @@ public class IntegrationTestBase {
   protected String createLocalField(String tag) throws UnsupportedEncodingException {
     var dto = localTestField(tag);
     return createLocalField(dto);
+  }
+
+  protected String createLocalIndicator(String fieldId, FieldIndicatorChangeDto localTestIndicator) {
+    return doPostAndReturn(fieldIndicatorsPath(fieldId), localTestIndicator, FieldIndicatorDto.class)
+      .getId().toString();
+  }
+
+  protected String createLocalIndicator(String fieldId) {
+    var dto = localTestIndicator(1);
+    return createLocalIndicator(fieldId, dto);
+  }
+
+  protected String createLocalCode(String indicatorId, IndicatorCodeChangeDto localTestCode) {
+    return doPostAndReturn(indicatorCodesPath(indicatorId), localTestCode, IndicatorCodeDto.class)
+      .getId().toString();
+  }
+
+  protected String createLocalCode(String indicatorId) {
+    var dto = localTestCode("a");
+    return createLocalCode(indicatorId, dto);
   }
 
   @SneakyThrows

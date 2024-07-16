@@ -21,11 +21,11 @@ public final class ScopeModificationNotAllowedException extends RuntimeException
     return new ScopeModificationNotAllowedException(scope, ModificationType.UPDATE, fieldName);
   }
 
-  public static ScopeModificationNotAllowedException forDelete(Scope scope) {
-    return new ScopeModificationNotAllowedException(scope, ModificationType.DELETE, null);
+  public static ScopeModificationNotAllowedException forDelete(Scope scope, String fieldName) {
+    return new ScopeModificationNotAllowedException(scope, ModificationType.DELETE, fieldName);
   }
 
   public enum ModificationType {
-    UPDATE, DELETE
+    CREATE, UPDATE, DELETE
   }
 }
