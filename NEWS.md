@@ -16,6 +16,9 @@
 * add include parameter for GET specifications endpoint ([MRSPECS-28](https://folio-org.atlassian.net//browse/MRSPECS-28))
 * implement PUT/DELETE endpoints for indicators, indicator codes ([MRSPECS-28](https://folio-org.atlassian.net//browse/MRSPECS-28))
 
+#### Validator
+* implement validation by MARC specification ([MRSPECS-38](https://folio-org.atlassian.net//browse/MRSPECS-38))
+
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
 

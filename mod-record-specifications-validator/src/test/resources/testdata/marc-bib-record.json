@@ -1,0 +1,203 @@
+{
+  "fields": [
+    {
+      "001": "393893"
+    },
+    {
+      "005": "20141107001016.0"
+    },
+    {
+      "006": "c bcdefghijklmn o "
+    },
+    {
+      "007": "sa bcdefghijkl"
+    },
+    {
+      "008": "abcdefghijklmnopqr bcdefghijklmn o stuvw"
+    },
+    {
+      "010": {
+        "ind1": " ",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "  2001000234"
+          },
+          {
+            "z": "0001"
+          },
+          {
+            "z": "0002"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": " ",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "(OCoLC)63611770"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": " ",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "393893"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": " ",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "cn"
+          },
+          {
+            "a": "ct"
+          },
+          {
+            "a": "co"
+          },
+          {
+            "a": "df"
+          },
+          {
+            "a": "dv"
+          },
+          {
+            "a": "ft"
+          },
+          {
+            "a": "fg"
+          },
+          {
+            "a": "ms"
+          },
+          {
+            "a": "mi"
+          },
+          {
+            "a": "nc"
+          },
+          {
+            "a": "op"
+          },
+          {
+            "a": "ov"
+          },
+          {
+            "a": "rq"
+          },
+          {
+            "a": "sn"
+          },
+          {
+            "a": "su"
+          },
+          {
+            "a": "sy"
+          },
+          {
+            "a": "vr"
+          },
+          {
+            "a": "zz"
+          }
+        ]
+      }
+    },
+    {
+      "100": {
+        "ind1": "/",
+        "ind2": "/",
+        "subfields": [
+          {
+            "a": "Mozart, Wolfgang Amadeus,"
+          },
+          {
+            "d": "1756-1791."
+          },
+          {
+            "0": "12345"
+          },
+          {
+            "9": "b9a5f035-de63-4e2c-92c2-07240c88b817"
+          }
+        ]
+      }
+    },
+    {
+      "245": {
+        "ind1": "1",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "Neue Ausgabe samtlicher Werke,"
+          },
+          {
+            "b": "in Verbindung mit den Mozartstadten, Augsburg, Salzburg und Wien."
+          },
+          {
+            "c": "Hrsg. von der Internationalen Stiftung Mozarteum, Salzburg."
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": " ",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "Instrumental music"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": " ",
+        "ind2": "7",
+        "subfields": [
+          {
+            "a": "Instrumental music"
+          },
+          {
+            "2": "fast"
+          },
+          {
+            "0": "(OCoLC)fst00974414"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": " ",
+        "ind2": "7",
+        "subfields": [
+          {
+            "a": "Vocal music"
+          },
+          {
+            "2": "fast"
+          },
+          {
+            "0": "(OCoLC)fst01168379"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}
