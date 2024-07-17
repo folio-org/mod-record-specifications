@@ -26,8 +26,8 @@ class MarcSpecificationGuidedValidatorTest {
 
   @Test
   void testMarcRecordValidation() {
-    var record = TestRecordProvider.getMarc4jRecord();
-    var validationErrors = validator.validate(record, getSpecification());
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord();
+    var validationErrors = validator.validate(marc4jRecord, getSpecification());
     assertThat(validationErrors)
       .hasSize(4)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)

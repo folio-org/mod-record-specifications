@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class FieldSetMissingFieldRuleValidatorTest {
+class FieldSetMissingFieldRuleValidatorTest {
 
   @Mock
   private TranslationProvider translationProvider;
@@ -82,7 +82,7 @@ public class FieldSetMissingFieldRuleValidatorTest {
     assertEquals(expectedErrorMessage, error.getMessage());
   }
 
-  public static Stream<Arguments> validationDataProvider() {
+  static Stream<Arguments> validationDataProvider() {
     var tagRef = Reference.forTag("001");
     return Stream.of(
       Arguments.of(new MarcControlField(tagRef, null)),

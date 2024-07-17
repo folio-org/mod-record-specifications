@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class MarcSpecificationValidatorTest {
+class MarcSpecificationValidatorTest {
 
   @Mock
   private Converter<Object, MarcRecord> customConverter;
@@ -22,22 +22,22 @@ public class MarcSpecificationValidatorTest {
   @Test
   void validate_whenInvalidObject_throwsException() {
     SpecificationDto specificationDto = new SpecificationDto();
-    Object record = new Object();
+    Object rec = new Object();
 
-    when(customConverter.convert(record)).thenThrow(new RuntimeException("Error"));
+    when(customConverter.convert(rec)).thenThrow(new RuntimeException("Error"));
 
     var validator = new MarcSpecificationValidator((key, args) -> "error", customConverter);
-    assertThrows(IllegalArgumentException.class, () -> validator.validate(record, specificationDto));
+    assertThrows(IllegalArgumentException.class, () -> validator.validate(rec, specificationDto));
   }
 
   @Test
   void validate_whenUnsupportedType_throwsException() {
     SpecificationDto specificationDto = new SpecificationDto();
-    String record = "unsupported";
+    String unsupportedRecord = "unsupported";
 
     var validator = new MarcSpecificationValidator((key, args) -> "error", null);
 
-    assertThrows(IllegalArgumentException.class, () -> validator.validate(record, specificationDto));
+    assertThrows(IllegalArgumentException.class, () -> validator.validate(unsupportedRecord, specificationDto));
   }
 
 }

@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.marc4j.marc.Record;
 
 @UnitTest
-public class Marc4jConverterTest {
+class Marc4jConverterTest {
 
   private final Marc4jConverter marc4jConverter = new Marc4jConverter();
-  private final Record record = TestRecordProvider.getMarc4jRecord();
+  private final Record marc4jRecord = TestRecordProvider.getMarc4jRecord();
 
   @Test
-  public void testConvert_WhenCalled_ShouldReturnMarcRecord() {
-    MarcRecord marcRecord = marc4jConverter.convert(record);
+  void testConvert_WhenCalled_ShouldReturnMarcRecord() {
+    MarcRecord marcRecord = marc4jConverter.convert(marc4jRecord);
     assertEquals(6, marcRecord.getControlFields().size());
     assertEquals(9, marcRecord.getDataFields().size());
 

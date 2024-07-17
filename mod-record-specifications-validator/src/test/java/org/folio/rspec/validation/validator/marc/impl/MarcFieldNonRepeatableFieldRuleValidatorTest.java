@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class MarcFieldNonRepeatableFieldRuleValidatorTest {
+class MarcFieldNonRepeatableFieldRuleValidatorTest {
 
   @Mock
   private TranslationProvider translationProvider;
@@ -29,7 +29,7 @@ public class MarcFieldNonRepeatableFieldRuleValidatorTest {
   private MarcFieldNonRepeatableFieldRuleValidator validator;
 
   @Test
-  public void validate_whenRepeatedField_shouldReturnValidationError() {
+  void validate_whenRepeatedField_shouldReturnValidationError() {
     var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
     var marcField = new MarcDataField(Reference.forTag("tag", 1), null, null);
 
@@ -45,7 +45,7 @@ public class MarcFieldNonRepeatableFieldRuleValidatorTest {
   }
 
   @Test
-  public void validate_whenSingleOccurrence_shouldReturnEmptyList() {
+  void validate_whenSingleOccurrence_shouldReturnEmptyList() {
     var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
     var marcField = new MarcDataField(Reference.forTag("tag", 0), null, null);
 

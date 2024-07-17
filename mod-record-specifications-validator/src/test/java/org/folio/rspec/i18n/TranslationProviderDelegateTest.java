@@ -13,13 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class TranslationProviderDelegateTest {
+class TranslationProviderDelegateTest {
 
   @Mock
   private TranslationProvider delegate;
 
   @Test
-  public void format_appliesKeyPrefixAndDelegates() {
+  void format_appliesKeyPrefixAndDelegates() {
     TranslationProviderDelegate delegateUnderTest = new TranslationProviderDelegate(delegate);
 
     String key = "key";

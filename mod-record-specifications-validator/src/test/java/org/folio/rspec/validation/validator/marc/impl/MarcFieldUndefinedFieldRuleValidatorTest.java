@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class MarcFieldUndefinedFieldRuleValidatorTest {
+class MarcFieldUndefinedFieldRuleValidatorTest {
 
   @Mock
   private TranslationProvider translationProvider;
@@ -30,7 +30,7 @@ public class MarcFieldUndefinedFieldRuleValidatorTest {
   private MarcFieldUndefinedFieldRuleValidator validator;
 
   @Test
-  public void validate_undefinedFieldShouldReturnValidationError() {
+  void validate_undefinedFieldShouldReturnValidationError() {
     var marcField = new MarcDataField(Reference.forTag("001"), List.of(), List.of());
     var fields = Collections.<String, List<MarcField>>singletonMap("001", Collections.singletonList(marcField));
     var specification = new SpecificationDto().fields(Collections.emptyList());
@@ -50,7 +50,7 @@ public class MarcFieldUndefinedFieldRuleValidatorTest {
   }
 
   @Test
-  public void validate_definedFieldShouldNotReturnValidationError() {
+  void validate_definedFieldShouldNotReturnValidationError() {
     var marcField = new MarcDataField(Reference.forTag("001"), List.of(), List.of());
     var fields = Collections.<String, List<MarcField>>singletonMap("001", Collections.singletonList(marcField));
 

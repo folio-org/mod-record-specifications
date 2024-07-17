@@ -19,26 +19,26 @@ import org.marc4j.marc.VariableField;
 public class Marc4jConverter implements Converter<Record, MarcRecord> {
 
   @Override
-  public MarcRecord convert(Record record) {
-    var controlFields = convertControlFields(record);
-    var dataFields = convertDataFields(record);
+  public MarcRecord convert(Record rec) {
+    var controlFields = convertControlFields(rec);
+    var dataFields = convertDataFields(rec);
 
     return new MarcRecord(controlFields, dataFields);
   }
 
-  private List<MarcControlField> convertControlFields(Record record) {
+  private List<MarcControlField> convertControlFields(Record rec) {
     var controlFields = new ArrayList<MarcControlField>();
-    controlFields.add(convertLeader(record));
+    controlFields.add(convertLeader(rec));
 
-    record.getControlFields().stream()
+    rec.getControlFields().stream()
       .collect(Collectors.groupingBy(VariableField::getTag))
       .forEach((tag, fields) -> fields.forEach(field ->
         controlFields.add(convertControlField(fields, field))));
     return controlFields;
   }
 
-  private MarcControlField convertLeader(Record record) {
-    return new MarcControlField(Reference.forTag("000"), record.getLeader().toString());
+  private MarcControlField convertLeader(Record rec) {
+    return new MarcControlField(Reference.forTag("000"), rec.getLeader().toString());
   }
 
   private MarcControlField convertControlField(List<ControlField> fields, ControlField field) {
@@ -46,10 +46,10 @@ public class Marc4jConverter implements Converter<Record, MarcRecord> {
     return new MarcControlField(reference, field.getData());
   }
 
-  private List<MarcDataField> convertDataFields(Record record) {
+  private List<MarcDataField> convertDataFields(Record rec) {
     var dataFields = new ArrayList<MarcDataField>();
 
-    record.getDataFields().stream()
+    rec.getDataFields().stream()
       .collect(Collectors.groupingBy(VariableField::getTag))
       .forEach((tag, fields) -> fields.forEach(field -> {
         var marcDataField = toMarcDataField(field, fields.indexOf(field));

@@ -31,7 +31,7 @@ class SpecificationGuidedValidatorTest {
   void validate_givenValidRecordAndSpecification_usesCorrectValidator() {
     var family = Family.MARC;
     var specificationDto = new SpecificationDto().family(family);
-    var record = new Object();
+    var rec = new Object();
     var errors = Collections.singletonList(
       ValidationError.builder()
         .path("path")
@@ -45,7 +45,7 @@ class SpecificationGuidedValidatorTest {
     try (var construction = Mockito.mockConstruction(MarcSpecificationValidator.class,
       (marcValidator, context) -> when(marcValidator.validate(any(), any())).thenReturn(errors))) {
       var validator = new SpecificationGuidedValidator(translationProvider, source -> source);
-      var result = validator.validate(record, specificationDto);
+      var result = validator.validate(rec, specificationDto);
       assertEquals(1, construction.constructed().size());
       assertEquals(result, errors);
     }

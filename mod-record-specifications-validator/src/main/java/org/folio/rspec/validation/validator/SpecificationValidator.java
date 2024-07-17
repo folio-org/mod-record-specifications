@@ -6,6 +6,6 @@ import org.folio.rspec.domain.dto.ValidationError;
 
 public interface SpecificationValidator {
 
-  List<ValidationError> validate(Object record, SpecificationDto specification);
+  List<ValidationError> validate(Object recordValue, SpecificationDto specification);
 
 }

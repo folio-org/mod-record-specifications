@@ -24,15 +24,15 @@ public class MarcSpecificationValidator implements SpecificationValidator {
   }
 
   @Override
-  public List<ValidationError> validate(Object record, SpecificationDto specification) {
-    MarcRecord marcRecord;
-    if (record instanceof MarcRecord) {
-      marcRecord = (MarcRecord) record;
-    } else if (record instanceof Record) {
-      marcRecord = defaultConverter.convert((Record) record);
+  public List<ValidationError> validate(Object recordValue, SpecificationDto specification) {
+    MarcRecord marc;
+    if (recordValue instanceof MarcRecord marcRecord) {
+      marc = marcRecord;
+    } else if (recordValue instanceof Record marc4jRecord) {
+      marc = defaultConverter.convert(marc4jRecord);
     } else if (converter != null) {
       try {
-        marcRecord = converter.convert(record);
+        marc = converter.convert(recordValue);
       } catch (Exception e) {
         throw new IllegalArgumentException("Invalid converter: ", e);
       }
@@ -40,7 +40,7 @@ public class MarcSpecificationValidator implements SpecificationValidator {
       throw new IllegalArgumentException("Unexpected record type.");
     }
 
-    return marcRecordRuleValidator.validate(marcRecord, specification);
+    return marcRecordRuleValidator.validate(marc, specification);
   }
 
 }

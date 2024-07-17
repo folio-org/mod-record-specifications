@@ -26,10 +26,10 @@ public class SpecificationGuidedValidator {
     this.validators = Map.of(Family.MARC, new MarcSpecificationValidator(translationProviderDelegate, converter));
   }
 
-  public Collection<ValidationError> validate(Object record, SpecificationDto specification) {
+  public Collection<ValidationError> validate(Object recordValue, SpecificationDto specification) {
     var family = specification.getFamily();
     var familyValidator = Optional.of(validators.get(family))
       .orElseThrow(() -> new UnsupportedOperationException("%s validator not found".formatted(family)));
-    return familyValidator.validate(record, specification);
+    return familyValidator.validate(recordValue, specification);
   }
 }
