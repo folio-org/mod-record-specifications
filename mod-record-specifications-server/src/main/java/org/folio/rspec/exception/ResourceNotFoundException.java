@@ -36,13 +36,18 @@ public class ResourceNotFoundException extends RuntimeException {
     return new ResourceNotFoundException(Resource.FIELD_INDICATOR, id);
   }
 
+  public static ResourceNotFoundException forIndicatorCode(Object id) {
+    return new ResourceNotFoundException(Resource.INDICATOR_CODE, id);
+  }
+
   @Getter
   public enum Resource {
 
     SPECIFICATION("specification"),
     SPECIFICATION_RULE("specification rule"),
     FIELD_DEFINITION("field definition"),
-    FIELD_INDICATOR("field indicator");
+    FIELD_INDICATOR("field indicator"),
+    INDICATOR_CODE("indicator code");
 
     private final String name;
 

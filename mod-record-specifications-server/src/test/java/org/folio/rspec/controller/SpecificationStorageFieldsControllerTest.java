@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 import org.folio.rspec.config.TranslationConfig;
+import org.folio.rspec.config.ValidationConfig;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
@@ -50,7 +51,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @UnitTest
 @ExtendWith(RandomParametersExtension.class)
 @WebMvcTest(SpecificationStorageFieldsController.class)
-@Import({ApiExceptionHandler.class, TranslationConfig.class})
+@Import({ApiExceptionHandler.class, TranslationConfig.class, ValidationConfig.class})
 @ComponentScan(basePackages = {"org.folio.rspec.controller.handler",
                                "org.folio.rspec.service.i18n",
                                "org.folio.spring.i18n"})
@@ -153,19 +154,19 @@ class SpecificationStorageFieldsControllerTest {
   }
 
   @Test
-  void updateField_return404_notExistedSpecification() throws Exception {
-    var specificationId = UUID.randomUUID();
-    when(specificationFieldService.updateField(eq(specificationId), any()))
-      .thenThrow(ResourceNotFoundException.forSpecification(specificationId));
+  void updateField_return404_notExistedField() throws Exception {
+    var fieldId = UUID.randomUUID();
+    when(specificationFieldService.updateField(eq(fieldId), any()))
+      .thenThrow(ResourceNotFoundException.forField(fieldId));
 
-    var requestBuilder = put(fieldPath(specificationId))
+    var requestBuilder = put(fieldPath(fieldId))
       .contentType(APPLICATION_JSON)
       .content("{\"tag\": \"666\", \"label\": \"Mystic field\"}");
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("specification with ID [%s] was not found."
-        .formatted(specificationId)))));
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("field definition with ID [%s] was not found."
+        .formatted(fieldId)))));
   }
 
   @Test
@@ -261,8 +262,9 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.size()", is(1)))
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' must be not blank."))))
+        hasItem(is("The 'label' field is required."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));
@@ -382,8 +384,9 @@ class SpecificationStorageFieldsControllerTest {
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.size()", is(1)))
       .andExpect(jsonPath("$.errors.[*].message",
-        hasItem(is("The 'label' must be not blank."))))
+        hasItem(is("The 'label' field is required."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("label"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(""))));

@@ -1,0 +1,31 @@
+put:
+  summary: Update Field Indicators
+  description: Update an indicator definition.
+  operationId: updateIndicator
+  parameters:
+    - $ref: '../../parameters/indicatorId-param.yaml'
+  tags:
+    - specification-storage-indicators
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/fieldIndicatorChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/fieldIndicatorChangeDto.yaml'
+  responses:
+    '202':
+      description: Indicator definition was updated
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/fieldIndicatorDto.yaml'
+          examples:
+            RequestExample:
+              $ref: '../../examples/request/fieldIndicatorChangeDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

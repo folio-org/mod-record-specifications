@@ -76,7 +76,7 @@ public class SpecificationFieldService {
     log.info("deleteField::id={}", id);
     var fieldEntity = fieldRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.forField(id));
     if (fieldEntity.getScope() != Scope.LOCAL) {
-      throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope());
+      throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope(), Field.FIELD_TABLE_NAME);
     }
     fieldRepository.delete(fieldEntity);
   }

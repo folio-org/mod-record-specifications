@@ -1,11 +1,18 @@
 package org.folio.rspec.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.support.builders.FieldBuilder.local;
+import static org.folio.support.builders.IndicatorBuilder.basic;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
@@ -13,15 +20,19 @@ import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
+import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
+import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.service.mapper.FieldIndicatorMapper;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -117,8 +128,11 @@ class FieldIndicatorServiceTest {
 
   @Test
   void testCreateLocalCode() {
+    var field = new Field();
+    field.setScope(Scope.LOCAL);
     var indicatorId = UUID.randomUUID();
     var indicator = new Indicator();
+    indicator.setField(field);
     var createDto = new IndicatorCodeChangeDto();
     var expected = new IndicatorCodeDto();
 
@@ -143,5 +157,45 @@ class FieldIndicatorServiceTest {
 
     assertThat(actual.getId()).isEqualTo(indicatorId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_INDICATOR);
+  }
+
+  @Test
+  void testUpdateIndicator() {
+    var field = local().buildEntity();
+    var existed = basic().buildEntity();
+    existed.setField(field);
+    var changeDto = basic().buildChangeDto();
+    var indicatorId = Objects.requireNonNull(existed.getId());
+    doNothing().when(mapper).update(existed, changeDto);
+    when(repository.save(any())).thenReturn(existed);
+    when(mapper.toDto(existed)).thenReturn(new FieldIndicatorDto());
+
+    when(repository.findById(indicatorId)).thenReturn(Optional.of(existed));
+
+    service.updateIndicator(indicatorId, changeDto);
+
+    verify(repository).save(existed);
+  }
+
+  @ParameterizedTest
+  @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
+  void testUpdateField_throwExceptionForUnsupportedScope(Scope scope) {
+    var field = new Field();
+    field.setScope(scope);
+    var existed = basic().buildEntity();
+    existed.setField(field);
+    var changeDto = basic().buildChangeDto();
+    var indicatorId = Objects.requireNonNull(existed.getId());
+
+    when(repository.findById(indicatorId)).thenReturn(Optional.of(existed));
+
+    var exception =
+      assertThrows(ScopeModificationNotAllowedException.class, () -> service.updateIndicator(indicatorId, changeDto));
+    assertThat(exception)
+      .extracting(ScopeModificationNotAllowedException::getFieldName)
+      .isEqualTo(Indicator.INDICATOR_TABLE_NAME);
+
+    verifyNoInteractions(mapper);
+    verifyNoMoreInteractions(repository);
   }
 }

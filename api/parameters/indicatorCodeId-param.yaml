@@ -1,0 +1,7 @@
+in: path
+name: indicatorCodeId
+description: Indicator code ID
+required: true
+schema:
+  type: string
+  format: uuid

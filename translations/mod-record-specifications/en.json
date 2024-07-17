@@ -6,7 +6,7 @@
   "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
   "specification.fetch.failed": "Specification fetching failed.",
   "scope.update.not-allowed": "The ''{parameter}'' modification is not allowed for {scope} scope.",
-  "scope.delete.not-allowed": "Deletion is not allowed for {scope} scope.",
+  "scope.delete.not-allowed": "A {scope} scope {parameter} cannot be deleted.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
@@ -17,7 +17,6 @@
   "Min": "{parameter} must be greater than or equal to {value}.",
   "Max": "{parameter} must be less than or equal to {value}.",
   "NotNull": "The ''{parameter}'' field is required.",
-  "NotBlank": "The ''{parameter}'' must be not blank.",
   "Size": "The ''{parameter}'' field has exceeded {max} character limit.",
   "URL": "The ''{parameter}'' field should be valid URL.",
 
