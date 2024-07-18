@@ -20,6 +20,10 @@
   "Size": "The ''{parameter}'' field has exceeded {max} character limit.",
   "URL": "The ''{parameter}'' field should be valid URL.",
 
-  "unexpected": "Unexpected error: {errorMessage}."
+  "unexpected": "Unexpected error: {errorMessage}.",
+
+  "validation.missingField": "Field {tag} is required.",
+  "validation.nonRepeatableField": "Field is non-repeatable.",
+  "validation.undefinedField": "Field is undefined."
 
 }

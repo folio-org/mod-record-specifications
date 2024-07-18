@@ -17,7 +17,7 @@
 
   <modules>
     <module>mod-record-specifications-dto</module>
-    <module>mod-record-specifications-core</module>
+    <module>mod-record-specifications-validator</module>
     <module>mod-record-specifications-server</module>
   </modules>
 
@@ -33,22 +33,23 @@
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <lombok.mapstruct-binding.version>0.2.0</lombok.mapstruct-binding.version>
-    <jsoup.version>1.17.2</jsoup.version>
+    <jsoup.version>1.18.1</jsoup.version>
+    <marc4j.version>2.9.5</marc4j.version>
     <commons-text.version>1.12.0</commons-text.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
-    <openapi-generator.version>7.6.0</openapi-generator.version>
+    <openapi-generator.version>7.7.0</openapi-generator.version>
     <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
     <versions-maven-plugin.version>2.17.0</versions-maven-plugin.version>
     <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-    <maven-surefire-plugin.version>3.3.0</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
     <maven-release-plugin.version>3.1.0</maven-release-plugin.version>
     <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-    <maven-failsafe-plugin.version>3.3.0</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
     <checkstyle.version>10.17.0</checkstyle.version>
   </properties>
 
@@ -97,6 +98,16 @@
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${jsoup.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.marc4j</groupId>
+        <artifactId>marc4j</artifactId>
+        <version>${marc4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>33.2.0-jre</version>
       </dependency>
 
       <dependency>

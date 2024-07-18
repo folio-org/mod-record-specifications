@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>org.folio</groupId>
-      <artifactId>mod-record-specifications-core</artifactId>
+      <artifactId>mod-record-specifications-dto</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>
