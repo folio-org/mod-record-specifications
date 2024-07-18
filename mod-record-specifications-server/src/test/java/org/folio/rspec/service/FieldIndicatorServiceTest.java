@@ -21,12 +21,14 @@ import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldIndicatorMapper;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,8 @@ class FieldIndicatorServiceTest {
   private FieldIndicatorMapper mapper;
   @Mock
   private IndicatorCodeService codeService;
+  @Mock
+  private EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   @Test
   void testFindFieldIndicators() {
@@ -128,8 +132,7 @@ class FieldIndicatorServiceTest {
 
   @Test
   void testCreateLocalCode() {
-    var field = new Field();
-    field.setScope(Scope.LOCAL);
+    var field = local().buildEntity();
     var indicatorId = UUID.randomUUID();
     var indicator = new Indicator();
     indicator.setField(field);
@@ -144,6 +147,8 @@ class FieldIndicatorServiceTest {
     var actual = service.createLocalCode(indicatorId, createDto);
 
     assertThat(actual).isEqualTo(expected);
+
+    verify(eventProducer).sendMessage(field.getSpecification().getId());
   }
 
   @Test
@@ -154,6 +159,7 @@ class FieldIndicatorServiceTest {
     var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalCode(indicatorId, createDto));
 
     verifyNoInteractions(codeService);
+    verifyNoInteractions(eventProducer);
 
     assertThat(actual.getId()).isEqualTo(indicatorId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_INDICATOR);
@@ -175,11 +181,12 @@ class FieldIndicatorServiceTest {
     service.updateIndicator(indicatorId, changeDto);
 
     verify(repository).save(existed);
+    verify(eventProducer).sendMessage(field.getSpecification().getId());
   }
 
   @ParameterizedTest
   @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
-  void testUpdateField_throwExceptionForUnsupportedScope(Scope scope) {
+  void testUpdateIndicator_throwExceptionForUnsupportedScope(Scope scope) {
     var field = new Field();
     field.setScope(scope);
     var existed = basic().buildEntity();
@@ -197,5 +204,6 @@ class FieldIndicatorServiceTest {
 
     verifyNoInteractions(mapper);
     verifyNoMoreInteractions(repository);
+    verifyNoInteractions(eventProducer);
   }
 }

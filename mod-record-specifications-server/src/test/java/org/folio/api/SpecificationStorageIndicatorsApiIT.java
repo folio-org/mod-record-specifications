@@ -7,9 +7,11 @@ import static org.folio.support.ApiEndpoints.codePath;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.indicatorPath;
+import static org.folio.support.KafkaUtils.createAndStartTestConsumer;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.folio.support.TestConstants.specificationUpdatedTopic;
 import static org.folio.support.builders.FieldBuilder.local;
 import static org.folio.support.builders.FieldBuilder.standard;
 import static org.folio.support.builders.IndicatorBuilder.basic;
@@ -30,8 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
 import org.folio.rspec.domain.repository.IndicatorRepository;
@@ -40,9 +44,12 @@ import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 
 @IntegrationTest
@@ -59,6 +66,20 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
   @BeforeAll
   static void beforeAll() {
     setUpTenant();
+  }
+
+  @BeforeEach
+  void setUp(@Autowired KafkaProperties kafkaProperties) {
+    consumerRecords = new LinkedBlockingQueue<>();
+    container =
+      createAndStartTestConsumer(specificationUpdatedTopic(),
+        consumerRecords, kafkaProperties, SpecificationUpdatedEvent.class);
+  }
+
+  @AfterEach
+  void tearDown() {
+    consumerRecords.clear();
+    container.stop();
   }
 
   @Test
@@ -110,6 +131,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
 
     doGet(indicatorCodesPath(indId))
       .andExpect(jsonPath("$.codes.[*].id", hasItem(createdCodeId)));
+
+    assertSpecificationUpdatedEvents(3);
   }
 
   @Test
@@ -145,6 +168,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
         hasEntry("order", 2),
         hasEntry("label", "Ind 2")
       ))));
+
+    assertSpecificationUpdatedEvents(3);
   }
 
   @Test
@@ -201,6 +226,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
 
     doGet(indicatorCodesPath(indId))
       .andExpect(jsonPath("$.codes.[*].id", not(hasItem(codeId))));
+
+    assertSpecificationUpdatedEvents(4);
   }
 
   @Test
@@ -247,6 +274,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
         hasEntry("label", updatedCode.getLabel()),
         hasEntry("deprecated", updatedCode.getDeprecated())
       ))));
+
+    assertSpecificationUpdatedEvents(4);
   }
 
   @Test

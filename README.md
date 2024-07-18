@@ -24,22 +24,31 @@ mvn clean install
 
 Below are the environment variables used by this module:
 
-| Variable Name                  | Default Value | Description                                                                                                                   |
-|--------------------------------|---------------|-------------------------------------------------------------------------------------------------------------------------------|
-| DB_HOST                        | localhost     | Postgres hostname                                                                                                             |
-| DB_PORT                        | 5432          | Postgres port                                                                                                                 |
-| DB_USERNAME                    | folio_admin   | Postgres username                                                                                                             |
-| DB_PASSWORD                    | folio_admin   | Postgres username password                                                                                                    |
-| DB_DATABASE                    | okapi_modules | Postgres database name                                                                                                        |
-| DB_MAXPOOLSIZE                 | 10            | Max pool size allowed, including both idle and in-use connections                                                             |
-| DB_MINIMUM_IDLE                | 10            | Min number of idle connections that HikariCP tries to maintain in the pool                                                    |
-| DB_CONNECTION_TIMEOUT          | 30000         | Max number of milliseconds that a client will wait for a connection from the pool                                             |
-| DB_IDLE_TIMEOUT                | 600000        | Max amount of time that a connection is allowed to sit idle in the pool, applicable when `DB_MINIMUM_IDLE` < `DB_MAXPOOLSIZE` |
-| DB_KEEPALIVE_TIME              | 0             | Frequency of connection keep alive attempts by HikariCP to prevent time-out by database/network. 0 means disabled             |
-| DB_MAX_LIFETIME                | 1800000       | Max lifetime of a connection in the pool                                                                                      |
-| DB_VALIDATION_TIMEOUT          | 5000          | Max amount of time a connection is tested for aliveness. Must be less than `DB_CONNECTION_TIMEOUT`                            |
-| DB_INITIALIZATION_FAIL_TIMEOUT | 30000         | Defines whether the pool will 'fail fast' if it can't be seeded with an initial connection                                    |
-| DB_LEAK_DETECTION_THRESHOLD    | 30000         | Time a connection can be out of the pool before a message is logged for a possible connection leak. 0 means disabled          |
+| Variable Name                                        | Default Value | Description                                                                                                                                                |
+|------------------------------------------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| DB_HOST                                              | localhost     | Postgres hostname                                                                                                                                          |
+| DB_PORT                                              | 5432          | Postgres port                                                                                                                                              |
+| DB_USERNAME                                          | folio_admin   | Postgres username                                                                                                                                          |
+| DB_PASSWORD                                          | folio_admin   | Postgres username password                                                                                                                                 |
+| DB_DATABASE                                          | okapi_modules | Postgres database name                                                                                                                                     |
+| DB_MAXPOOLSIZE                                       | 10            | Max pool size allowed, including both idle and in-use connections                                                                                          |
+| DB_MINIMUM_IDLE                                      | 10            | Min number of idle connections that HikariCP tries to maintain in the pool                                                                                 |
+| DB_CONNECTION_TIMEOUT                                | 30000         | Max number of milliseconds that a client will wait for a connection from the pool                                                                          |
+| DB_IDLE_TIMEOUT                                      | 600000        | Max amount of time that a connection is allowed to sit idle in the pool, applicable when `DB_MINIMUM_IDLE` < `DB_MAXPOOLSIZE`                              |
+| DB_KEEPALIVE_TIME                                    | 0             | Frequency of connection keep alive attempts by HikariCP to prevent time-out by database/network. 0 means disabled                                          |
+| DB_MAX_LIFETIME                                      | 1800000       | Max lifetime of a connection in the pool                                                                                                                   |
+| DB_VALIDATION_TIMEOUT                                | 5000          | Max amount of time a connection is tested for aliveness. Must be less than `DB_CONNECTION_TIMEOUT`                                                         |
+| DB_INITIALIZATION_FAIL_TIMEOUT                       | 30000         | Defines whether the pool will 'fail fast' if it can't be seeded with an initial connection                                                                 |
+| DB_LEAK_DETECTION_THRESHOLD                          | 30000         | Time a connection can be out of the pool before a message is logged for a possible connection leak. 0 means disabled                                       |
+| KAFKA_HOST                                           | kafka         | Kafka broker hostname                                                                                                                                      |
+| KAFKA_PORT                                           | 9092          | Kafka broker port                                                                                                                                          |
+| KAFKA_SECURITY_PROTOCOL                              | PLAINTEXT     | Kafka security protocol used to communicate with brokers (SSL or PLAINTEXT)                                                                                |
+| KAFKA_SSL_KEYSTORE_LOCATION                          | -             | The location of the Kafka key store file. This is optional for client and can be used for two-way authentication for client.                               |
+| KAFKA_SSL_KEYSTORE_PASSWORD                          | -             | The store password for the Kafka key store file. This is optional for client and only needed if 'ssl.keystore.location' is configured.                     |
+| KAFKA_SSL_TRUSTSTORE_LOCATION                        | -             | The location of the Kafka trust store file.                                                                                                                |
+| KAFKA_SSL_TRUSTSTORE_PASSWORD                        | -             | The password for the Kafka trust store file. If a password is not set, trust store file configured will still be used, but integrity checking is disabled. |
+| KAFKA_AUTHORITY_SOURCE_FILE_TOPIC_PARTITIONS         | 1             | Amount of partitions for `specification-storage.specification.updated` topic.                                                                              |
+| KAFKA_AUTHORITY_SOURCE_FILE_TOPIC_REPLICATION_FACTOR | -             | Replication factor for `specification-storage.specification.updated` topic.                                                                                |
 
 Change these variables as per your requirements.
 

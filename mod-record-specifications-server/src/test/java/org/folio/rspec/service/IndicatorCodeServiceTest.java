@@ -1,6 +1,7 @@
 package org.folio.rspec.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.support.builders.IndicatorCodeBuilder.localCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -15,10 +16,12 @@ import java.util.UUID;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.IndicatorCodeMapper;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,8 @@ class IndicatorCodeServiceTest {
   private IndicatorCodeRepository repository;
   @Mock
   private IndicatorCodeMapper mapper;
+  @Mock
+  private EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   @Test
   void testFindIndicatorCodes() {
@@ -96,15 +101,14 @@ class IndicatorCodeServiceTest {
   @Test
   void testDeleteCode() {
     var codeId = UUID.randomUUID();
-    var code = new IndicatorCode();
-    code.setId(codeId);
-    code.setScope(Scope.LOCAL);
+    var code = localCode().id(codeId).buildEntity();
 
     when(repository.findById(codeId)).thenReturn(Optional.of(code));
 
     service.deleteCode(codeId);
 
     verify(repository).delete(code);
+    verify(eventProducer).sendMessage(code.getIndicator().getField().getSpecification().getId());
   }
 
   @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
@@ -124,14 +128,13 @@ class IndicatorCodeServiceTest {
       .containsExactly(scope, ScopeModificationNotAllowedException.ModificationType.DELETE);
 
     verifyNoMoreInteractions(repository);
+    verifyNoInteractions(eventProducer);
   }
 
   @Test
   void testUpdateCode() {
     var codeId = UUID.randomUUID();
-    var existed = new IndicatorCode();
-    existed.setId(codeId);
-    existed.setScope(Scope.LOCAL);
+    var existed = localCode().id(codeId).buildEntity();
     var changeDto = new IndicatorCodeChangeDto();
     doNothing().when(mapper).update(existed, changeDto);
     when(repository.save(any())).thenReturn(existed);
@@ -142,6 +145,7 @@ class IndicatorCodeServiceTest {
     service.updateCode(codeId, changeDto);
 
     verify(repository).save(existed);
+    verify(eventProducer).sendMessage(existed.getIndicator().getField().getSpecification().getId());
   }
 
   @ParameterizedTest
@@ -163,5 +167,6 @@ class IndicatorCodeServiceTest {
 
     verifyNoInteractions(mapper);
     verifyNoMoreInteractions(repository);
+    verifyNoInteractions(eventProducer);
   }
 }

@@ -16,6 +16,7 @@ import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
@@ -24,6 +25,7 @@ import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldMapper;
 import org.folio.rspec.service.validation.scope.ScopeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ public class SpecificationFieldService {
   private final FieldMapper fieldMapper;
   private final FieldIndicatorService indicatorService;
   private final SubfieldService subfieldService;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new EnumMap<>(Scope.class);
 
@@ -78,7 +81,9 @@ public class SpecificationFieldService {
     if (fieldEntity.getScope() != Scope.LOCAL) {
       throw ScopeModificationNotAllowedException.forDelete(fieldEntity.getScope(), Field.FIELD_TABLE_NAME);
     }
+    var specificationId = fieldEntity.getSpecification().getId();
     fieldRepository.delete(fieldEntity);
+    eventProducer.sendMessage(specificationId);
   }
 
   @Transactional
@@ -90,7 +95,9 @@ public class SpecificationFieldService {
       .ifPresent(validator -> validator.validateChange(changeDto, fieldEntity));
     fieldMapper.update(fieldEntity, changeDto);
 
-    return fieldMapper.toDto(fieldRepository.save(fieldEntity));
+    var dto = fieldMapper.toDto(fieldRepository.save(fieldEntity));
+    eventProducer.sendMessage(fieldEntity.getSpecification().getId());
+    return dto;
   }
 
   @Transactional
@@ -105,7 +112,11 @@ public class SpecificationFieldService {
   public FieldIndicatorDto createLocalIndicator(UUID fieldId, FieldIndicatorChangeDto createDto) {
     log.debug("createLocalIndicator::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
-      field -> indicatorService.createLocalIndicator(field, createDto)
+      field -> {
+        var indicator = indicatorService.createLocalIndicator(field, createDto);
+        eventProducer.sendMessage(field.getSpecification().getId());
+        return indicator;
+      }
     );
   }
 
@@ -119,7 +130,11 @@ public class SpecificationFieldService {
   public SubfieldDto createLocalSubfield(UUID fieldId, SubfieldChangeDto createDto) {
     log.debug("createLocalSubfield::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
-      field -> subfieldService.createLocalSubfield(field, createDto)
+      field -> {
+        var dto = subfieldService.createLocalSubfield(field, createDto);
+        eventProducer.sendMessage(field.getSpecification().getId());
+        return dto;
+      }
     );
   }
 

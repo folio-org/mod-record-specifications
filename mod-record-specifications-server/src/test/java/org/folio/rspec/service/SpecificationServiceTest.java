@@ -1,5 +1,8 @@
 package org.folio.rspec.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.folio.support.builders.FieldBuilder.local;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,11 +15,14 @@ import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.entity.SpecificationRuleId;
 import org.folio.rspec.domain.repository.SpecificationRepository;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.SpecificationMapper;
+import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
@@ -41,6 +47,15 @@ class SpecificationServiceTest {
 
   @Mock
   private SpecificationRuleService ruleService;
+
+  @Mock
+  private SpecificationFieldService fieldService;
+
+  @Mock
+  private SpecificationSyncService syncService;
+
+  @Mock
+  private EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   @Test
   void testFindSpecifications(@Random SpecificationDto specificationDto) {
@@ -70,7 +85,7 @@ class SpecificationServiceTest {
 
   @Test
   void testFindSpecificationRules() {
-    UUID id = UUID.randomUUID();
+    var id = UUID.randomUUID();
     when(repository.findById(id)).thenReturn(Optional.of(new Specification()));
     when(ruleService.findSpecificationRules(id)).thenReturn(new SpecificationRuleDtoCollection());
 
@@ -80,11 +95,38 @@ class SpecificationServiceTest {
 
   @Test
   void testToggleSpecificationRule() {
-    UUID specificationId = UUID.randomUUID();
-    UUID ruleId = UUID.randomUUID();
-    ToggleSpecificationRuleDto toggleSpecificationRuleDto = new ToggleSpecificationRuleDto(Boolean.TRUE);
+    var specificationId = UUID.randomUUID();
+    var ruleId = UUID.randomUUID();
+    var toggleSpecificationRuleDto = new ToggleSpecificationRuleDto(Boolean.TRUE);
 
     service.toggleSpecificationRule(specificationId, ruleId, toggleSpecificationRuleDto);
     verify(ruleService).toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId), true);
+    verify(eventProducer).sendMessage(specificationId);
+  }
+
+  @Test
+  void testCreateLocalField() {
+    var specificationId = UUID.randomUUID();
+    var createDto = local().buildChangeDto();
+    var field = local().buildDto();
+    when(repository.findById(specificationId)).thenReturn(Optional.of(new Specification()));
+    when(fieldService.createLocalField(any(), eq(createDto))).thenReturn(field);
+
+    var actual = service.createLocalField(specificationId, createDto);
+
+    assertThat(actual).isEqualTo(field);
+    verify(eventProducer).sendMessage(specificationId);
+  }
+
+  @Test
+  void testSync() {
+    var specificationId = UUID.randomUUID();
+    var specification = new Specification();
+    when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
+
+    service.sync(specificationId);
+
+    verify(syncService).sync(specification);
+    verify(eventProducer).sendMessage(specificationId);
   }
 }

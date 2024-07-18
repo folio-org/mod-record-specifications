@@ -9,9 +9,11 @@ import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationsPath;
+import static org.folio.support.KafkaUtils.createAndStartTestConsumer;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.folio.support.TestConstants.specificationUpdatedTopic;
 import static org.folio.support.builders.FieldBuilder.local;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThan;
@@ -24,18 +26,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -46,6 +54,20 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
   @BeforeAll
   static void beforeAll() {
     setUpTenant();
+  }
+
+  @BeforeEach
+  void setUp(@Autowired KafkaProperties kafkaProperties) {
+    consumerRecords = new LinkedBlockingQueue<>();
+    container =
+      createAndStartTestConsumer(specificationUpdatedTopic(),
+        consumerRecords, kafkaProperties, SpecificationUpdatedEvent.class);
+  }
+
+  @AfterEach
+  void tearDown() {
+    consumerRecords.clear();
+    container.stop();
   }
 
   @Test
@@ -195,6 +217,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     toggleDto = toggleDto.enabled(stateBeforeToggle);
     doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
     assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID, stateBeforeToggle);
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -267,6 +291,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("$.fields.[*].id", hasItem(createdFieldId)));
+
+    assertSpecificationUpdatedEvent();
   }
 
   @Test

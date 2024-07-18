@@ -1,5 +1,7 @@
 package org.folio.support.builders;
 
+import static org.folio.support.builders.IndicatorBuilder.basic;
+
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.Scope;
-import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.IndicatorCode;
 
 @Getter
@@ -58,8 +59,7 @@ public class IndicatorCodeBuilder {
     indicatorCode.setLabel(label);
     indicatorCode.setScope(scope);
     indicatorCode.setDeprecated(deprecated);
-    var indicator = new Indicator();
-    indicator.setId(indicatorId);
+    var indicator = basic().id(indicatorId).buildEntity();
     indicatorCode.setIndicator(indicator);
     return indicatorCode;
   }

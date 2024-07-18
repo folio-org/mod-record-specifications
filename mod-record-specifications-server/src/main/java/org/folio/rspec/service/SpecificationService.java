@@ -15,11 +15,13 @@ import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationRuleDtoCollection;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.entity.SpecificationRuleId;
 import org.folio.rspec.domain.repository.SpecificationRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.SpecificationMapper;
 import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
@@ -36,6 +38,7 @@ public class SpecificationService {
   private final SpecificationRuleService specificationRuleService;
   private final SpecificationFieldService specificationFieldService;
   private final SpecificationSyncService specificationSyncService;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   @Transactional
   public SpecificationDtoCollection findSpecifications(Family family, FamilyProfile profile, IncludeParam include,
@@ -71,6 +74,7 @@ public class SpecificationService {
     Objects.requireNonNull(toggleSpecificationRuleDto.getEnabled());
     specificationRuleService.toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId),
       toggleSpecificationRuleDto.getEnabled());
+    eventProducer.sendMessage(specificationId);
   }
 
   @Transactional
@@ -85,7 +89,11 @@ public class SpecificationService {
   public SpecificationFieldDto createLocalField(UUID specificationId, SpecificationFieldChangeDto createDto) {
     log.debug("createLocalField::specificationId={}, createDto={}", specificationId, createDto);
     return doForSpecificationOrFail(specificationId,
-      specification -> specificationFieldService.createLocalField(specification, createDto)
+      specification -> {
+        var field = specificationFieldService.createLocalField(specification, createDto);
+        eventProducer.sendMessage(specificationId);
+        return field;
+      }
     );
   }
 
@@ -93,6 +101,7 @@ public class SpecificationService {
     log.info("sync::specificationId={}", specificationId);
     var specification = doForSpecificationOrFail(specificationId, Function.identity());
     specificationSyncService.sync(specification);
+    eventProducer.sendMessage(specificationId);
   }
 
   private <T> T doForSpecificationOrFail(UUID specificationId, Function<Specification, T> action) {

@@ -1,12 +1,13 @@
 package org.folio.support.builders;
 
+import static org.folio.support.builders.FieldBuilder.local;
+
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
-import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
 
 @Getter
@@ -43,8 +44,7 @@ public class IndicatorBuilder {
     indicator.setId(id);
     indicator.setOrder(order);
     indicator.setLabel(label);
-    var field = new Field();
-    field.setId(fieldId);
+    var field = local().id(fieldId).buildEntity();
     indicator.setField(field);
     return indicator;
   }

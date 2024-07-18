@@ -7,11 +7,13 @@ import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.IndicatorCodeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class IndicatorCodeService {
 
   private final IndicatorCodeRepository repository;
   private final IndicatorCodeMapper mapper;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   public IndicatorCodeDtoCollection findIndicatorCodes(UUID indicatorId) {
     log.debug("findIndicatorCodes::indicatorId={}", indicatorId);
@@ -50,7 +53,10 @@ public class IndicatorCodeService {
       throw ScopeModificationNotAllowedException.forDelete(codeEntity.getScope(),
         IndicatorCode.INDICATOR_CODE_TABLE_NAME);
     }
+
+    var specificationId = codeEntity.getIndicator().getField().getSpecification().getId();
     repository.delete(codeEntity);
+    eventProducer.sendMessage(specificationId);
   }
 
   @Transactional
@@ -63,6 +69,8 @@ public class IndicatorCodeService {
     }
     mapper.update(codeEntity, changeDto);
 
-    return mapper.toDto(repository.save(codeEntity));
+    var dto = mapper.toDto(repository.save(codeEntity));
+    eventProducer.sendMessage(codeEntity.getIndicator().getField().getSpecification().getId());
+    return dto;
   }
 }

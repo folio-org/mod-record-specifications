@@ -6,9 +6,11 @@ import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.fieldPath;
 import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
+import static org.folio.support.KafkaUtils.createAndStartTestConsumer;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
+import static org.folio.support.TestConstants.specificationUpdatedTopic;
 import static org.folio.support.builders.FieldBuilder.local;
 import static org.folio.support.builders.FieldBuilder.standard;
 import static org.hamcrest.Matchers.everyItem;
@@ -26,7 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.folio.rspec.domain.dto.ErrorCode;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.FolioModuleMetadata;
@@ -34,9 +38,12 @@ import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.IntegrationTestBase;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -54,6 +61,20 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
     setUpTenant();
   }
 
+  @BeforeEach
+  void setUp(@Autowired KafkaProperties kafkaProperties) {
+    consumerRecords = new LinkedBlockingQueue<>();
+    container =
+      createAndStartTestConsumer(specificationUpdatedTopic(),
+        consumerRecords, kafkaProperties, SpecificationUpdatedEvent.class);
+  }
+
+  @AfterEach
+  void tearDown() {
+    consumerRecords.clear();
+    container.stop();
+  }
+
   @Test
   void deleteField_shouldReturn204AndDeleteLocalField() throws Exception {
     var createdFieldId = createLocalField(local().buildChangeDto());
@@ -62,6 +83,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("$.fields.[*].id", not(hasItem(createdFieldId))));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -89,6 +112,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
         hasEntry("deprecated", true),
         hasEntry("url", "http://www.viverra.com")
       ))));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -185,6 +210,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(fieldIndicatorsPath(fieldId))
       .andExpect(jsonPath("$.indicators.[*].id", hasItem(createdIndicatorId)));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -249,6 +276,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(fieldSubfieldsPath(fieldId))
       .andExpect(jsonPath("$.subfields.[*].id", hasItem(createdSubfieldId)));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
