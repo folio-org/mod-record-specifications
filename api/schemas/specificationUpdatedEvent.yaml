@@ -1,3 +1,4 @@
+title: Specification Update Event
 type: object
 description: Specification update event body
 properties:
