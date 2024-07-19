@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SpecificationChangeProducer extends EventProducer<UUID, SpecificationUpdatedEvent> {
+
+  public static final String SPECIFICATION_UPDATED_TOPIC = "specification-storage.specification.updated";
+
   public SpecificationChangeProducer(
     KafkaTemplate<String, SpecificationUpdatedEvent> template,
     FolioExecutionContext context) {
@@ -16,7 +19,7 @@ public class SpecificationChangeProducer extends EventProducer<UUID, Specificati
 
   @Override
   protected String topicName() {
-    return "specification-storage.specification.updated";
+    return SPECIFICATION_UPDATED_TOPIC;
   }
 
   @Override

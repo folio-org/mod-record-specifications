@@ -83,7 +83,7 @@ public class SpecificationFieldService {
     }
     var specificationId = fieldEntity.getSpecification().getId();
     fieldRepository.delete(fieldEntity);
-    eventProducer.sendMessage(specificationId);
+    eventProducer.sendEvent(specificationId);
   }
 
   @Transactional
@@ -96,7 +96,7 @@ public class SpecificationFieldService {
     fieldMapper.update(fieldEntity, changeDto);
 
     var dto = fieldMapper.toDto(fieldRepository.save(fieldEntity));
-    eventProducer.sendMessage(fieldEntity.getSpecification().getId());
+    eventProducer.sendEvent(fieldEntity.getSpecification().getId());
     return dto;
   }
 
@@ -114,7 +114,7 @@ public class SpecificationFieldService {
     return doForFieldOrFail(fieldId,
       field -> {
         var indicator = indicatorService.createLocalIndicator(field, createDto);
-        eventProducer.sendMessage(field.getSpecification().getId());
+        eventProducer.sendEvent(field.getSpecification().getId());
         return indicator;
       }
     );
@@ -132,7 +132,7 @@ public class SpecificationFieldService {
     return doForFieldOrFail(fieldId,
       field -> {
         var dto = subfieldService.createLocalSubfield(field, createDto);
-        eventProducer.sendMessage(field.getSpecification().getId());
+        eventProducer.sendEvent(field.getSpecification().getId());
         return dto;
       }
     );

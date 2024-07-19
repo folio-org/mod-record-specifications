@@ -41,7 +41,7 @@ class SpecificationChangeProducerTest {
     when(context.getTenantId()).thenReturn(TENANT_ID);
     var captor = ArgumentCaptor.<ProducerRecord<String, SpecificationUpdatedEvent>>captor();
 
-    producer.sendMessage(specificationId);
+    producer.sendEvent(specificationId);
 
     verify(template).send(captor.capture());
     var captured = captor.getValue();

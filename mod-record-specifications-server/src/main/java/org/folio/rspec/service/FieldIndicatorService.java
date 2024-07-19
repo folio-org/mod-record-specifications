@@ -63,7 +63,7 @@ public class FieldIndicatorService {
     return doForIndicatorOrFail(indicatorId,
       indicator -> {
         var dto = codeService.createLocalCode(indicator, createDto);
-        eventProducer.sendMessage(indicator.getField().getSpecification().getId());
+        eventProducer.sendEvent(indicator.getField().getSpecification().getId());
         return dto;
       }
     );
@@ -80,7 +80,7 @@ public class FieldIndicatorService {
     mapper.update(indicatorEntity, changeDto);
 
     var dto = mapper.toDto(repository.save(indicatorEntity));
-    eventProducer.sendMessage(field.getSpecification().getId());
+    eventProducer.sendEvent(field.getSpecification().getId());
     return dto;
   }
 

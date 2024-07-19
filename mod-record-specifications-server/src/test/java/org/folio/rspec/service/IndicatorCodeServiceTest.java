@@ -108,7 +108,7 @@ class IndicatorCodeServiceTest {
     service.deleteCode(codeId);
 
     verify(repository).delete(code);
-    verify(eventProducer).sendMessage(code.getIndicator().getField().getSpecification().getId());
+    verify(eventProducer).sendEvent(code.getIndicator().getField().getSpecification().getId());
   }
 
   @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
@@ -145,7 +145,7 @@ class IndicatorCodeServiceTest {
     service.updateCode(codeId, changeDto);
 
     verify(repository).save(existed);
-    verify(eventProducer).sendMessage(existed.getIndicator().getField().getSpecification().getId());
+    verify(eventProducer).sendEvent(existed.getIndicator().getField().getSpecification().getId());
   }
 
   @ParameterizedTest

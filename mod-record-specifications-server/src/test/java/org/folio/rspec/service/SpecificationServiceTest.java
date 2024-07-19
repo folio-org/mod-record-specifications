@@ -101,7 +101,7 @@ class SpecificationServiceTest {
 
     service.toggleSpecificationRule(specificationId, ruleId, toggleSpecificationRuleDto);
     verify(ruleService).toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId), true);
-    verify(eventProducer).sendMessage(specificationId);
+    verify(eventProducer).sendEvent(specificationId);
   }
 
   @Test
@@ -115,7 +115,7 @@ class SpecificationServiceTest {
     var actual = service.createLocalField(specificationId, createDto);
 
     assertThat(actual).isEqualTo(field);
-    verify(eventProducer).sendMessage(specificationId);
+    verify(eventProducer).sendEvent(specificationId);
   }
 
   @Test
@@ -127,6 +127,6 @@ class SpecificationServiceTest {
     service.sync(specificationId);
 
     verify(syncService).sync(specification);
-    verify(eventProducer).sendMessage(specificationId);
+    verify(eventProducer).sendEvent(specificationId);
   }
 }

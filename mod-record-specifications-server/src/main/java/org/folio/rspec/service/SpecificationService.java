@@ -74,7 +74,7 @@ public class SpecificationService {
     Objects.requireNonNull(toggleSpecificationRuleDto.getEnabled());
     specificationRuleService.toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId),
       toggleSpecificationRuleDto.getEnabled());
-    eventProducer.sendMessage(specificationId);
+    eventProducer.sendEvent(specificationId);
   }
 
   @Transactional
@@ -91,7 +91,7 @@ public class SpecificationService {
     return doForSpecificationOrFail(specificationId,
       specification -> {
         var field = specificationFieldService.createLocalField(specification, createDto);
-        eventProducer.sendMessage(specificationId);
+        eventProducer.sendEvent(specificationId);
         return field;
       }
     );
@@ -101,7 +101,7 @@ public class SpecificationService {
     log.info("sync::specificationId={}", specificationId);
     var specification = doForSpecificationOrFail(specificationId, Function.identity());
     specificationSyncService.sync(specification);
-    eventProducer.sendMessage(specificationId);
+    eventProducer.sendEvent(specificationId);
   }
 
   private <T> T doForSpecificationOrFail(UUID specificationId, Function<Specification, T> action) {

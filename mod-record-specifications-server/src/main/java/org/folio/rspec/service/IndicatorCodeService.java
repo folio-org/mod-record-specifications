@@ -56,7 +56,7 @@ public class IndicatorCodeService {
 
     var specificationId = codeEntity.getIndicator().getField().getSpecification().getId();
     repository.delete(codeEntity);
-    eventProducer.sendMessage(specificationId);
+    eventProducer.sendEvent(specificationId);
   }
 
   @Transactional
@@ -70,7 +70,7 @@ public class IndicatorCodeService {
     mapper.update(codeEntity, changeDto);
 
     var dto = mapper.toDto(repository.save(codeEntity));
-    eventProducer.sendMessage(codeEntity.getIndicator().getField().getSpecification().getId());
+    eventProducer.sendEvent(codeEntity.getIndicator().getField().getSpecification().getId());
     return dto;
   }
 }

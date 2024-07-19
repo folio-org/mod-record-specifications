@@ -148,7 +148,7 @@ class FieldIndicatorServiceTest {
 
     assertThat(actual).isEqualTo(expected);
 
-    verify(eventProducer).sendMessage(field.getSpecification().getId());
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @Test
@@ -181,7 +181,7 @@ class FieldIndicatorServiceTest {
     service.updateIndicator(indicatorId, changeDto);
 
     verify(repository).save(existed);
-    verify(eventProducer).sendMessage(field.getSpecification().getId());
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @ParameterizedTest

@@ -126,7 +126,7 @@ class SpecificationFieldServiceTest {
     service.deleteField(fieldId);
 
     verify(fieldRepository).delete(field);
-    verify(eventProducer).sendMessage(field.getSpecification().getId());
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
@@ -161,7 +161,7 @@ class SpecificationFieldServiceTest {
 
     verify(validator).validateChange(changeDto, existed);
     verify(fieldRepository).save(existed);
-    verify(eventProducer).sendMessage(existed.getSpecification().getId());
+    verify(eventProducer).sendEvent(existed.getSpecification().getId());
   }
 
   @MethodSource("updateFieldTestData")
@@ -230,7 +230,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual).isEqualTo(expected);
 
-    verify(eventProducer).sendMessage(field.getSpecification().getId());
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @Test
@@ -290,7 +290,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual).isEqualTo(expected);
 
-    verify(eventProducer).sendMessage(field.getSpecification().getId());
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @Test

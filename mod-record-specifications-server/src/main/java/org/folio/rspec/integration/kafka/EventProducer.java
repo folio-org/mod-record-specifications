@@ -14,8 +14,8 @@ public abstract class EventProducer<T, D> {
   private final KafkaTemplate<String, D> template;
   private final FolioExecutionContext context;
 
-  public void sendMessage(T data) {
-    log.info("Sending events to Kafka [topic: {}]", topicName());
+  public void sendEvent(T data) {
+    log.info("sendEvent::topic={}", topicName());
     var messageBody = buildEvent(data);
     var producerRecord = toProducerRecord(messageBody);
     template.send(producerRecord);
