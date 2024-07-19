@@ -49,6 +49,6 @@ class SpecificationChangeProducerTest {
       topic.endsWith(producer.topicName()) && topic.contains(TENANT_ID));
     assertThat(captured.headers().toArray()).isEqualTo(KafkaUtils.toKafkaHeaders(headers).toArray());
     assertThat(captured.value()).matches(event ->
-      TENANT_ID.equals(event.getTenantId()) && specificationId.equals(event.getSpecificationId()));
+      TENANT_ID.equals(event.tenantId()) && specificationId.equals(event.specificationId()));
   }
 }

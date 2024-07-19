@@ -3,16 +3,12 @@ package org.folio.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.specificationSyncPath;
-import static org.folio.support.KafkaUtils.createAndStartTestConsumer;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
-import static org.folio.support.TestConstants.specificationUpdatedTopic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingQueue;
-import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
@@ -23,19 +19,17 @@ import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.extension.EnableOkapi;
 import org.folio.spring.testing.extension.impl.OkapiConfiguration;
 import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.IntegrationTestBase;
+import org.folio.support.SpecificationITBase;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 @EnableOkapi
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
-class SpecificationStorageSyncApiIT extends IntegrationTestBase {
+class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   protected static OkapiConfiguration okapi;
 
@@ -56,7 +50,7 @@ class SpecificationStorageSyncApiIT extends IntegrationTestBase {
   }
 
   @BeforeEach
-  void setUp(@Autowired KafkaProperties kafkaProperties) {
+  void setUp() {
     executeInContext(() -> {
       var specificationMetadata = metadataRepository.findBySpecificationId(BIBLIOGRAPHIC_SPECIFICATION_ID);
       var newSyncUrl = okapi.getOkapiUrl() + "/marc/bibliographic.html";
@@ -64,17 +58,6 @@ class SpecificationStorageSyncApiIT extends IntegrationTestBase {
       metadataRepository.save(specificationMetadata);
       return null;
     });
-
-    consumerRecords = new LinkedBlockingQueue<>();
-    container =
-      createAndStartTestConsumer(specificationUpdatedTopic(),
-        consumerRecords, kafkaProperties, SpecificationUpdatedEvent.class);
-  }
-
-  @AfterEach
-  void tearDown() {
-    consumerRecords.clear();
-    container.stop();
   }
 
   @Test

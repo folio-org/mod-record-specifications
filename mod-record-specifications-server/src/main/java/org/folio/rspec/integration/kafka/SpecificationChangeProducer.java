@@ -24,8 +24,6 @@ public class SpecificationChangeProducer extends EventProducer<UUID, Specificati
 
   @Override
   protected SpecificationUpdatedEvent buildEvent(UUID specificationId) {
-    return new SpecificationUpdatedEvent()
-      .specificationId(specificationId)
-      .tenantId(tenantId());
+    return new SpecificationUpdatedEvent(specificationId, tenantId());
   }
 }

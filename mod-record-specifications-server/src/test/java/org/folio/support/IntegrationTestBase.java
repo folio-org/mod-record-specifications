@@ -1,10 +1,8 @@
 package org.folio.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
-import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.folio.support.TestConstants.USER_ID;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -22,27 +20,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.header.internals.RecordHeader;
 import org.folio.rspec.RecordSpecificationsApp;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
-import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.spring.FolioExecutionContext;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.integration.XOkapiHeaders;
 import org.folio.spring.scope.FolioExecutionContextSetter;
-import org.folio.spring.testing.extension.EnableKafka;
 import org.folio.spring.testing.extension.EnablePostgres;
 import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
@@ -60,7 +51,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -69,7 +59,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @EnablePostgres
-@EnableKafka
 @SpringBootTest(classes = RecordSpecificationsApp.class)
 @ActiveProfiles("dev")
 @AutoConfigureMockMvc
@@ -79,9 +68,6 @@ public class IntegrationTestBase {
   protected static MockMvc mockMvc;
   protected static ObjectMapper objectMapper = new ObjectMapper();
   protected static EasyRandom easyRandom = new EasyRandom();
-
-  protected KafkaMessageListenerContainer<String, SpecificationUpdatedEvent> container;
-  protected BlockingQueue<ConsumerRecord<String, SpecificationUpdatedEvent>> consumerRecords;
 
   @Autowired
   protected FolioModuleMetadata moduleMetadata;
@@ -364,34 +350,6 @@ public class IntegrationTestBase {
   @NotNull
   private static ResultActions tryDoHttpMethod(MockHttpServletRequestBuilder builder, Object body) throws Exception {
     return tryDoHttpMethod(builder, body, defaultHeaders());
-  }
-
-  private static List<RecordHeader> defaultKafkaHeaders() {
-    return List.of(
-      new RecordHeader(XOkapiHeaders.TENANT, TENANT_ID.getBytes()),
-      new RecordHeader(XOkapiHeaders.USER_ID, USER_ID.getBytes()));
-  }
-
-  protected void assertSpecificationUpdatedEvents(int count) {
-    for (int i = 0; i < count; i++) {
-      assertSpecificationUpdatedEvent();
-    }
-  }
-
-  protected void assertSpecificationUpdatedEvent() {
-    var consumerRecord = getConsumedEvent();
-    assertThat(consumerRecord.headers().toArray()).containsAll(defaultKafkaHeaders());
-
-    var event = consumerRecord.value();
-    assertThat(event.getSpecificationId()).isEqualTo(BIBLIOGRAPHIC_SPECIFICATION_ID);
-    assertThat(event.getTenantId()).isEqualTo(TENANT_ID);
-  }
-
-  @SneakyThrows
-  protected ConsumerRecord<String, SpecificationUpdatedEvent> getConsumedEvent() {
-    var consumerRecord = consumerRecords.poll(5, TimeUnit.SECONDS);
-    assertThat(consumerRecord).withFailMessage("Specification update event wasn't received").isNotNull();
-    return consumerRecord;
   }
 
   @TestConfiguration
