@@ -24,12 +24,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @IntegrationTest
@@ -49,18 +51,27 @@ class RecordSpecificationsAppIT {
       .withDatabaseName("postgres");
 
   @Container
+  private static final KafkaContainer KAFKA =
+    new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.5.3"))
+      .withNetwork(NETWORK)
+      .withNetworkAliases("mykafka")
+      .withExposedPorts(9093, 29092);
+
+  @Container
   private static final GenericContainer<?> MOD_RSPEC =
     new GenericContainer<>(
       new ImageFromDockerfile("mod-record-specifications").withFileFromPath(".", Path.of("../")))
       .withNetwork(NETWORK)
       .withExposedPorts(8081)
       .withAccessToHost(true)
-      .dependsOn(POSTGRES)
+      .dependsOn(POSTGRES, KAFKA)
       .withEnv("DB_HOST", "mypostgres")
       .withEnv("DB_PORT", "5432")
       .withEnv("DB_USERNAME", "username")
       .withEnv("DB_PASSWORD", "password")
-      .withEnv("DB_DATABASE", "postgres");
+      .withEnv("DB_DATABASE", "postgres")
+      .withEnv("KAFKA_HOST", "mykafka")
+      .withEnv("KAFKA_PORT", "9092");
 
   private final ObjectMapper mapper = new ObjectMapper();
 

@@ -32,7 +32,7 @@ import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.IntegrationTestBase;
+import org.folio.support.SpecificationITBase;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @IntegrationTest
 @DatabaseCleanup(tables = {INDICATOR_TABLE_NAME, FIELD_TABLE_NAME}, tenants = TENANT_ID)
-class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
+class SpecificationStorageFieldsApiIT extends SpecificationITBase {
 
   @Autowired
   private FieldRepository fieldRepository;
@@ -62,6 +62,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("$.fields.[*].id", not(hasItem(createdFieldId))));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -89,6 +91,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
         hasEntry("deprecated", true),
         hasEntry("url", "http://www.viverra.com")
       ))));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -185,6 +189,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(fieldIndicatorsPath(fieldId))
       .andExpect(jsonPath("$.indicators.[*].id", hasItem(createdIndicatorId)));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -249,6 +255,8 @@ class SpecificationStorageFieldsApiIT extends IntegrationTestBase {
 
     doGet(fieldSubfieldsPath(fieldId))
       .andExpect(jsonPath("$.subfields.[*].id", hasItem(createdSubfieldId)));
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test

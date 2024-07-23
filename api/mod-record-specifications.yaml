@@ -32,7 +32,6 @@ tags:
   - name: specification-storage-indicators
     description: Provides API for managing specification field indicators.
 
-
 paths:
   /specification-storage/specifications:
     $ref: 'paths/specification-storage/specifications-path.yaml'

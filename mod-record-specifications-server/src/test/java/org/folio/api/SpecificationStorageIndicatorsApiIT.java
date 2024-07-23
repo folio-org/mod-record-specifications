@@ -38,7 +38,7 @@ import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.IntegrationTestBase;
+import org.folio.support.SpecificationITBase;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 @IntegrationTest
 @DatabaseCleanup(tables = {INDICATOR_CODE_TABLE_NAME, INDICATOR_TABLE_NAME, FIELD_TABLE_NAME}, tenants = TENANT_ID)
-class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
+class SpecificationStorageIndicatorsApiIT extends SpecificationITBase {
 
   @Autowired
   private FieldRepository fieldRepository;
@@ -110,6 +110,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
 
     doGet(indicatorCodesPath(indId))
       .andExpect(jsonPath("$.codes.[*].id", hasItem(createdCodeId)));
+
+    assertSpecificationUpdatedEvents(3);
   }
 
   @Test
@@ -145,6 +147,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
         hasEntry("order", 2),
         hasEntry("label", "Ind 2")
       ))));
+
+    assertSpecificationUpdatedEvents(3);
   }
 
   @Test
@@ -201,6 +205,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
 
     doGet(indicatorCodesPath(indId))
       .andExpect(jsonPath("$.codes.[*].id", not(hasItem(codeId))));
+
+    assertSpecificationUpdatedEvents(4);
   }
 
   @Test
@@ -247,6 +253,8 @@ class SpecificationStorageIndicatorsApiIT extends IntegrationTestBase {
         hasEntry("label", updatedCode.getLabel()),
         hasEntry("deprecated", updatedCode.getDeprecated())
       ))));
+
+    assertSpecificationUpdatedEvents(4);
   }
 
   @Test

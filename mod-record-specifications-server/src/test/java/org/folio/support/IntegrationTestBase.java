@@ -68,6 +68,7 @@ public class IntegrationTestBase {
   protected static MockMvc mockMvc;
   protected static ObjectMapper objectMapper = new ObjectMapper();
   protected static EasyRandom easyRandom = new EasyRandom();
+
   @Autowired
   protected FolioModuleMetadata moduleMetadata;
 

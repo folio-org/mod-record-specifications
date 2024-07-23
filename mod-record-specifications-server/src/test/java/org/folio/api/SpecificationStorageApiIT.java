@@ -32,8 +32,8 @@ import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.IntegrationTestBase;
 import org.folio.support.QueryParams;
+import org.folio.support.SpecificationITBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,7 +41,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
-class SpecificationStorageApiIT extends IntegrationTestBase {
+class SpecificationStorageApiIT extends SpecificationITBase {
 
   @BeforeAll
   static void beforeAll() {
@@ -195,6 +195,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
     toggleDto = toggleDto.enabled(stateBeforeToggle);
     doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
     assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID, stateBeforeToggle);
+
+    assertSpecificationUpdatedEvents(2);
   }
 
   @Test
@@ -267,6 +269,8 @@ class SpecificationStorageApiIT extends IntegrationTestBase {
 
     doGet(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("$.fields.[*].id", hasItem(createdFieldId)));
+
+    assertSpecificationUpdatedEvent();
   }
 
   @Test

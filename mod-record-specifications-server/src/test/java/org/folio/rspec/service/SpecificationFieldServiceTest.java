@@ -28,6 +28,7 @@ import org.folio.rspec.domain.dto.FieldIndicatorDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
@@ -38,6 +39,7 @@ import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException.ModificationType;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldMapper;
 import org.folio.rspec.service.validation.scope.ScopeValidator;
 import org.folio.spring.testing.type.UnitTest;
@@ -71,6 +73,9 @@ class SpecificationFieldServiceTest {
 
   @Mock
   private ScopeValidator<SpecificationFieldChangeDto, Field> validator;
+
+  @Mock
+  private EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   @BeforeEach
   void setUp() {
@@ -121,6 +126,7 @@ class SpecificationFieldServiceTest {
     service.deleteField(fieldId);
 
     verify(fieldRepository).delete(field);
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @EnumSource(value = Scope.class, names = "LOCAL", mode = EnumSource.Mode.EXCLUDE)
@@ -138,6 +144,7 @@ class SpecificationFieldServiceTest {
       .containsExactly(scope, ModificationType.DELETE);
 
     verifyNoMoreInteractions(fieldRepository);
+    verifyNoInteractions(eventProducer);
   }
 
   @MethodSource("updateFieldTestData")
@@ -154,6 +161,7 @@ class SpecificationFieldServiceTest {
 
     verify(validator).validateChange(changeDto, existed);
     verify(fieldRepository).save(existed);
+    verify(eventProducer).sendEvent(existed.getSpecification().getId());
   }
 
   @MethodSource("updateFieldTestData")
@@ -172,6 +180,7 @@ class SpecificationFieldServiceTest {
       .isEqualTo("fieldName");
 
     verifyNoMoreInteractions(fieldRepository);
+    verifyNoInteractions(eventProducer);
   }
 
   @Test
@@ -208,9 +217,7 @@ class SpecificationFieldServiceTest {
   @Test
   void testCreateLocalIndicator() {
     var fieldId = UUID.randomUUID();
-    var field = new Field();
-    field.setId(fieldId);
-    field.setScope(Scope.LOCAL);
+    var field = local().id(fieldId).buildEntity();
     var createDto = new FieldIndicatorChangeDto();
     var expected = new FieldIndicatorDto().fieldId(fieldId);
 
@@ -222,6 +229,8 @@ class SpecificationFieldServiceTest {
     var actual = service.createLocalIndicator(fieldId, createDto);
 
     assertThat(actual).isEqualTo(expected);
+
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @Test
@@ -232,6 +241,7 @@ class SpecificationFieldServiceTest {
     var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalIndicator(fieldId, createDto));
 
     verifyNoInteractions(indicatorService);
+    verifyNoInteractions(eventProducer);
 
     assertThat(actual.getId()).isEqualTo(fieldId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
@@ -269,8 +279,7 @@ class SpecificationFieldServiceTest {
   @Test
   void testCreateLocalSubfield() {
     var fieldId = UUID.randomUUID();
-    var field = new Field();
-    field.setId(fieldId);
+    var field = local().id(fieldId).buildEntity();
     var createDto = new SubfieldChangeDto();
     var expected = new SubfieldDto().fieldId(fieldId);
 
@@ -280,6 +289,8 @@ class SpecificationFieldServiceTest {
     var actual = service.createLocalSubfield(fieldId, createDto);
 
     assertThat(actual).isEqualTo(expected);
+
+    verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
   @Test
@@ -290,6 +301,7 @@ class SpecificationFieldServiceTest {
     var actual = assertThrows(ResourceNotFoundException.class, () -> service.createLocalSubfield(fieldId, createDto));
 
     verifyNoInteractions(indicatorService);
+    verifyNoInteractions(eventProducer);
 
     assertThat(actual.getId()).isEqualTo(fieldId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);

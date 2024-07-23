@@ -11,11 +11,13 @@ import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDtoCollection;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.repository.IndicatorRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
+import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldIndicatorMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class FieldIndicatorService {
   private final IndicatorRepository repository;
   private final FieldIndicatorMapper mapper;
   private final IndicatorCodeService codeService;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   public FieldIndicatorDtoCollection findFieldIndicators(UUID fieldId) {
     log.debug("findFieldIndicators::fieldId={}", fieldId);
@@ -58,7 +61,11 @@ public class FieldIndicatorService {
   public IndicatorCodeDto createLocalCode(UUID indicatorId, IndicatorCodeChangeDto createDto) {
     log.debug("createLocalCode::indicatorId={}, createDto={}", indicatorId, createDto);
     return doForIndicatorOrFail(indicatorId,
-      indicator -> codeService.createLocalCode(indicator, createDto)
+      indicator -> {
+        var dto = codeService.createLocalCode(indicator, createDto);
+        eventProducer.sendEvent(indicator.getField().getSpecification().getId());
+        return dto;
+      }
     );
   }
 
@@ -72,7 +79,9 @@ public class FieldIndicatorService {
     }
     mapper.update(indicatorEntity, changeDto);
 
-    return mapper.toDto(repository.save(indicatorEntity));
+    var dto = mapper.toDto(repository.save(indicatorEntity));
+    eventProducer.sendEvent(field.getSpecification().getId());
+    return dto;
   }
 
   private <T> T doForIndicatorOrFail(UUID indicatorId, Function<Indicator, T> action) {

@@ -379,6 +379,51 @@
         "name": "DB_LEAK_DETECTION_THRESHOLD",
         "value": "30000",
         "description": "This property controls the amount of time that a connection can be out of the pool before a message is logged indicating a possible connection leak (0 - disabled)"
+      },
+      {
+        "name": "KAFKA_HOST",
+        "value": "kafka",
+        "description": "Kafka broker hostname"
+      },
+      {
+        "name": "KAFKA_PORT",
+        "value": "9092",
+        "description": "Kafka broker port"
+      },
+      {
+        "name": "KAFKA_SECURITY_PROTOCOL",
+        "value": "PLAINTEXT",
+        "description": "Kafka security protocol used to communicate with brokers (SSL or PLAINTEXT)"
+      },
+      {
+        "name": "KAFKA_SSL_KEYSTORE_LOCATION",
+        "value": "",
+        "description": "The location of the Kafka key store file. This is optional for client and can be used for two-way authentication for client."
+      },
+      {
+        "name": "KAFKA_SSL_KEYSTORE_PASSWORD",
+        "value": "",
+        "description": "The store password for the Kafka key store file. This is optional for client and only needed if 'ssl.keystore.location' is configured."
+      },
+      {
+        "name": "KAFKA_SSL_TRUSTSTORE_LOCATION",
+        "value": "",
+        "description": "The location of the Kafka trust store file."
+      },
+      {
+        "name": "KAFKA_SSL_TRUSTSTORE_PASSWORD",
+        "value": "",
+        "description": "The password for the Kafka trust store file. If a password is not set, trust store file configured will still be used, but integrity checking is disabled."
+      },
+      {
+        "name": "KAFKA_SPECIFICATION_UPDATE_TOPIC_PARTITIONS",
+        "value": "1",
+        "description": "Amount of partitions for `specification-storage.specification.updated` topic."
+      },
+      {
+        "name": "KAFKA_SPECIFICATION_UPDATE_TOPIC_REPLICATION_FACTOR",
+        "value": "",
+        "description": "Replication factor for `specification-storage.specification.updated` topic."
       }
     ]
   }
