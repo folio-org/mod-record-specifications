@@ -158,6 +158,24 @@
           "permissionsRequired": [
             "specification-storage.indicator-codes.item.delete"
           ]
+        },
+        {
+          "methods": [
+            "PUT"
+          ],
+          "pathPattern": "/specification-storage/subfields/{subfieldId}",
+          "permissionsRequired": [
+            "specification-storage.subfields.item.put"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/specification-storage/subfields/{subfieldId}",
+          "permissionsRequired": [
+            "specification-storage.subfields.item.delete"
+          ]
         }
       ]
     },
@@ -269,6 +287,16 @@
       "description": "Delete indicator code definition"
     },
     {
+      "permissionName": "specification-storage.subfields.item.put",
+      "displayName": "Specification Storage - Update indicator code definition",
+      "description": "Update indicator code definition"
+    },
+    {
+      "permissionName": "specification-storage.subfields.item.delete",
+      "displayName": "Specification Storage - Delete indicator code definition",
+      "description": "Delete indicator code definition"
+    },
+    {
       "permissionName": "specification-storage.all",
       "displayName": "Specification Storage - All permissions",
       "description": "Entire set of permissions needed to manage specifications",
@@ -286,7 +314,9 @@
         "specification-storage.field.indicators.item.post",
         "specification-storage.indicators.item.put",
         "specification-storage.indicator.indicator-codes.collection.get",
-        "specification-storage.indicator.indicator-codes.item.post"
+        "specification-storage.indicator.indicator-codes.item.post",
+        "specification-storage.subfields.item.put",
+        "specification-storage.subfields.item.delete"
       ]
     }
   ],

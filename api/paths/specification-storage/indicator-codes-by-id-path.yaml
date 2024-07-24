@@ -23,8 +23,8 @@ put:
           schema:
             $ref: '../../schemas/indicatorCodeDto.yaml'
           examples:
-            RequestExample:
-              $ref: '../../examples/request/indicatorCodeChangeDto.yaml'
+            ResponseExample:
+              $ref: '../../examples/response/indicatorCodeDto.yaml'
     '400':
       $ref: '../../responses/badRequestResponse.yaml'
     '500':

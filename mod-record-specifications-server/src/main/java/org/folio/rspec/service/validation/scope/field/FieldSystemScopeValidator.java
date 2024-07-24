@@ -6,9 +6,9 @@ import java.util.function.BiPredicate;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.entity.Field;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class FieldSystemScopeValidator extends FieldStandardScopeValidator {
 
   @Override
