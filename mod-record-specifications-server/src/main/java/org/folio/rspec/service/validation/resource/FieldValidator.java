@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class FieldValidator {
 
-  private static final String ERROR_MESSAGE = "Cannot define %s for control numbers";
+  private static final String ERROR_MESSAGE = "Cannot define %s for control numbers.";
   private static final String CONTROL_FIELD_TAG_START = "00";
 
   public void validateFieldResourceCreate(Field field, String resource) {
     if (field.getTag().startsWith(CONTROL_FIELD_TAG_START)) {
-      throw new ResourceValidationFailedException(ERROR_MESSAGE.formatted(resource));
+      throw new ResourceValidationFailedException(resource, ERROR_MESSAGE.formatted(resource));
     }
   }
 }
