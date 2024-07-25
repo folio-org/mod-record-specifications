@@ -12,17 +12,18 @@ import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
 
-class MarcFieldNonRepeatableFieldRuleValidator implements SpecificationRuleValidator<MarcField, SpecificationFieldDto> {
+class MarcFieldNonRepeatable1xxFieldRuleValidator
+  implements SpecificationRuleValidator<MarcField, SpecificationFieldDto> {
 
   private final TranslationProvider translationProvider;
 
-  MarcFieldNonRepeatableFieldRuleValidator(TranslationProvider translationProvider) {
+  MarcFieldNonRepeatable1xxFieldRuleValidator(TranslationProvider translationProvider) {
     this.translationProvider = translationProvider;
   }
 
   @Override
   public List<ValidationError> validate(MarcField marcField, SpecificationFieldDto field) {
-    if (!TagsMatcher.matches1xx(marcField.tag())
+    if (TagsMatcher.matches1xx(marcField.tag())
       && Boolean.FALSE.equals(field.getRepeatable()) && marcField.reference().getTagIndex() > 0) {
       return List.of(buildError(marcField, field));
     }
@@ -31,7 +32,7 @@ class MarcFieldNonRepeatableFieldRuleValidator implements SpecificationRuleValid
 
   @Override
   public SpecificationRuleCode supportedRule() {
-    return MarcRuleCode.NON_REPEATABLE_FIELD;
+    return MarcRuleCode.NON_REPEATABLE_1XX_FIELD;
   }
 
   @Override

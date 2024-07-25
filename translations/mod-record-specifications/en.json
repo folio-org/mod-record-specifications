@@ -23,6 +23,7 @@
   "unexpected": "Unexpected error: {errorMessage}.",
 
   "validation.missingField": "Field {tag} is required.",
+  "validation.nonRepeatable1XXField": "Field 1XX is non-repeatable.",
   "validation.nonRepeatableField": "Field is non-repeatable.",
   "validation.undefinedField": "Field is undefined."
 
