@@ -14,6 +14,8 @@ import org.folio.rspec.validation.validator.marc.model.Reference;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,7 +33,7 @@ class MarcFieldNonRepeatable1XxFieldRuleValidatorTest {
   @Test
   void validate_whenRepeated1xxField_shouldReturnValidationError() {
     var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
-    var marcField = new MarcDataField(Reference.forTag("110", 1), null, null);
+    var marcField = new MarcDataField(Reference.forTag("100", 1), null, null);
 
     when(translationProvider.format(validator.supportedRule().getCode())).thenReturn("message");
 
@@ -44,30 +46,15 @@ class MarcFieldNonRepeatable1XxFieldRuleValidatorTest {
     assertEquals("message", errors.get(0).getMessage());
   }
 
-  @Test
-  void validate_whenSingleOccurrence1xxField_shouldReturnEmptyList() {
+  @ParameterizedTest
+  @CsvSource({
+    "110, 0",
+    "650, 0",
+    "650, 1"
+  })
+  void validate_whenValid1xxField_shouldReturnEmptyList(String tag, int tagIndex) {
     var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
-    var marcField = new MarcDataField(Reference.forTag("110", 0), null, null);
-
-    List<ValidationError> errors = validator.validate(marcField, fieldDefinition);
-
-    assertTrue(errors.isEmpty());
-  }
-
-  @Test
-  void validate_whenRepeatedNot1xxField_shouldReturnEmptyList() {
-    var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
-    var marcField = new MarcDataField(Reference.forTag("650", 1), null, null);
-
-    List<ValidationError> errors = validator.validate(marcField, fieldDefinition);
-
-    assertTrue(errors.isEmpty());
-  }
-
-  @Test
-  void validate_whenSingleOccurrenceNot1xxField_shouldReturnEmptyList() {
-    var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
-    var marcField = new MarcDataField(Reference.forTag("650", 0), null, null);
+    var marcField = new MarcDataField(Reference.forTag(tag, tagIndex), null, null);
 
     List<ValidationError> errors = validator.validate(marcField, fieldDefinition);
 
