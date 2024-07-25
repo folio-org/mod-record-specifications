@@ -142,10 +142,10 @@
         "ind2": "/",
         "subfields": [
           {
-            "a": "Mozart, Wolfgang Amadeus,(repeat)"
+            "a": "(repeat)Mozart, Wolfgang Amadeus,"
           },
           {
-            "d": "1756-1791.(repeat)"
+            "d": "1756-1791."
           },
           {
             "0": "12345"
@@ -162,10 +162,10 @@
         "ind2": "/",
         "subfields": [
           {
-            "a": "Mozart, Wolfgang Amadeus, 3"
+            "a": "(another)Mozart, Wolfgang Amadeus,"
           },
           {
-            "d": "1756-1791. 3"
+            "d": "1756-1791."
           },
           {
             "0": "12345"
