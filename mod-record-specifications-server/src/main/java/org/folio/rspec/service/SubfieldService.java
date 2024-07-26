@@ -33,7 +33,7 @@ public class SubfieldService {
   private final SubfieldMapper mapper;
   private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
-  private final Map<Scope, ScopeValidator<SubfieldChangeDto, Subfield>> fieldValidators = new EnumMap<>(Scope.class);
+  private final Map<Scope, ScopeValidator<SubfieldChangeDto, Subfield>> validators = new EnumMap<>(Scope.class);
 
   public SubfieldDtoCollection findFieldSubfields(UUID fieldId) {
     log.debug("findFieldSubfields::fieldId={}", fieldId);
@@ -57,7 +57,7 @@ public class SubfieldService {
     log.info("updateSubfield::subfieldId={}, dto={}", id, changeDto);
     var subfieldEntity = repository.findById(id).orElseThrow(() -> ResourceNotFoundException.forSubfield(id));
     var scope = subfieldEntity.getScope();
-    Optional.ofNullable(fieldValidators.get(scope))
+    Optional.ofNullable(validators.get(scope))
       .ifPresent(validator -> validator.validateChange(changeDto, subfieldEntity));
     mapper.update(subfieldEntity, changeDto);
 
@@ -79,8 +79,8 @@ public class SubfieldService {
   }
 
   @Autowired
-  public void setFieldValidators(List<ScopeValidator<SubfieldChangeDto, Subfield>> fieldValidators) {
-    fieldValidators.forEach(validator -> this.fieldValidators.put(validator.scope(), validator));
+  public void setValidators(List<ScopeValidator<SubfieldChangeDto, Subfield>> validators) {
+    validators.forEach(validator -> this.validators.put(validator.scope(), validator));
   }
 
 }

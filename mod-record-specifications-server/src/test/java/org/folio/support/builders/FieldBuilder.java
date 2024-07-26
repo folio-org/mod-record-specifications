@@ -105,6 +105,10 @@ public class FieldBuilder {
     return this;
   }
 
+  public static FieldBuilder basic() {
+    return new FieldBuilder();
+  }
+
   public static FieldBuilder local() {
     var fieldBuilder = new FieldBuilder();
     fieldBuilder.scope = Scope.LOCAL;

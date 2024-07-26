@@ -128,7 +128,7 @@ class SubfieldServiceTest {
     subfield.setScope(Scope.SYSTEM);
     subfield.setCode("a");
     changeDto.setCode("b");
-    subfieldService.setFieldValidators(List.of(new SubfieldSystemScopeValidator()));
+    subfieldService.setValidators(List.of(new SubfieldSystemScopeValidator()));
 
     assertThrows(ScopeModificationNotAllowedException.class,
       () -> subfieldService.updateSubfield(subfieldId, changeDto));

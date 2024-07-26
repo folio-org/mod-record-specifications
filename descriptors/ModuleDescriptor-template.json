@@ -288,13 +288,13 @@
     },
     {
       "permissionName": "specification-storage.subfields.item.put",
-      "displayName": "Specification Storage - Update indicator code definition",
-      "description": "Update indicator code definition"
+      "displayName": "Specification Storage - Update subfield definition",
+      "description": "Update subfield definition"
     },
     {
       "permissionName": "specification-storage.subfields.item.delete",
-      "displayName": "Specification Storage - Delete indicator code definition",
-      "description": "Delete indicator code definition"
+      "displayName": "Specification Storage - Delete subfield definition",
+      "description": "Delete subfield definition"
     },
     {
       "permissionName": "specification-storage.all",
