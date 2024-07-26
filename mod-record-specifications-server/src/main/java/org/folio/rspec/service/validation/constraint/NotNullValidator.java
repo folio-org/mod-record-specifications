@@ -1,4 +1,4 @@
-package org.folio.rspec.service.validation;
+package org.folio.rspec.service.validation.constraint;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package org.folio.rspec.service.validation;
+package org.folio.rspec.service.validation.constraint;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
