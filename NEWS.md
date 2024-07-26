@@ -17,6 +17,7 @@
 * implement PUT/DELETE endpoints for indicators, indicator codes ([MRSPECS-25](https://folio-org.atlassian.net//browse/MRSPECS-25))
 * implement PUT/DELETE endpoints for subfields ([MRSPECS-24](https://folio-org.atlassian.net//browse/MRSPECS-24))
 * Send Kafka event in case of specification change ([MRSPECS-40](https://folio-org.atlassian.net//browse/MRSPECS-40))
+* Restrict creating indicators/subfields for control fields ([MRSPECS-39](https://folio-org.atlassian.net//browse/MRSPECS-39))
 
 #### Validator
 * implement validation by MARC specification ([MRSPECS-38](https://folio-org.atlassian.net//browse/MRSPECS-38))

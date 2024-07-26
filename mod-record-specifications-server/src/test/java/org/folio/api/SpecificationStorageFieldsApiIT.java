@@ -29,6 +29,7 @@ import java.util.UUID;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
+import org.folio.rspec.exception.ResourceValidationFailedException;
 import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
@@ -208,6 +209,18 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
   }
 
   @Test
+  void createFieldLocalIndicator_shouldReturn400WhenControlField() throws Exception {
+    var fieldId = createLocalField("005");
+    var dto = localTestIndicator(1);
+
+    tryPost(fieldIndicatorsPath(fieldId), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(ResourceValidationFailedException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.CONTROL_FIELD_RESOURCE_NOT_ALLOWED.getType())))
+      .andExpect(errorMessageMatch(is("Cannot define indicator for control numbers.")));
+  }
+
+  @Test
   void getFieldSubfields_shouldReturn200AndAllSubfieldsForField() throws Exception {
     var fieldId = createLocalField("103");
     var sub1 = localTestSubfield("a", "Subfield a");
@@ -271,6 +284,18 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
       .andExpect(exceptionMatch(DataIntegrityViolationException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.DUPLICATE_SUBFIELD.getType())))
       .andExpect(errorMessageMatch(is("The 'code' must be unique.")));
+  }
+
+  @Test
+  void createFieldLocalSubfield_shouldReturn400_whenControlField() throws Exception {
+    var fieldId = createLocalField("004");
+    var dto = localTestSubfield("a", "Subfield a");
+
+    tryPost(fieldSubfieldsPath(fieldId), dto)
+      .andExpect(status().isBadRequest())
+      .andExpect(exceptionMatch(ResourceValidationFailedException.class))
+      .andExpect(errorTypeMatch(is(ErrorCode.CONTROL_FIELD_RESOURCE_NOT_ALLOWED.getType())))
+      .andExpect(errorMessageMatch(is("Cannot define subfield for control numbers.")));
   }
 
   private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {

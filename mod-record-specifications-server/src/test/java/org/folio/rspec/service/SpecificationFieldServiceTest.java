@@ -33,14 +33,18 @@ import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.Specification;
+import org.folio.rspec.domain.entity.Subfield;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceNotFoundException.Resource;
+import org.folio.rspec.exception.ResourceValidationFailedException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException.ModificationType;
 import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldMapper;
+import org.folio.rspec.service.validation.resource.FieldValidator;
 import org.folio.rspec.service.validation.scope.ScopeValidator;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +74,8 @@ class SpecificationFieldServiceTest {
   private FieldIndicatorService indicatorService;
   @Mock
   private SubfieldService subfieldService;
+  @Mock
+  private FieldValidator fieldValidator;
 
   @Mock
   private ScopeValidator<SpecificationFieldChangeDto, Field> validator;
@@ -230,6 +236,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual).isEqualTo(expected);
 
+    verify(fieldValidator).validateFieldResourceCreate(field, Indicator.INDICATOR_TABLE_NAME);
     verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
@@ -245,6 +252,22 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual.getId()).isEqualTo(fieldId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testCreateLocalIndicator_validationFailed() {
+    var fieldId = UUID.randomUUID();
+    var field = local().id(fieldId).buildEntity();
+    var createDto = new FieldIndicatorChangeDto();
+
+    when(fieldRepository.findById(fieldId))
+      .thenReturn(Optional.of(field));
+    doThrow(ResourceValidationFailedException.class)
+      .when(fieldValidator).validateFieldResourceCreate(field, Indicator.INDICATOR_TABLE_NAME);
+
+    assertThrows(ResourceValidationFailedException.class, () -> service.createLocalIndicator(fieldId, createDto));
+
+    verifyNoInteractions(indicatorService);
   }
 
   @Test
@@ -290,6 +313,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual).isEqualTo(expected);
 
+    verify(fieldValidator).validateFieldResourceCreate(field, Subfield.SUBFIELD_TABLE_NAME);
     verify(eventProducer).sendEvent(field.getSpecification().getId());
   }
 
@@ -305,6 +329,22 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual.getId()).isEqualTo(fieldId);
     assertThat(actual.getResource()).isEqualTo(Resource.FIELD_DEFINITION);
+  }
+
+  @Test
+  void testCreateLocalSubfield_validationFailed() {
+    var fieldId = UUID.randomUUID();
+    var field = local().id(fieldId).buildEntity();
+    var createDto = new SubfieldChangeDto();
+
+    when(fieldRepository.findById(fieldId))
+      .thenReturn(Optional.of(field));
+    doThrow(ResourceValidationFailedException.class)
+      .when(fieldValidator).validateFieldResourceCreate(field, Subfield.SUBFIELD_TABLE_NAME);
+
+    assertThrows(ResourceValidationFailedException.class, () -> service.createLocalSubfield(fieldId, createDto));
+
+    verifyNoInteractions(indicatorService);
   }
 
   private static Stream<Arguments> updateFieldTestData() {
