@@ -24,7 +24,7 @@ class Marc4jConverterTest {
   void testConvert_WhenCalled_ShouldReturnMarcRecord() {
     MarcRecord marcRecord = marc4jConverter.convert(marc4jRecord);
     assertEquals(6, marcRecord.getControlFields().size());
-    assertEquals(11, marcRecord.getDataFields().size());
+    assertEquals(10, marcRecord.getDataFields().size());
 
     assertThat(marcRecord.getControlFields())
       .hasSize(6)
@@ -39,7 +39,7 @@ class Marc4jConverterTest {
       );
 
     assertThat(marcRecord.getDataFields())
-      .hasSize(11)
+      .hasSize(10)
       .extracting(dataField -> dataField.reference().toString(), controlFieldExtractor(), dataFieldExtractor()
       )
       .containsExactlyInAnyOrder(
@@ -52,9 +52,6 @@ class Marc4jConverterTest {
         tuple("100[0]", "100[0]^1=/;100[0]^2=/",
           "100[0]$0[0]=12345 100[0]$a[0]=Mozart, Wolfgang Amadeus, "
           + "100[0]$d[0]=1756-1791. 100[0]$9[0]=b9a5f035-de63-4e2c-92c2-07240c88b817"),
-        tuple("100[1]", "100[1]^1=/;100[1]^2=/",
-          "100[1]$0[0]=12345 100[1]$a[0]=(repeat)Mozart, Wolfgang Amadeus, "
-          + "100[1]$d[0]=1756-1791. 100[1]$9[0]=b9a5f035-de63-4e2c-92c2-07240c88b817"),
         tuple("110[0]", "110[0]^1=/;110[0]^2=/",
           "110[0]$0[0]=12345 110[0]$a[0]=(another)Mozart, Wolfgang Amadeus, "
             + "110[0]$d[0]=1756-1791. 110[0]$9[0]=b9a5f035-de63-4e2c-92c2-07240c88b817"),

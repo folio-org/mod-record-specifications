@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-class MarcFieldNonRepeatable1XxFieldRuleValidatorTest {
+class MarcFieldNonRepeatable1xxFieldRuleValidatorTest {
 
   @Mock
   private TranslationProvider translationProvider;
@@ -53,7 +53,7 @@ class MarcFieldNonRepeatable1XxFieldRuleValidatorTest {
     assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
     assertEquals("message", errors.get(0).getMessage());
     assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), errors.get(0).getRuleCode());
-    assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), errors.get(1).getMessage());
+    assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), errors.get(1).getRuleCode());
   }
 
   @ParameterizedTest
