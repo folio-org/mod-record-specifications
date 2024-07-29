@@ -1,0 +1,27 @@
+get:
+  summary: Get Specification by ID
+  description: Get a specification by id.
+  operationId: getSpecification
+  tags:
+    - specification-storage
+  parameters:
+    - $ref: '../../parameters/specificationId-param.yaml'
+    - in: query
+      name: include
+      description: Limit the number of elements returned in the response.
+      schema:
+        $ref: '../../schemas/includeParam.yaml'
+  responses:
+    '200':
+      description: Specification object
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/specificationDto.yaml'
+          examples:
+            RequestExample:
+              $ref: '../../examples/response/specificationDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

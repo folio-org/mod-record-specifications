@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
+import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -54,6 +55,12 @@ public class SpecificationStorageController implements SpecificationStorageApi {
                                                                       Integer offset) {
     var specifications = specificationService.findSpecifications(family, profile, include, limit, offset);
     return ResponseEntity.ok(specifications);
+  }
+
+  @Override
+  public ResponseEntity<SpecificationDto> getSpecification(UUID specificationId, IncludeParam include) {
+    var specification = specificationService.getSpecificationById(specificationId, include);
+    return ResponseEntity.ok(specification);
   }
 
   @Override
