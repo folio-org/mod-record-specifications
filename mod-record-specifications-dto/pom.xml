@@ -75,6 +75,7 @@
                 <library>spring-boot</library>
                 <useSpringBoot3>true</useSpringBoot3>
                 <sourceFolder>model</sourceFolder>
+                <additionalModelTypeAnnotations>@lombok.ToString</additionalModelTypeAnnotations>
               </configOptions>
             </configuration>
           </execution>
