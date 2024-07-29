@@ -20,6 +20,7 @@ public class ApiEndpoints {
   public static final String INDICATOR_PATH = SPECIFICATION_STORAGE_PATH + "/indicators/%s";
   public static final String INDICATOR_CODES_PATH = INDICATOR_PATH + "/indicator-codes";
   public static final String CODE_PATH = SPECIFICATION_STORAGE_PATH + "/indicator-codes/%s";
+  public static final String SUBFIELD_PATH = SPECIFICATION_STORAGE_PATH  + "/subfields/%s";
 
   public static String specificationsPath() {
     return SPECIFICATIONS_PATH;
@@ -115,6 +116,14 @@ public class ApiEndpoints {
 
   public static String indicatorCodesPath(UUID indicatorId) {
     return indicatorCodesPath(indicatorId.toString());
+  }
+
+  public static String subfieldPath(String subfieldId) {
+    return SUBFIELD_PATH.formatted(subfieldId);
+  }
+
+  public static String subfieldPath(UUID subfieldId) {
+    return subfieldPath(subfieldId.toString());
   }
 
   private static String addQueryParams(String path, QueryParams queryParams) {

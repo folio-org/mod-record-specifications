@@ -31,6 +31,8 @@ tags:
     description: Provides API for managing specification fields.
   - name: specification-storage-indicators
     description: Provides API for managing specification field indicators.
+  - name: specification-storage-subfields
+    description: Provides API for managing specification field subfields.
 
 paths:
   /specification-storage/specifications:
@@ -57,3 +59,5 @@ paths:
     $ref: 'paths/specification-storage/indicator-codes-path.yaml'
   /specification-storage/indicator-codes/{indicatorCodeId}:
     $ref: 'paths/specification-storage/indicator-codes-by-id-path.yaml'
+  /specification-storage/subfields/{subfieldId}:
+    $ref: 'paths/specification-storage/subfields-by-id-path.yaml'

@@ -34,7 +34,7 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
   kafka:
-    bootstrap-servers: ${KAFKA_HOST:kafka}:${KAFKA_PORT:9092}
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:29092}
     security:
       protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
     ssl:

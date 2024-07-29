@@ -2,8 +2,10 @@ package org.folio.rspec.exception;
 
 import static org.folio.rspec.exception.ResourceNotFoundException.forField;
 import static org.folio.rspec.exception.ResourceNotFoundException.forIndicator;
+import static org.folio.rspec.exception.ResourceNotFoundException.forIndicatorCode;
 import static org.folio.rspec.exception.ResourceNotFoundException.forSpecification;
 import static org.folio.rspec.exception.ResourceNotFoundException.forSpecificationRule;
+import static org.folio.rspec.exception.ResourceNotFoundException.forSubfield;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -34,7 +36,9 @@ class ResourceNotFoundExceptionTest {
       arguments((Supplier<ResourceNotFoundException>) () -> forSpecificationRule(1L), Resource.SPECIFICATION_RULE),
       arguments((Supplier<ResourceNotFoundException>) () -> forSpecification(1L), Resource.SPECIFICATION),
       arguments((Supplier<ResourceNotFoundException>) () -> forField(1L), Resource.FIELD_DEFINITION),
-      arguments((Supplier<ResourceNotFoundException>) () -> forIndicator(1L), Resource.FIELD_INDICATOR)
+      arguments((Supplier<ResourceNotFoundException>) () -> forIndicator(1L), Resource.FIELD_INDICATOR),
+      arguments((Supplier<ResourceNotFoundException>) () -> forIndicatorCode(1L), Resource.INDICATOR_CODE),
+      arguments((Supplier<ResourceNotFoundException>) () -> forSubfield(1L), Resource.SUBFIELD)
     );
   }
 }

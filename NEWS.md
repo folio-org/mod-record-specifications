@@ -15,6 +15,7 @@
 * add limitations for modifying and deleting system/standard field definition ([MRSPECS-11](https://folio-org.atlassian.net//browse/MRSPECS-11))
 * add include parameter for GET specifications endpoint ([MRSPECS-28](https://folio-org.atlassian.net//browse/MRSPECS-28))
 * implement PUT/DELETE endpoints for indicators, indicator codes ([MRSPECS-25](https://folio-org.atlassian.net//browse/MRSPECS-25))
+* implement PUT/DELETE endpoints for subfields ([MRSPECS-24](https://folio-org.atlassian.net//browse/MRSPECS-24))
 * Send Kafka event in case of specification change ([MRSPECS-40](https://folio-org.atlassian.net//browse/MRSPECS-40))
 * Restrict creating indicators/subfields for control fields ([MRSPECS-39](https://folio-org.atlassian.net//browse/MRSPECS-39))
 * Implement GET specification by id endpoint ([MRSPECS-50](https://folio-org.atlassian.net//browse/MRSPECS-50))
