@@ -59,7 +59,7 @@ public class SpecificationStorageController implements SpecificationStorageApi {
 
   @Override
   public ResponseEntity<SpecificationDto> getSpecification(UUID specificationId, IncludeParam include) {
-    var specification = specificationService.findSpecificationById(specificationId, include);
+    var specification = specificationService.getSpecificationById(specificationId, include);
     return ResponseEntity.ok(specification);
   }
 

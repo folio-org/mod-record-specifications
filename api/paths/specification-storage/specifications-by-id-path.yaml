@@ -1,6 +1,6 @@
 get:
   summary: Get Specification by ID
-  description: Get a specifications by id.
+  description: Get a specification by id.
   operationId: getSpecification
   tags:
     - specification-storage

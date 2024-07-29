@@ -87,36 +87,36 @@ class SpecificationServiceTest {
   }
 
   @Test
-  void testFindSpecificationById(@Random UUID specificationId, @Random SpecificationDto specificationDto) {
+  void testGetSpecificationById(@Random UUID specificationId, @Random SpecificationDto specificationDto) {
     var specification = new Specification();
 
     when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
     when(mapper.toDto(any(Specification.class))).thenReturn(specificationDto);
 
-    var actual = service.findSpecificationById(specificationId, IncludeParam.NONE);
+    var actual = service.getSpecificationById(specificationId, IncludeParam.NONE);
 
     assertThat(actual).isEqualTo(specificationDto);
     verify(mapper).toDto(any(Specification.class));
   }
 
   @Test
-  void testFindSpecificationById_withIncludeAll(@Random UUID specificationId,
+  void testGetSpecificationById_withIncludeAll(@Random UUID specificationId,
                                                 @Random SpecificationDto specificationDto) {
     var specification = new Specification();
 
     when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
     when(mapper.toFullDto(any(Specification.class))).thenReturn(specificationDto);
 
-    var actual = service.findSpecificationById(specificationId, IncludeParam.ALL);
+    var actual = service.getSpecificationById(specificationId, IncludeParam.ALL);
 
     assertThat(actual).isEqualTo(specificationDto);
     verify(mapper).toFullDto(any(Specification.class));
   }
 
   @Test
-  void testFindSpecificationById_notFound(@Random UUID specificationId) {
+  void testGetSpecificationById_notFound(@Random UUID specificationId) {
     var exception = Assertions.assertThrows(ResourceNotFoundException.class,
-      () -> service.findSpecificationById(specificationId, IncludeParam.ALL));
+      () -> service.getSpecificationById(specificationId, IncludeParam.ALL));
 
     assertThat(exception.getId()).isEqualTo(specificationId);
     assertThat(exception.getResource()).isEqualTo(ResourceNotFoundException.Resource.SPECIFICATION);

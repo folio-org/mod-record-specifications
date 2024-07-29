@@ -62,7 +62,7 @@ public class SpecificationService {
   }
 
   @Transactional
-  public SpecificationDto findSpecificationById(UUID specificationId, IncludeParam include) {
+  public SpecificationDto getSpecificationById(UUID specificationId, IncludeParam include) {
     log.debug("findSpecificationById::id={}, include={}", specificationId, include);
 
     return doForSpecificationOrFail(specificationId, specification -> switch (include) {

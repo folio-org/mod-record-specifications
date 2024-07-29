@@ -148,7 +148,7 @@ class SpecificationStorageControllerTest {
   @Test
   void getSpecification_returnSpecification(@Random UUID specificationId,
                                             @Random SpecificationDto specificationDto) throws Exception {
-    when(specificationService.findSpecificationById(specificationId, IncludeParam.NONE))
+    when(specificationService.getSpecificationById(specificationId, IncludeParam.NONE))
       .thenReturn(specificationDto);
 
     var requestBuilder = get(specificationPath(specificationId))
@@ -161,7 +161,7 @@ class SpecificationStorageControllerTest {
       .andExpect(jsonPath("$.family", is(specificationDto.getFamily().getValue())))
       .andExpect(jsonPath("$.profile", is(specificationDto.getProfile().getValue())));
 
-    verify(specificationService).findSpecificationById(specificationId, IncludeParam.NONE);
+    verify(specificationService).getSpecificationById(specificationId, IncludeParam.NONE);
   }
 
   @Test
