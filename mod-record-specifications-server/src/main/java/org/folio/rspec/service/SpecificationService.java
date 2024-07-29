@@ -49,14 +49,7 @@ public class SpecificationService {
     var specificationCollection = new SpecificationDtoCollection();
 
     var page = specificationRepository.findByFamilyAndProfile(family, profile, OffsetRequest.of(offset, limit))
-      .map(specification -> switch (include) {
-        case ALL -> specificationMapper.toFullDto(specification);
-        case NONE -> specificationMapper.toDto(specification);
-        case FIELDS_REQUIRED -> {
-          var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
-          yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
-        }
-      });
+      .map(convertSpecification(include));
 
     return specificationCollection.specifications(page.toList()).totalRecords(toIntExact(page.getTotalElements()));
   }
@@ -65,14 +58,7 @@ public class SpecificationService {
   public SpecificationDto getSpecificationById(UUID specificationId, IncludeParam include) {
     log.debug("findSpecificationById::id={}, include={}", specificationId, include);
 
-    return doForSpecificationOrFail(specificationId, specification -> switch (include) {
-      case ALL -> specificationMapper.toFullDto(specification);
-      case NONE -> specificationMapper.toDto(specification);
-      case FIELDS_REQUIRED -> {
-        var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
-        yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
-      }
-    });
+    return doForSpecificationOrFail(specificationId, convertSpecification(include));
   }
 
   @Transactional
@@ -123,5 +109,16 @@ public class SpecificationService {
     return specificationRepository.findById(specificationId)
       .map(action)
       .orElseThrow(() -> ResourceNotFoundException.forSpecification(specificationId));
+  }
+
+  private Function<Specification, SpecificationDto> convertSpecification(IncludeParam include) {
+    return specification -> switch (include) {
+      case ALL -> specificationMapper.toFullDto(specification);
+      case NONE -> specificationMapper.toDto(specification);
+      case FIELDS_REQUIRED -> {
+        var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
+        yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
+      }
+    };
   }
 }
