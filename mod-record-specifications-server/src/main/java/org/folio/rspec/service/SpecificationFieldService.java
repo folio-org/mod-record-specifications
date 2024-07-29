@@ -21,12 +21,15 @@ import org.folio.rspec.domain.dto.SubfieldChangeDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.Indicator;
 import org.folio.rspec.domain.entity.Specification;
+import org.folio.rspec.domain.entity.Subfield;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
 import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.FieldMapper;
+import org.folio.rspec.service.validation.resource.FieldValidator;
 import org.folio.rspec.service.validation.scope.ScopeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,7 @@ public class SpecificationFieldService {
   private final FieldMapper fieldMapper;
   private final FieldIndicatorService indicatorService;
   private final SubfieldService subfieldService;
+  private final FieldValidator fieldValidator;
   private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
   private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new EnumMap<>(Scope.class);
@@ -113,6 +117,7 @@ public class SpecificationFieldService {
     log.debug("createLocalIndicator::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
       field -> {
+        fieldValidator.validateFieldResourceCreate(field, Indicator.INDICATOR_TABLE_NAME);
         var indicator = indicatorService.createLocalIndicator(field, createDto);
         eventProducer.sendEvent(field.getSpecification().getId());
         return indicator;
@@ -131,6 +136,7 @@ public class SpecificationFieldService {
     log.debug("createLocalSubfield::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
       field -> {
+        fieldValidator.validateFieldResourceCreate(field, Subfield.SUBFIELD_TABLE_NAME);
         var dto = subfieldService.createLocalSubfield(field, createDto);
         eventProducer.sendEvent(field.getSpecification().getId());
         return dto;

@@ -1,0 +1,46 @@
+put:
+  summary: Update Subfield
+  description: Update an subfield definition.
+  operationId: updateSubfield
+  parameters:
+    - $ref: '../../parameters/subfieldId-param.yaml'
+  tags:
+    - specification-storage-subfields
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/subfieldChangeDto.yaml'
+        examples:
+          RequestExample:
+            $ref: '../../examples/request/subfieldChangeDto.yaml'
+  responses:
+    '202':
+      description: Indicator code definition was updated
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/subfieldDto.yaml'
+          examples:
+            ResponseExample:
+              $ref: '../../examples/response/subfieldDto.yaml'
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'
+delete:
+  summary: Delete Subfield Definition
+  description: Delete subfield definition
+  operationId: deleteSubfield
+  parameters:
+    - $ref: '../../parameters/subfieldId-param.yaml'
+  tags:
+    - specification-storage-subfields
+  responses:
+    '204':
+      description: Subfield definition was deleted
+    '400':
+      $ref: '../../responses/badRequestResponse.yaml'
+    '500':
+      $ref: '../../responses/internalServerErrorResponse.yaml'

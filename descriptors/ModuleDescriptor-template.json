@@ -17,6 +17,15 @@
         },
         {
           "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/specifications/{specificationId}",
+          "permissionsRequired": [
+            "specification-storage.specifications.item.get"
+          ]
+        },
+        {
+          "methods": [
             "POST"
           ],
           "pathPattern": "/specification-storage/specifications/{specificationId}/sync",
@@ -158,6 +167,24 @@
           "permissionsRequired": [
             "specification-storage.indicator-codes.item.delete"
           ]
+        },
+        {
+          "methods": [
+            "PUT"
+          ],
+          "pathPattern": "/specification-storage/subfields/{subfieldId}",
+          "permissionsRequired": [
+            "specification-storage.subfields.item.put"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/specification-storage/subfields/{subfieldId}",
+          "permissionsRequired": [
+            "specification-storage.subfields.item.delete"
+          ]
         }
       ]
     },
@@ -187,6 +214,11 @@
       "permissionName": "specification-storage.specifications.collection.get",
       "displayName": "Specification Storage - Get specification collection",
       "description": "Get specification collection"
+    },
+    {
+      "permissionName": "specification-storage.specifications.item.get",
+      "displayName": "Specification Storage - Get specification",
+      "description": "Get specification"
     },
     {
       "permissionName": "specification-storage.specification.item.sync",
@@ -269,11 +301,22 @@
       "description": "Delete indicator code definition"
     },
     {
+      "permissionName": "specification-storage.subfields.item.put",
+      "displayName": "Specification Storage - Update subfield definition",
+      "description": "Update subfield definition"
+    },
+    {
+      "permissionName": "specification-storage.subfields.item.delete",
+      "displayName": "Specification Storage - Delete subfield definition",
+      "description": "Delete subfield definition"
+    },
+    {
       "permissionName": "specification-storage.all",
       "displayName": "Specification Storage - All permissions",
       "description": "Entire set of permissions needed to manage specifications",
       "subPermissions": [
         "specification-storage.specifications.collection.get",
+        "specification-storage.specifications.item.get",
         "specification-storage.specification.rules.collection.get",
         "specification-storage.specification.rules.item.patch",
         "specification-storage.specification.fields.collection.get",
@@ -286,7 +329,9 @@
         "specification-storage.field.indicators.item.post",
         "specification-storage.indicators.item.put",
         "specification-storage.indicator.indicator-codes.collection.get",
-        "specification-storage.indicator.indicator-codes.item.post"
+        "specification-storage.indicator.indicator-codes.item.post",
+        "specification-storage.subfields.item.put",
+        "specification-storage.subfields.item.delete"
       ]
     }
   ],

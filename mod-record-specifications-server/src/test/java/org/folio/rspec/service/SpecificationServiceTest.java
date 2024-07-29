@@ -5,6 +5,7 @@ import static org.folio.support.builders.FieldBuilder.local;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -20,12 +21,14 @@ import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.domain.entity.Specification;
 import org.folio.rspec.domain.entity.SpecificationRuleId;
 import org.folio.rspec.domain.repository.SpecificationRepository;
+import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.SpecificationMapper;
 import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -81,6 +84,43 @@ class SpecificationServiceTest {
 
     service.findSpecifications(family, profile, IncludeParam.ALL, 10, 0);
     verify(mapper).toFullDto(any(Specification.class));
+  }
+
+  @Test
+  void testGetSpecificationById(@Random UUID specificationId, @Random SpecificationDto specificationDto) {
+    var specification = new Specification();
+
+    when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
+    when(mapper.toDto(any(Specification.class))).thenReturn(specificationDto);
+
+    var actual = service.getSpecificationById(specificationId, IncludeParam.NONE);
+
+    assertThat(actual).isEqualTo(specificationDto);
+    verify(mapper).toDto(any(Specification.class));
+  }
+
+  @Test
+  void testGetSpecificationById_withIncludeAll(@Random UUID specificationId,
+                                                @Random SpecificationDto specificationDto) {
+    var specification = new Specification();
+
+    when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
+    when(mapper.toFullDto(any(Specification.class))).thenReturn(specificationDto);
+
+    var actual = service.getSpecificationById(specificationId, IncludeParam.ALL);
+
+    assertThat(actual).isEqualTo(specificationDto);
+    verify(mapper).toFullDto(any(Specification.class));
+  }
+
+  @Test
+  void testGetSpecificationById_notFound(@Random UUID specificationId) {
+    var exception = Assertions.assertThrows(ResourceNotFoundException.class,
+      () -> service.getSpecificationById(specificationId, IncludeParam.ALL));
+
+    assertThat(exception.getId()).isEqualTo(specificationId);
+    assertThat(exception.getResource()).isEqualTo(ResourceNotFoundException.Resource.SPECIFICATION);
+    verifyNoInteractions(mapper);
   }
 
   @Test
