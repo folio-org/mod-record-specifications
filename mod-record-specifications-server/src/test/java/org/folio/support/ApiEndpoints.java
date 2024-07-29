@@ -9,6 +9,7 @@ public class ApiEndpoints {
 
   public static final String SPECIFICATION_STORAGE_PATH = "/specification-storage";
   public static final String SPECIFICATIONS_PATH = SPECIFICATION_STORAGE_PATH + "/specifications";
+  public static final String SPECIFICATION_PATH = SPECIFICATIONS_PATH + "/%s";
   public static final String SPECIFICATION_SYNC_PATH = SPECIFICATIONS_PATH + "/%s/sync";
   public static final String SPECIFICATION_RULES_PATH = SPECIFICATIONS_PATH + "/%s/rules";
   public static final String SPECIFICATION_RULE_PATH = SPECIFICATION_RULES_PATH + "/%s";
@@ -26,6 +27,14 @@ public class ApiEndpoints {
 
   public static String specificationsPath(QueryParams queryParams) {
     return addQueryParams(specificationsPath(), queryParams);
+  }
+
+  public static String specificationPath(UUID specificationId) {
+    return SPECIFICATION_PATH.formatted(specificationId);
+  }
+
+  public static String specificationPath(UUID specificationId, QueryParams queryParams) {
+    return addQueryParams(specificationPath(specificationId), queryParams);
   }
 
   public static String specificationSyncPath(UUID specId) {

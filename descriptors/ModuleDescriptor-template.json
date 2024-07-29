@@ -17,6 +17,15 @@
         },
         {
           "methods": [
+            "GET"
+          ],
+          "pathPattern": "/specification-storage/specifications/{specificationId}",
+          "permissionsRequired": [
+            "specification-storage.specifications.item.get"
+          ]
+        },
+        {
+          "methods": [
             "POST"
           ],
           "pathPattern": "/specification-storage/specifications/{specificationId}/sync",
@@ -189,6 +198,11 @@
       "description": "Get specification collection"
     },
     {
+      "permissionName": "specification-storage.specifications.item.get",
+      "displayName": "Specification Storage - Get specification",
+      "description": "Get specification"
+    },
+    {
       "permissionName": "specification-storage.specification.item.sync",
       "displayName": "Specification Storage - Sync specification",
       "description": "Sync specification"
@@ -274,6 +288,7 @@
       "description": "Entire set of permissions needed to manage specifications",
       "subPermissions": [
         "specification-storage.specifications.collection.get",
+        "specification-storage.specifications.item.get",
         "specification-storage.specification.rules.collection.get",
         "specification-storage.specification.rules.item.patch",
         "specification-storage.specification.fields.collection.get",

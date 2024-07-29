@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
+import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
 import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -58,6 +59,20 @@ public class SpecificationService {
       });
 
     return specificationCollection.specifications(page.toList()).totalRecords(toIntExact(page.getTotalElements()));
+  }
+
+  @Transactional
+  public SpecificationDto findSpecificationById(UUID specificationId, IncludeParam include) {
+    log.debug("findSpecificationById::id={}, include={}", specificationId, include);
+
+    return doForSpecificationOrFail(specificationId, specification -> switch (include) {
+      case ALL -> specificationMapper.toFullDto(specification);
+      case NONE -> specificationMapper.toDto(specification);
+      case FIELDS_REQUIRED -> {
+        var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
+        yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
+      }
+    });
   }
 
   @Transactional

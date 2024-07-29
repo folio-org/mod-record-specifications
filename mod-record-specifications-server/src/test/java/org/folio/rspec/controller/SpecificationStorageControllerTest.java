@@ -1,6 +1,7 @@
 package org.folio.rspec.controller;
 
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
+import static org.folio.support.ApiEndpoints.specificationPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
 import static org.folio.support.ApiEndpoints.specificationRulesPath;
 import static org.folio.support.ApiEndpoints.specificationSyncPath;
@@ -142,6 +143,25 @@ class SpecificationStorageControllerTest {
       .andExpect(status().isUnprocessableEntity())
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Unexpected value [randomValue]. Possible values: [%s]."
         .formatted(possibleValues)))));
+  }
+
+  @Test
+  void getSpecification_returnSpecification(@Random UUID specificationId,
+                                            @Random SpecificationDto specificationDto) throws Exception {
+    when(specificationService.findSpecificationById(specificationId, IncludeParam.NONE))
+      .thenReturn(specificationDto);
+
+    var requestBuilder = get(specificationPath(specificationId))
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id", is(specificationDto.getId().toString())))
+      .andExpect(jsonPath("$.title", is(specificationDto.getTitle())))
+      .andExpect(jsonPath("$.family", is(specificationDto.getFamily().getValue())))
+      .andExpect(jsonPath("$.profile", is(specificationDto.getProfile().getValue())));
+
+    verify(specificationService).findSpecificationById(specificationId, IncludeParam.NONE);
   }
 
   @Test
