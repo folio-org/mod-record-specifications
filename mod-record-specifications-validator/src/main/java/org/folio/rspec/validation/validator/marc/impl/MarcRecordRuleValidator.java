@@ -24,11 +24,11 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
       new FieldSetMissingFieldRuleValidator(translationProvider),
-      new MarcFieldUndefinedFieldRuleValidator(translationProvider)
+      new MarcFieldUndefinedFieldRuleValidator(translationProvider),
+      new MarcFieldNonRepeatable1xxFieldRuleValidator(translationProvider)
     );
     this.fieldValidators = List.of(
-      new MarcFieldNonRepeatableFieldRuleValidator(translationProvider),
-      new MarcFieldNonRepeatable1xxFieldRuleValidator(translationProvider)
+      new MarcFieldNonRepeatableFieldRuleValidator(translationProvider)
     );
   }
 

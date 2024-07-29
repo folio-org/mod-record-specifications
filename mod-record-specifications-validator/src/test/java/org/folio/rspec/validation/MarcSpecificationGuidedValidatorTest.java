@@ -29,12 +29,13 @@ class MarcSpecificationGuidedValidatorTest {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord();
     var validationErrors = validator.validate(marc4jRecord, getSpecification());
     assertThat(validationErrors)
-      .hasSize(5)
+      .hasSize(6)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("889[0]", MarcRuleCode.MISSING_FIELD.getCode()),
         tuple("047[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-        tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("110[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
         tuple("650[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
         tuple("650[2]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode())
       );
