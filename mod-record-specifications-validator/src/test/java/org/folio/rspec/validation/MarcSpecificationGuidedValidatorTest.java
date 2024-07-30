@@ -27,7 +27,7 @@ class MarcSpecificationGuidedValidatorTest {
   @Test
   void testMarcRecordValidation() {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord();
-    var validationErrors = validator.validate(marc4jRecord, getSpecification());
+    var validationErrors = validator.validate(marc4jRecord, getSpecification(FamilyProfile.BIBLIOGRAPHIC));
     assertThat(validationErrors)
       .hasSize(6)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
@@ -41,11 +41,27 @@ class MarcSpecificationGuidedValidatorTest {
       );
   }
 
-  private SpecificationDto getSpecification() {
+  @Test
+  void testNo1xxMarcRecordValidation() {
+    var marcRecord = TestRecordProvider.getNo1xxMarcRecord();
+    var validationErrors = validator.validate(marcRecord, getSpecification(FamilyProfile.AUTHORITY));
+    assertThat(validationErrors)
+      .hasSize(5)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("889[0]", MarcRuleCode.MISSING_FIELD.getCode()),
+        tuple("047[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple(null, MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+        tuple("650[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
+        tuple("650[2]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode())
+      );
+  }
+
+  private SpecificationDto getSpecification(FamilyProfile familyProfile) {
     return new SpecificationDto()
       .id(UUID.randomUUID())
       .family(Family.MARC)
-      .profile(FamilyProfile.BIBLIOGRAPHIC)
+      .profile(familyProfile)
       .rules(allEnabledRules())
       .fields(fieldDefinitions());
   }
