@@ -24,12 +24,12 @@ class Marc4jConverterTest {
   void testConvert_WhenCalled_ShouldReturnMarcRecord() {
     MarcRecord marcRecord = marc4jConverter.convert(marc4jRecord);
     assertEquals(6, marcRecord.getControlFields().size());
-    assertEquals(9, marcRecord.getDataFields().size());
+    assertEquals(10, marcRecord.getDataFields().size());
 
     assertThat(marcRecord.getControlFields())
       .hasSize(6)
       .extracting(controlField -> controlField.reference().toString(), MarcControlField::value)
-      .containsExactly(
+      .containsExactlyInAnyOrder(
         tuple("000[0]", "01750ccm a2200421   4500"),
         tuple("001[0]", "393893"),
         tuple("005[0]", "20141107001016.0"),
@@ -39,10 +39,11 @@ class Marc4jConverterTest {
       );
 
     assertThat(marcRecord.getDataFields())
-      .hasSize(9)
+      .hasSize(10)
       .extracting(dataField -> dataField.reference().toString(), controlFieldExtractor(), dataFieldExtractor()
       )
-      .containsExactly(
+      .containsExactlyInAnyOrder(
+        tuple("035[0]", "035[0]^1= ;035[0]^2= ", "035[0]$a[0]=(OCoLC)63611770"),
         tuple("650[0]", "650[0]^1= ;650[0]^2=0", "650[0]$a[0]=Instrumental music"),
         tuple("650[1]", "650[1]^1= ;650[1]^2=7",
           "650[1]$0[0]=(OCoLC)fst00974414 650[1]$a[0]=Instrumental music 650[1]$2[0]=fast"),
@@ -51,7 +52,9 @@ class Marc4jConverterTest {
         tuple("100[0]", "100[0]^1=/;100[0]^2=/",
           "100[0]$0[0]=12345 100[0]$a[0]=Mozart, Wolfgang Amadeus, "
           + "100[0]$d[0]=1756-1791. 100[0]$9[0]=b9a5f035-de63-4e2c-92c2-07240c88b817"),
-        tuple("035[0]", "035[0]^1= ;035[0]^2= ", "035[0]$a[0]=(OCoLC)63611770"),
+        tuple("110[0]", "110[0]^1=/;110[0]^2=/",
+          "110[0]$0[0]=12345 110[0]$a[0]=(another)Mozart, Wolfgang Amadeus, "
+            + "110[0]$d[0]=1756-1791. 110[0]$9[0]=b9a5f035-de63-4e2c-92c2-07240c88b817"),
         tuple("035[1]", "035[1]^1= ;035[1]^2= ", "035[1]$a[0]=393893"),
         tuple("245[0]", "245[0]^1=1;245[0]^2=0",
           "245[0]$a[0]=Neue Ausgabe samtlicher Werke, "

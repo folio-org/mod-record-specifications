@@ -29,11 +29,13 @@ class MarcSpecificationGuidedValidatorTest {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord();
     var validationErrors = validator.validate(marc4jRecord, getSpecification());
     assertThat(validationErrors)
-      .hasSize(4)
+      .hasSize(6)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("889[0]", MarcRuleCode.MISSING_FIELD.getCode()),
         tuple("047[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("110[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
         tuple("650[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
         tuple("650[2]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode())
       );
@@ -58,7 +60,8 @@ class MarcSpecificationGuidedValidatorTest {
       defaultField("008"),
       defaultField("010"),
       defaultField("035"),
-      defaultField("100"),
+      nonRepeatableField("100"),
+      nonRepeatableField("110"),
       requiredField("245"),
       requiredField("889"),
       requiredNonRepeatableField("650")
@@ -71,6 +74,10 @@ class MarcSpecificationGuidedValidatorTest {
 
   private SpecificationFieldDto requiredNonRepeatableField(String tag) {
     return fieldDefinition(tag, true, false, false);
+  }
+
+  private SpecificationFieldDto nonRepeatableField(String tag) {
+    return fieldDefinition(tag, false, false, false);
   }
 
   private SpecificationFieldDto defaultField(String tag) {
