@@ -217,7 +217,7 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(ResourceValidationFailedException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.CONTROL_FIELD_RESOURCE_NOT_ALLOWED.getType())))
-      .andExpect(errorMessageMatch(is("Cannot define indicator for control numbers.")));
+      .andExpect(errorMessageMatch(is("Cannot define indicators for 00X control fields.")));
   }
 
   @Test
@@ -295,7 +295,7 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
       .andExpect(status().isBadRequest())
       .andExpect(exceptionMatch(ResourceValidationFailedException.class))
       .andExpect(errorTypeMatch(is(ErrorCode.CONTROL_FIELD_RESOURCE_NOT_ALLOWED.getType())))
-      .andExpect(errorMessageMatch(is("Cannot define subfield for control numbers.")));
+      .andExpect(errorMessageMatch(is("Cannot define subfields for 00X control fields.")));
   }
 
   private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {
