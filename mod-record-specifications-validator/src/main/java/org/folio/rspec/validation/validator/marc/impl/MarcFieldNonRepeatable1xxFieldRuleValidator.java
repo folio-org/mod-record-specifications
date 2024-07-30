@@ -2,13 +2,10 @@ package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
 import java.util.Map;
-import org.folio.rspec.domain.dto.DefinitionType;
-import org.folio.rspec.domain.dto.SeverityType;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
-import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
