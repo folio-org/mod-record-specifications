@@ -2,15 +2,9 @@ package org.folio.rspec.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.folio.support.TestDataProvider.getSpecification;
+import static org.folio.support.TestDataProvider.getSpecification1xx;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import org.folio.rspec.domain.dto.Family;
-import org.folio.rspec.domain.dto.FamilyProfile;
-import org.folio.rspec.domain.dto.SpecificationDto;
-import org.folio.rspec.domain.dto.SpecificationFieldDto;
-import org.folio.rspec.domain.dto.SpecificationRuleDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
@@ -26,79 +20,71 @@ class MarcSpecificationGuidedValidatorTest {
 
   @Test
   void testMarcRecordValidation() {
-    var marc4jRecord = TestRecordProvider.getMarc4jRecord();
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/marc-bib-record.json");
     var validationErrors = validator.validate(marc4jRecord, getSpecification());
     assertThat(validationErrors)
-      .hasSize(6)
+      .hasSize(4)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("889[0]", MarcRuleCode.MISSING_FIELD.getCode()),
         tuple("047[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-        tuple("110[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
         tuple("650[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
         tuple("650[2]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode())
       );
   }
 
-  private SpecificationDto getSpecification() {
-    return new SpecificationDto()
-      .id(UUID.randomUUID())
-      .family(Family.MARC)
-      .profile(FamilyProfile.BIBLIOGRAPHIC)
-      .rules(allEnabledRules())
-      .fields(fieldDefinitions());
+  @Test
+  void testSame1xxUndefinedMarcRecordValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/bib1xx/marc-bib-same1xx-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecification1xx());
+    assertThat(validationErrors)
+      .hasSize(4)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+      );
   }
 
-  private List<SpecificationFieldDto> fieldDefinitions() {
-    return List.of(
-      requiredNonRepeatableField("000"),
-      requiredNonRepeatableField("001"),
-      defaultField("005"),
-      defaultField("006"),
-      defaultField("007"),
-      defaultField("008"),
-      defaultField("010"),
-      defaultField("035"),
-      nonRepeatableField("100"),
-      nonRepeatableField("110"),
-      requiredField("245"),
-      requiredField("889"),
-      requiredNonRepeatableField("650")
-    );
+  @Test
+  void testSame1xxMarcRecordValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/bib1xx/marc-bib-same1xx-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecification1xx("100"));
+    assertThat(validationErrors)
+      .hasSize(2)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+      );
   }
 
-  private SpecificationFieldDto requiredField(String tag) {
-    return fieldDefinition(tag, true, false, true);
+  @Test
+  void testDifferent1xxUndefinedMarcRecordValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/bib1xx/marc-bib-different1xx-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecification1xx("100"));
+    assertThat(validationErrors)
+      .hasSize(3)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("131[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+      );
   }
 
-  private SpecificationFieldDto requiredNonRepeatableField(String tag) {
-    return fieldDefinition(tag, true, false, false);
+  @Test
+  void testDifferent1xxMarcRecordValidation1() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/bib1xx/marc-bib-different1xx-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecification1xx("100", "131"));
+    assertThat(validationErrors)
+      .hasSize(2)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+      );
   }
-
-  private SpecificationFieldDto nonRepeatableField(String tag) {
-    return fieldDefinition(tag, false, false, false);
-  }
-
-  private SpecificationFieldDto defaultField(String tag) {
-    return fieldDefinition(tag, false, false, true);
-  }
-
-  private SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated, boolean repeatable) {
-    return new SpecificationFieldDto()
-      .id(UUID.randomUUID())
-      .tag(tag)
-      .required(required)
-      .deprecated(deprecated)
-      .repeatable(repeatable);
-  }
-
-  private List<SpecificationRuleDto> allEnabledRules() {
-    return Arrays.stream(MarcRuleCode.values()).map(this::enabledRule).toList();
-  }
-
-  private SpecificationRuleDto enabledRule(MarcRuleCode ruleCode) {
-    return new SpecificationRuleDto().id(UUID.randomUUID()).code(ruleCode.getCode()).enabled(true);
-  }
-
 }

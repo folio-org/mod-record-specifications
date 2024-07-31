@@ -10,6 +10,6 @@ public final class TagsMatcher {
   }
 
   public static boolean matches1xx(String tag) {
-    return TAG_1XX_PATTERN.matcher(tag).matches();
+    return tag != null && TAG_1XX_PATTERN.matcher(tag).matches();
   }
 }
