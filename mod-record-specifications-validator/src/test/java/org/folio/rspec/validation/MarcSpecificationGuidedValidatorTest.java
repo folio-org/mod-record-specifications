@@ -53,10 +53,11 @@ class MarcSpecificationGuidedValidatorTest {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/bib1xx/marc-bib-same1xx-record.json");
     var validationErrors = validator.validate(marc4jRecord, getSpecification1xx("100"));
     assertThat(validationErrors)
-      .hasSize(2)
+      .hasSize(3)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+        tuple("100[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
         tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
       );
   }

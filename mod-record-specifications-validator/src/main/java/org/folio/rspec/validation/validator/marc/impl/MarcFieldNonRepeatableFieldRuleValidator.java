@@ -10,7 +10,6 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
 
 class MarcFieldNonRepeatableFieldRuleValidator implements SpecificationRuleValidator<MarcField, SpecificationFieldDto> {
 
@@ -22,8 +21,7 @@ class MarcFieldNonRepeatableFieldRuleValidator implements SpecificationRuleValid
 
   @Override
   public List<ValidationError> validate(MarcField marcField, SpecificationFieldDto field) {
-    if (!TagsMatcher.matches1xx(field.getTag())
-      && Boolean.FALSE.equals(field.getRepeatable()) && marcField.reference().getTagIndex() > 0) {
+    if (Boolean.FALSE.equals(field.getRepeatable()) && marcField.reference().getTagIndex() > 0) {
       return List.of(buildError(marcField, field));
     }
     return List.of();
