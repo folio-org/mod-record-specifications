@@ -22,15 +22,6 @@ public class TestDataProvider {
       .fields(fieldDefinitions());
   }
 
-  public static SpecificationDto getSpecification1xx(String... tags) {
-    return new SpecificationDto()
-      .id(UUID.randomUUID())
-      .family(Family.MARC)
-      .profile(FamilyProfile.BIBLIOGRAPHIC)
-      .rules(allEnabledRules())
-      .fields(fieldDefinitions1xx(tags));
-  }
-
   private static List<SpecificationFieldDto> fieldDefinitions() {
     return List.of(
       requiredNonRepeatableField("000"),
@@ -46,6 +37,15 @@ public class TestDataProvider {
       requiredField("889"),
       requiredNonRepeatableField("650")
     );
+  }
+
+  public static SpecificationDto getSpecification1xx(String... tags) {
+    return new SpecificationDto()
+      .id(UUID.randomUUID())
+      .family(Family.MARC)
+      .profile(FamilyProfile.BIBLIOGRAPHIC)
+      .rules(allEnabledRules())
+      .fields(fieldDefinitions1xx(tags));
   }
 
   private static List<SpecificationFieldDto> fieldDefinitions1xx(String[] tags) {
