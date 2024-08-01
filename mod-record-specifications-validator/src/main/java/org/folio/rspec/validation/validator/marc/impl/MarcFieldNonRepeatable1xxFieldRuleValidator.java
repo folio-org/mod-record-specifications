@@ -19,14 +19,14 @@ class MarcFieldNonRepeatable1xxFieldRuleValidator
 
   @Override
   public List<ValidationError> validate(Map<String, List<MarcField>> fields, SpecificationDto specification) {
-    List<String> tags1xx = fields.keySet().stream().filter(TagsMatcher::matches1xx).toList();
-    if (tags1xx.size() > 1) {
-      return tags1xx.stream()
-        .flatMap(tag -> fields.get(tag).stream())
-        .map(field -> buildError(field.reference().toString(), specification))
-        .toList();
-    }
-    return List.of();
+    List<MarcField> all1xxFields = fields.keySet().stream()
+      .filter(TagsMatcher::matches1xx)
+      .flatMap(tag -> fields.get(tag).stream())
+      .toList();
+
+    return all1xxFields.size() > 1
+      ? all1xxFields.stream().map(field -> buildError(field, specification)).toList()
+      : List.of();
   }
 
   @Override
