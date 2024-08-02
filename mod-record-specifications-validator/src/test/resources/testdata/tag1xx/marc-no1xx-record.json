@@ -1,0 +1,37 @@
+{
+  "fields": [
+    {
+      "001": "393893"
+    },
+    {
+      "005": "20141107001016.0"
+    },
+    {
+      "006": "c bcdefghijklmn o "
+    },
+    {
+      "007": "sa bcdefghijkl"
+    },
+    {
+      "008": "abcdefghijklmnopqr bcdefghijklmn o stuvw"
+    },
+    {
+      "010": {
+        "ind1": " ",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "  2001000234"
+          },
+          {
+            "z": "0001"
+          },
+          {
+            "z": "0002"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}

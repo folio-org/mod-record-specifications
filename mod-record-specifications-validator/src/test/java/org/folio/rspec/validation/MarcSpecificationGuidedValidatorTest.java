@@ -40,8 +40,8 @@ class MarcSpecificationGuidedValidatorTest {
 
   @ParameterizedTest
   @MethodSource("provide1xxArguments")
-  void test1xxNonRepeatableMarcRecordValidation(String file, String[] tags, Tuple[] expected) {
-    var marc4jRecord = TestRecordProvider.getMarc4jRecord(String.format("testdata/bib1xx/%s.json", file));
+  void test1xxMarcRecordValidation(String file, String[] tags, Tuple[] expected) {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord(String.format("testdata/tag1xx/%s.json", file));
 
     var validationErrors = validator.validate(marc4jRecord, getSpecification1xx(tags));
 
@@ -53,32 +53,50 @@ class MarcSpecificationGuidedValidatorTest {
 
   private static Stream<Arguments> provide1xxArguments() {
     return Stream.of(
-      Arguments.of("marc-bib-same1xx-record", new String[] {},
+      // Multiple 1xx fields with same undefined tag
+      Arguments.of("marc-same1xx-record", new String[] {},
         new Tuple[] {
           tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
           tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       ),
-      Arguments.of("marc-bib-same1xx-record", new String[] {"100"},
+      // Multiple 1xx fields with same defined tag
+      Arguments.of("marc-same1xx-record", new String[] {"100"},
         new Tuple[] {
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
           tuple("100[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       ),
-      Arguments.of("marc-bib-different1xx-record", new String[] {"100"},
+      // Multiple 1xx fields with different tags (one undefined tag)
+      Arguments.of("marc-different1xx-record", new String[] {"100"},
         new Tuple[] {
           tuple("131[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       ),
-      Arguments.of("marc-bib-different1xx-record", new String[] {"100", "131"},
+      // Multiple 1xx fields with different defined tags
+      Arguments.of("marc-different1xx-record", new String[] {"100", "131"},
         new Tuple[] {
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode())
+          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+        }
+      ),
+      // No 1xx fields
+      Arguments.of("marc-no1xx-record", new String[] {},
+        new Tuple[] {
+          tuple(null, MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       )
     );

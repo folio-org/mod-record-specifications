@@ -9,23 +9,25 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 
-class MarcFieldNonRepeatable1xxFieldRuleValidator
+class MarcFieldNonRepeatableRequired1xxFieldRuleValidator
   extends Abstract1xxFieldRuleValidator {
 
-  MarcFieldNonRepeatable1xxFieldRuleValidator(TranslationProvider translationProvider) {
+  MarcFieldNonRepeatableRequired1xxFieldRuleValidator(TranslationProvider translationProvider) {
     super(translationProvider);
   }
 
   @Override
   public List<ValidationError> validate(Map<String, List<MarcField>> fields, SpecificationDto specification) {
-    var all1xxFields = extract1xxFields(fields);
-    return all1xxFields.size() > 1
-      ? all1xxFields.stream().map(field -> buildError(field, specification)).toList()
-      : List.of();
+    List<MarcField> all1xxFields = extract1xxFields(fields);
+    return switch (all1xxFields.size()) {
+      case 1 -> List.of();
+      case 0 -> List.of(buildError(null, specification));
+      default -> all1xxFields.stream().map(field -> buildError(field, specification)).toList();
+    };
   }
 
   @Override
   public SpecificationRuleCode supportedRule() {
-    return MarcRuleCode.NON_REPEATABLE_1XX_FIELD;
+    return MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD;
   }
 }
