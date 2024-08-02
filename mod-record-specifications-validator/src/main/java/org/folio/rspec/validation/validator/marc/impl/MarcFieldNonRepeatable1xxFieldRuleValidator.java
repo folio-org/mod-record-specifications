@@ -8,7 +8,6 @@ import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
 
 class MarcFieldNonRepeatable1xxFieldRuleValidator
   extends Abstract1xxFieldRuleValidator {
@@ -19,11 +18,7 @@ class MarcFieldNonRepeatable1xxFieldRuleValidator
 
   @Override
   public List<ValidationError> validate(Map<String, List<MarcField>> fields, SpecificationDto specification) {
-    List<MarcField> all1xxFields = fields.keySet().stream()
-      .filter(TagsMatcher::matches1xx)
-      .flatMap(tag -> fields.get(tag).stream())
-      .toList();
-
+    var all1xxFields = extract1xxFields(fields);
     return all1xxFields.size() > 1
       ? all1xxFields.stream().map(field -> buildError(field, specification)).toList()
       : List.of();
