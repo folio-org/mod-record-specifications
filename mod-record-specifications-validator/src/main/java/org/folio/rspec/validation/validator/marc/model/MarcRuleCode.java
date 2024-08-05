@@ -6,6 +6,7 @@ public enum MarcRuleCode implements SpecificationRuleCode {
 
   UNDEFINED_FIELD("undefinedField"),
   MISSING_FIELD("missingField"),
+  INVALID_FIELD_TAG("invalidFieldTag"),
   NON_REPEATABLE_1XX_FIELD("nonRepeatable1XXField"),
   NON_REPEATABLE_REQUIRED_1XX_FIELD("nonRepeatableRequired1XXField"),
   NON_REPEATABLE_FIELD("nonRepeatableField");
