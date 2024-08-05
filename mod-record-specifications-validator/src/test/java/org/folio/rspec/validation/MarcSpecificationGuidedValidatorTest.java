@@ -96,7 +96,7 @@ class MarcSpecificationGuidedValidatorTest {
       // No 1xx fields
       Arguments.of("marc-no1xx-record", new String[] {},
         new Tuple[] {
-          tuple(null, MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+          tuple("1XX[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       )
     );
