@@ -2,8 +2,6 @@ package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.i18n.TranslationProvider;

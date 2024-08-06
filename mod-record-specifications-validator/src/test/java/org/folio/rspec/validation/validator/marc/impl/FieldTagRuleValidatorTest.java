@@ -1,33 +1,21 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Stream;
 import org.folio.rspec.domain.dto.SpecificationDto;
-import org.folio.rspec.domain.dto.SpecificationFieldDto;
-import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
-import org.folio.rspec.validation.validator.marc.model.MarcControlField;
 import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.model.MarcSubfield;
 import org.folio.rspec.validation.validator.marc.model.Reference;
 import org.folio.spring.testing.type.UnitTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

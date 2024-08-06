@@ -2,7 +2,12 @@ package org.folio.rspec.validation.validator.marc.impl;
 
 import static org.folio.rspec.utils.SpecificationUtils.findField;
 import static org.folio.rspec.utils.SpecificationUtils.ruleIsEnabled;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.*;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.INVALID_FIELD_TAG;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.MISSING_FIELD;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_1XX_FIELD;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_FIELD;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD;
+import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.UNDEFINED_FIELD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +26,6 @@ import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 
 public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcRecord, SpecificationDto> {
 
-  private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
-  private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
-
   private static final List<MarcRuleCode> FIELD_RULES = List.of(
     NON_REPEATABLE_FIELD
   );
@@ -34,6 +36,9 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
     NON_REPEATABLE_1XX_FIELD,
     NON_REPEATABLE_REQUIRED_1XX_FIELD
   );
+
+  private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
+  private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = FIELD_SET_RULES.stream()

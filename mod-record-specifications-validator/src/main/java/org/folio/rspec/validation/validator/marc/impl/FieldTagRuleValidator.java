@@ -25,13 +25,10 @@ class FieldTagRuleValidator
 
   @Override
   public List<ValidationError> validate(Map<String, List<MarcField>> fields, SpecificationDto specification) {
-    if (fields.keySet().stream().allMatch(TagsMatcher::matchesValidTag)) {
-      return List.of();
-    }
-
     return fields.values().stream()
       .flatMap(Collection::stream)
-      .map(field -> prepareError(field, specification))
+      .filter(field -> !TagsMatcher.matchesValidTag(field.tag()))
+      .map(field -> buildError(field, specification))
       .toList();
   }
 
@@ -50,11 +47,10 @@ class FieldTagRuleValidator
     return SeverityType.ERROR;
   }
 
-  private ValidationError prepareError(MarcField marcField,
-                                       SpecificationDto specificationDto) {
+  private ValidationError buildError(MarcField marcField, SpecificationDto specificationDto) {
     var message = translationProvider.format(ruleCode());
     return ValidationError.builder()
-      .path(marcField != null ? marcField.reference().toString() : null)
+      .path(marcField.reference().toString())
       .definitionType(definitionType())
       .definitionId(specificationDto.getId())
       .severity(severity())
