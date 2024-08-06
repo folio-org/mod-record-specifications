@@ -1,6 +1,7 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +38,29 @@ class MarcFieldNonRepeatableRequired1xxFieldRuleValidatorTest {
   void validate_whenMoreThanOne1xxField_shouldReturnValidationError() {
     Map<String, List<MarcField>> fields = Map.of(
       "001", Collections.singletonList(new MarcDataField(Reference.forTag("001"), List.of(), List.of())),
+      "111", Collections.singletonList(new MarcDataField(Reference.forTag("111"), List.of(), List.of())),
+      "123", Collections.singletonList(new MarcDataField(Reference.forTag("123"), List.of(), List.of())),
+      "650", Collections.singletonList(new MarcDataField(Reference.forTag("650"), List.of(), List.of()))
+    );
+    var specification = new SpecificationDto().fields(List.of());
+    when(translationProvider.format(validator.supportedRule().getCode())).thenReturn("1xx error message");
+
+    var errors = validator.validate(fields, specification);
+
+    assertEquals(2, errors.size());
+    errors.forEach(error -> {
+      assertEquals(validator.definitionType(), error.getDefinitionType());
+      assertEquals(validator.severity(), error.getSeverity());
+      assertEquals(validator.supportedRule().getCode(), error.getRuleCode());
+      assertEquals("1xx error message", error.getMessage());
+      assertEquals(MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode(), error.getRuleCode());
+    });
+  }
+
+  @Test
+  void validate_whenNo1xxField_shouldReturnValidationError() {
+    Map<String, List<MarcField>> fields = Map.of(
+      "001", Collections.singletonList(new MarcDataField(Reference.forTag("001"), List.of(), List.of())),
       "650", Collections.singletonList(new MarcDataField(Reference.forTag("650"), List.of(), List.of()))
     );
     var specification = new SpecificationDto().fields(List.of());
@@ -50,6 +74,7 @@ class MarcFieldNonRepeatableRequired1xxFieldRuleValidatorTest {
     assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
     assertEquals("1xx error message", errors.get(0).getMessage());
     assertEquals(MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode(), errors.get(0).getRuleCode());
+    assertNotNull(errors.get(0).getPath());
   }
 
   @ParameterizedTest
