@@ -35,7 +35,7 @@
     {
       "1OO": {
         "ind1": "1OO",
-        "ind2": "1OO",
+        "ind2": "1OO1OO",
         "subfields": [
           {
             "a": "double O instead of zero"
@@ -75,7 +75,7 @@
     {
       "XXX": {
         "ind1": "XXX",
-        "ind2": "XXX",
+        "ind2": "XXXXXX",
         "subfields": [
           {
             "a": "Xander 'XXX' Cage"

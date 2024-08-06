@@ -9,7 +9,11 @@ import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 
-public class RuleValidatorsProvider {
+public final class RuleValidatorsProvider {
+
+  private RuleValidatorsProvider() {
+    throw new IllegalStateException("Utility class");
+  }
 
   public static SpecificationRuleValidator<MarcField,
     SpecificationFieldDto> getFieldValidator(MarcRuleCode ruleCode, TranslationProvider translationProvider) {

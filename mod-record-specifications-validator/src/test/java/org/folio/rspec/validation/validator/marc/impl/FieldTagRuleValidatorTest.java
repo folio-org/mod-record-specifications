@@ -45,7 +45,7 @@ class FieldTagRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"10O", "11l", "22", "4444", "noTag"})
+  @ValueSource(strings = {"10O", "11I", "22", "4444", "XXX", "invalidTag"})
   void validate_whenInvalidFieldTag_returnValidationError(String fieldTag) {
     Map<String, List<MarcField>> fields = Map.of(fieldTag,
       Collections.singletonList(new MarcDataField(Reference.forTag(fieldTag), List.of(), List.of()))
