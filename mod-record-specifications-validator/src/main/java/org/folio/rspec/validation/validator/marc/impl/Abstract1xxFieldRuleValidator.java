@@ -8,12 +8,15 @@ import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
+import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
+import org.folio.rspec.validation.validator.marc.model.Reference;
 import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
 
 abstract class Abstract1xxFieldRuleValidator
   implements SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto> {
 
+  private static final String TAG_1XX = "1XX";
   private final TranslationProvider translationProvider;
 
   Abstract1xxFieldRuleValidator(TranslationProvider translationProvider) {
@@ -41,12 +44,19 @@ abstract class Abstract1xxFieldRuleValidator
                                      SpecificationDto specificationDto) {
     var message = translationProvider.format(ruleCode());
     return ValidationError.builder()
-      .path(marcField != null ? marcField.reference().toString() : null)
+      .path(getPath(marcField))
       .definitionType(definitionType())
       .definitionId(specificationDto.getId())
       .severity(severity())
       .ruleCode(ruleCode())
       .message(message)
       .build();
+  }
+
+  private String getPath(MarcField field) {
+    if (field == null) {
+      field = new MarcDataField(Reference.forTag(TAG_1XX), List.of(), List.of());
+    }
+    return field.reference().toString();
   }
 }
