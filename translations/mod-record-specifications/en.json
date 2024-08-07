@@ -27,6 +27,7 @@
   "validation.nonRepeatable1XXField": "Field 1XX is non-repeatable.",
   "validation.nonRepeatableRequired1XXField": "Field 1XX is non-repeatable and required.",
   "validation.nonRepeatableField": "Field is non-repeatable.",
-  "validation.undefinedField": "Field is undefined."
+  "validation.undefinedField": "Field is undefined.",
+  "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'."
 
 }

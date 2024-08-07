@@ -24,6 +24,7 @@
 * implement validation by MARC specification ([MRSPECS-38](https://folio-org.atlassian.net//browse/MRSPECS-38))
 * implement Non-Repeatable 1XX Fields validator ([MRSPECS-41](https://folio-org.atlassian.net/browse/MRSPECS-41))
 * implement Non-Repeatable Required 1XX Fields validator ([MRSPECS-42](https://folio-org.atlassian.net/browse/MRSPECS-42))
+* implement Invalid Indicator validation ([MRSPECS-45](https://folio-org.atlassian.net/browse/MRSPECS-45))
 
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
