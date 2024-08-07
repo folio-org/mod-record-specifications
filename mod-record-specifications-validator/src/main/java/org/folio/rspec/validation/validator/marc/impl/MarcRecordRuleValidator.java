@@ -2,17 +2,10 @@ package org.folio.rspec.validation.validator.marc.impl;
 
 import static org.folio.rspec.utils.SpecificationUtils.findField;
 import static org.folio.rspec.utils.SpecificationUtils.ruleIsEnabled;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.INVALID_FIELD_TAG;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.MISSING_FIELD;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_1XX_FIELD;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_FIELD;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD;
-import static org.folio.rspec.validation.validator.marc.model.MarcRuleCode.UNDEFINED_FIELD;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.folio.rspec.domain.dto.DefinitionType;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -22,33 +15,23 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRecord;
-import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 
 public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcRecord, SpecificationDto> {
-
-  private static final List<MarcRuleCode> FIELD_RULES = List.of(
-    NON_REPEATABLE_FIELD
-  );
-  private static final List<MarcRuleCode> FIELD_SET_RULES = List.of(
-    UNDEFINED_FIELD,
-    MISSING_FIELD,
-    INVALID_FIELD_TAG,
-    NON_REPEATABLE_1XX_FIELD,
-    NON_REPEATABLE_REQUIRED_1XX_FIELD
-  );
 
   private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
-    this.fieldSetValidators = FIELD_SET_RULES.stream()
-      .map(ruleCode -> RuleValidatorsProvider.getFieldSetValidator(ruleCode, translationProvider))
-      .filter(Objects::nonNull)
-      .toList();
-    this.fieldValidators = FIELD_RULES.stream()
-      .map(ruleCode -> RuleValidatorsProvider.getFieldValidator(ruleCode, translationProvider))
-      .filter(Objects::nonNull)
-      .toList();
+    this.fieldSetValidators = List.of(
+      new FieldTagRuleValidator(translationProvider),
+      new FieldSetMissingFieldRuleValidator(translationProvider),
+      new MarcFieldUndefinedFieldRuleValidator(translationProvider),
+      new MarcFieldNonRepeatable1xxFieldRuleValidator(translationProvider),
+      new MarcFieldNonRepeatableRequired1xxFieldRuleValidator(translationProvider)
+    );
+    this.fieldValidators = List.of(
+      new MarcFieldNonRepeatableFieldRuleValidator(translationProvider)
+    );
   }
 
   @Override
