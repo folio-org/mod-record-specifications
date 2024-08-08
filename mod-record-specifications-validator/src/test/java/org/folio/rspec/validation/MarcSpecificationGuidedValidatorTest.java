@@ -3,7 +3,7 @@ package org.folio.rspec.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.folio.support.TestDataProvider.getSpecification;
-import static org.folio.support.TestDataProvider.getSpecification1xx;
+import static org.folio.support.TestDataProvider.getSpecificationWithTags;
 
 import java.util.stream.Stream;
 import org.assertj.core.groups.Tuple;
@@ -38,12 +38,29 @@ class MarcSpecificationGuidedValidatorTest {
       );
   }
 
+  @Test
+  void testMarcRecordFieldsValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/marc-invalid-tag-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithTags("100"));
+    assertThat(validationErrors)
+      .hasSize(6)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("1OO[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("11I[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("XXX[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+        tuple("1OO[0]", MarcRuleCode.INVALID_FIELD_TAG.getCode()),
+        tuple("11I[0]", MarcRuleCode.INVALID_FIELD_TAG.getCode()),
+        tuple("XXX[0]", MarcRuleCode.INVALID_FIELD_TAG.getCode())
+      );
+  }
+
   @ParameterizedTest
   @MethodSource("provide1xxArguments")
   void test1xxMarcRecordValidation(String file, String[] tags, Tuple[] expected) {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord(String.format("testdata/tag1xx/%s.json", file));
 
-    var validationErrors = validator.validate(marc4jRecord, getSpecification1xx(tags));
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithTags(tags));
 
     assertThat(validationErrors)
       .hasSize(expected.length)

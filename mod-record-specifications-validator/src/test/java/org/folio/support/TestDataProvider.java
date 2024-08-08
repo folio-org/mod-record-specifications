@@ -22,33 +22,16 @@ public class TestDataProvider {
       .fields(fieldDefinitions());
   }
 
-  private static List<SpecificationFieldDto> fieldDefinitions() {
-    return List.of(
-      requiredNonRepeatableField("000"),
-      requiredNonRepeatableField("001"),
-      defaultField("005"),
-      defaultField("006"),
-      defaultField("007"),
-      defaultField("008"),
-      defaultField("010"),
-      defaultField("035"),
-      nonRepeatableField("100"),
-      requiredField("245"),
-      requiredField("889"),
-      requiredNonRepeatableField("650")
-    );
-  }
-
-  public static SpecificationDto getSpecification1xx(String... tags) {
+  public static SpecificationDto getSpecificationWithTags(String... tags) {
     return new SpecificationDto()
       .id(UUID.randomUUID())
       .family(Family.MARC)
       .profile(FamilyProfile.BIBLIOGRAPHIC)
       .rules(allEnabledRules())
-      .fields(fieldDefinitions1xx(tags));
+      .fields(fieldDefinitionsTags(tags));
   }
 
-  private static List<SpecificationFieldDto> fieldDefinitions1xx(String[] tags) {
+  private static List<SpecificationFieldDto> commonFieldDefinitions() {
     List<SpecificationFieldDto> fields = new ArrayList<>();
     fields.add(requiredNonRepeatableField("000"));
     fields.add(requiredNonRepeatableField("001"));
@@ -57,9 +40,22 @@ public class TestDataProvider {
     fields.add(defaultField("007"));
     fields.add(defaultField("008"));
     fields.add(defaultField("010"));
+    return fields;
+  }
 
+  private static List<SpecificationFieldDto> fieldDefinitions() {
+    List<SpecificationFieldDto> fields = commonFieldDefinitions();
+    fields.add(defaultField("035"));
+    fields.add(nonRepeatableField("100"));
+    fields.add(requiredField("245"));
+    fields.add(requiredField("889"));
+    fields.add(requiredNonRepeatableField("650"));
+    return fields;
+  }
+
+  private static List<SpecificationFieldDto> fieldDefinitionsTags(String[] tags) {
+    List<SpecificationFieldDto> fields = commonFieldDefinitions();
     Arrays.stream(tags).forEach(tag -> fields.add(nonRepeatableField(tag)));
-
     return fields;
   }
 
