@@ -4,13 +4,13 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 
 public enum MarcRuleCode implements SpecificationRuleCode {
 
-  INVALID_INDICATOR("invalidIndicator"),
   UNDEFINED_FIELD("undefinedField"),
   MISSING_FIELD("missingField"),
   INVALID_FIELD_TAG("invalidFieldTag"),
   NON_REPEATABLE_1XX_FIELD("nonRepeatable1XXField"),
   NON_REPEATABLE_REQUIRED_1XX_FIELD("nonRepeatableRequired1XXField"),
-  NON_REPEATABLE_FIELD("nonRepeatableField");
+  NON_REPEATABLE_FIELD("nonRepeatableField"),
+  INVALID_INDICATOR("invalidIndicator");
 
   private final String code;
 

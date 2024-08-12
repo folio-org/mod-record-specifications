@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
+import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
@@ -31,6 +33,15 @@ public class TestDataProvider {
       .fields(fieldDefinitionsTags(tags));
   }
 
+  public static SpecificationDto getSpecificationWithIndicators() {
+    return new SpecificationDto()
+      .id(UUID.randomUUID())
+      .family(Family.MARC)
+      .profile(FamilyProfile.BIBLIOGRAPHIC)
+      .rules(allEnabledRules())
+      .fields(indicatorsFieldDefinitions());
+  }
+
   private static List<SpecificationFieldDto> commonFieldDefinitions() {
     List<SpecificationFieldDto> fields = new ArrayList<>();
     fields.add(requiredNonRepeatableField("000"));
@@ -40,6 +51,18 @@ public class TestDataProvider {
     fields.add(defaultField("007"));
     fields.add(defaultField("008"));
     fields.add(defaultField("010"));
+    return fields;
+  }
+
+  private static List<SpecificationFieldDto> indicatorsFieldDefinitions() {
+    List<SpecificationFieldDto> fields = new ArrayList<>();
+    fields.add(requiredNonRepeatableField("000"));
+    fields.add(defaultFieldWithIndicator("010"));
+    fields.add(defaultFieldWithIndicator("035"));
+    fields.add(defaultFieldWithIndicator("047"));
+    fields.add(defaultFieldWithIndicator("100"));
+    fields.add(defaultFieldWithIndicator("245"));
+    fields.add(defaultFieldWithIndicator("650"));
     return fields;
   }
 
@@ -75,6 +98,10 @@ public class TestDataProvider {
     return fieldDefinition(tag, false, false, true);
   }
 
+  private static SpecificationFieldDto defaultFieldWithIndicator(String tag) {
+    return defaultField(tag).indicators(List.of(getIndicator(), getIndicator()));
+  }
+
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
                                                        boolean repeatable) {
     return new SpecificationFieldDto()
@@ -91,5 +118,9 @@ public class TestDataProvider {
 
   private static SpecificationRuleDto enabledRule(MarcRuleCode ruleCode) {
     return new SpecificationRuleDto().id(UUID.randomUUID()).code(ruleCode.getCode()).enabled(true);
+  }
+
+  private static FieldIndicatorDto getIndicator() {
+    return new FieldIndicatorDto().id(UUID.randomUUID()).addCodesItem(new IndicatorCodeDto().code("code"));
   }
 }

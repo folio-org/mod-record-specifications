@@ -3,6 +3,7 @@ package org.folio.rspec.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.folio.support.TestDataProvider.getSpecification;
+import static org.folio.support.TestDataProvider.getSpecificationWithIndicators;
 import static org.folio.support.TestDataProvider.getSpecificationWithTags;
 
 import java.util.stream.Stream;
@@ -66,6 +67,32 @@ class MarcSpecificationGuidedValidatorTest {
       .hasSize(expected.length)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(expected);
+  }
+
+  @Test
+  void testInvalidIndicatorValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/indicators/marc-indicators-record.json");
+
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithIndicators());
+
+    assertThat(validationErrors)
+      .hasSize(12)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("035[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[1]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[2]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[1]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[2]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("245[0]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("245[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("650[0]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("650[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode())
+
+      );
   }
 
   private static Stream<Arguments> provide1xxArguments() {

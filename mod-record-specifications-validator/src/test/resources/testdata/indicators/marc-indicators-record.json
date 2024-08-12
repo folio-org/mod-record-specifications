@@ -1,0 +1,124 @@
+{
+  "fields": [
+    {
+      "010": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "Both valid"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "#",
+        "ind2": " ",
+        "subfields": [
+          {
+            "a": "1st valid, 2nd invalid"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "A",
+        "ind2": "a",
+        "subfields": [
+          {
+            "a": "symbol - 1st invalid, 2nd valid"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "Ї",
+        "ind2": "є",
+        "subfields": [
+          {
+            "a": "symbol - 1st invalid, 2nd invalid"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "1",
+        "ind2": "",
+        "subfields": [
+          {
+            "a": "length - 1st valid, 2nd invalid"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "",
+        "ind2": "7",
+        "subfields": [
+          {
+            "a": "length - 1st invalid, 2nd valid"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "",
+        "ind2": "",
+        "subfields": [
+          {
+            "a": "length - 1st invalid, 2nd invalid"
+          }
+        ]
+      }
+    },
+    {
+      "100": {
+        "ind1": "u",
+        "ind2": "a",
+        "subfields": [
+          {
+            "a": "Mozart, Wolfgang Amadeus,"
+          },
+          {
+            "d": "1756-1791."
+          },
+          {
+            "0": "12345"
+          },
+          {
+            "9": "b9a5f035-de63-4e2c-92c2-07240c88b817"
+          }
+        ]
+      }
+    },
+    {
+      "245": {
+        "ind1": "\\",
+        "ind2": "\\\\",
+        "subfields": [
+          {
+            "a": "Both invalid"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": "   ",
+        "ind2": "      ",
+        "subfields": [
+          {
+            "a": "Both invalid"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}
