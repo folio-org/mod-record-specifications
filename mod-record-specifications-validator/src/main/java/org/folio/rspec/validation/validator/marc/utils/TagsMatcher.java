@@ -19,7 +19,7 @@ public final class TagsMatcher {
     return tag != null && TAG_1XX_PATTERN.matcher(tag).matches();
   }
 
-  public static boolean matchesIndicator(String symbol) {
+  public static boolean matchesValidIndicator(String symbol) {
     return symbol != null && INDICATOR_PATTERN.matcher(symbol).matches();
   }
 }

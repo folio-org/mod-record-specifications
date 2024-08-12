@@ -22,7 +22,7 @@ class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
       var indicators = marcDataField.indicators();
       if (indicators != null) {
         return indicators.stream()
-          .filter(marcIndicator -> !TagsMatcher.matchesIndicator(marcIndicator.value().toString()))
+          .filter(marcIndicator -> !TagsMatcher.matchesValidIndicator(marcIndicator.value().toString()))
           .map(marcIndicator -> buildError(marcIndicator, field))
           .toList();
       }
