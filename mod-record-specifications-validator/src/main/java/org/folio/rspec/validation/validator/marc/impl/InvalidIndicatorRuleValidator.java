@@ -18,8 +18,8 @@ class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
 
   @Override
   public List<ValidationError> validate(MarcField marcField, SpecificationFieldDto field) {
-    if (marcField instanceof MarcDataField) {
-      var indicators = ((MarcDataField) marcField).indicators();
+    if (marcField instanceof MarcDataField marcDataField) {
+      var indicators = marcDataField.indicators();
       if (indicators != null) {
         return indicators.stream()
           .filter(marcIndicator -> !TagsMatcher.matchesIndicator(marcIndicator.value().toString()))
