@@ -5,7 +5,13 @@ name: build dependants
 on:
   pull_request:
     branches: [ master ]
+    paths:
+      - 'pom.xml'
+      - 'api/**'
+      - 'mod-record-specifications-dto/**'
+      - 'mod-record-specifications-validator/**'
   workflow_dispatch:
+
 jobs:
   mod-record-specifications:
     runs-on: ubuntu-latest
