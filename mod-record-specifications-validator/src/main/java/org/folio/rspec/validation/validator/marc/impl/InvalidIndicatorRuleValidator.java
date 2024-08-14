@@ -8,7 +8,7 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
+import org.folio.rspec.validation.validator.marc.utils.MatcherUtils;
 
 class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
 
@@ -22,7 +22,7 @@ class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
       var indicators = marcDataField.indicators();
       if (indicators != null) {
         return indicators.stream()
-          .filter(marcIndicator -> !TagsMatcher.matchesValidIndicator(marcIndicator.value().toString()))
+          .filter(marcIndicator -> !MatcherUtils.matchesValidIndicator(marcIndicator.value()))
           .map(marcIndicator -> buildError(marcIndicator, field))
           .toList();
       }
