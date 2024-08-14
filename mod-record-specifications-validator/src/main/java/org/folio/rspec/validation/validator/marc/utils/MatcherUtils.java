@@ -19,6 +19,6 @@ public final class MatcherUtils {
   }
 
   public static boolean matchesValidIndicator(char symbol) {
-    return symbol == '#' || (symbol >= '0' && symbol <= '9') || (symbol >= 'a' && symbol <= 'z');
+    return symbol == '#' || symbol >= '0' && symbol <= '9' || symbol >= 'a' && symbol <= 'z';
   }
 }
