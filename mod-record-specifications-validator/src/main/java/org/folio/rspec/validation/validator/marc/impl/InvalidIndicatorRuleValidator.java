@@ -1,14 +1,13 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
-import org.folio.rspec.domain.dto.SpecificationFieldDto;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
-import org.folio.rspec.validation.validator.marc.model.MarcDataField;
-import org.folio.rspec.validation.validator.marc.model.MarcField;
+import org.folio.rspec.validation.validator.marc.model.MarcIndicator;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
+import org.folio.rspec.validation.validator.marc.utils.MatcherUtils;
 
 class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
 
@@ -17,17 +16,11 @@ class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
   }
 
   @Override
-  public List<ValidationError> validate(MarcField marcField, SpecificationFieldDto field) {
-    if (marcField instanceof MarcDataField marcDataField) {
-      var indicators = marcDataField.indicators();
-      if (indicators != null) {
-        return indicators.stream()
-          .filter(marcIndicator -> !TagsMatcher.matchesValidIndicator(marcIndicator.value().toString()))
-          .map(marcIndicator -> buildError(marcIndicator, field))
-          .toList();
-      }
-    }
-    return List.of();
+  public List<ValidationError> validate(List<MarcIndicator> indicators, List<FieldIndicatorDto> specification) {
+    return indicators.stream()
+      .filter(indicator -> !MatcherUtils.matchesValidIndicator(indicator.value()))
+      .map(indicator -> buildError(indicator, specification.get(indicator.order() - 1)))
+      .toList();
   }
 
   @Override

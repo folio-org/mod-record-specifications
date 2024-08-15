@@ -11,7 +11,7 @@ import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.Reference;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
+import org.folio.rspec.validation.validator.marc.utils.MatcherUtils;
 
 abstract class Abstract1xxFieldRuleValidator
   implements SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto> {
@@ -35,7 +35,7 @@ abstract class Abstract1xxFieldRuleValidator
 
   protected List<MarcField> extract1xxFields(Map<String, List<MarcField>> fields) {
     return fields.keySet().stream()
-      .filter(TagsMatcher::matches1xx)
+      .filter(MatcherUtils::matches1xxTag)
       .flatMap(tag -> fields.get(tag).stream())
       .toList();
   }

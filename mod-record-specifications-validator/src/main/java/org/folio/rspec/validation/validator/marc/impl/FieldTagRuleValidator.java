@@ -12,7 +12,7 @@ import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
-import org.folio.rspec.validation.validator.marc.utils.TagsMatcher;
+import org.folio.rspec.validation.validator.marc.utils.MatcherUtils;
 
 class FieldTagRuleValidator
   implements SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto> {
@@ -27,7 +27,7 @@ class FieldTagRuleValidator
   public List<ValidationError> validate(Map<String, List<MarcField>> fields, SpecificationDto specification) {
     return fields.values().stream()
       .flatMap(Collection::stream)
-      .filter(field -> !TagsMatcher.matchesValidTag(field.tag()))
+      .filter(field -> !MatcherUtils.matchesValidTag(field.tag()))
       .map(field -> buildError(field, specification))
       .toList();
   }
