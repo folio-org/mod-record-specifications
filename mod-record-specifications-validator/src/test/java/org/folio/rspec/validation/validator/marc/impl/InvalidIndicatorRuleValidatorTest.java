@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
@@ -31,7 +32,7 @@ class InvalidIndicatorRuleValidatorTest {
 
   @Test
   void validate_whenInvalidIndicators_shouldReturnValidationError() {
-    var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
+    var fieldDefinition = getFieldDefinition();
     var marcField = new MarcDataField(
       Reference.forTag("tag", 1),
       getIndicators('X', 'x'),
@@ -39,7 +40,7 @@ class InvalidIndicatorRuleValidatorTest {
 
     when(translationProvider.format(validator.supportedRule().getCode())).thenReturn("message");
 
-    var errors = validator.validate(marcField, fieldDefinition);
+    var errors = validator.validate(marcField.indicators(), fieldDefinition.getIndicators());
 
     assertEquals(1, errors.size());
     assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
@@ -50,21 +51,29 @@ class InvalidIndicatorRuleValidatorTest {
 
   @Test
   void validate_whenValidIndicators_shouldReturnEmptyList() {
-    var fieldDefinition = new SpecificationFieldDto().id(UUID.randomUUID()).repeatable(false);
+    var fieldDefinition = getFieldDefinition();
     var marcField = new MarcDataField(
       Reference.forTag("tag", 0),
       getIndicators('#', '#'),
       null);
 
-    List<ValidationError> errors = validator.validate(marcField, fieldDefinition);
+    List<ValidationError> errors = validator.validate(marcField.indicators(), fieldDefinition.getIndicators());
 
     assertTrue(errors.isEmpty());
   }
 
+  private static SpecificationFieldDto getFieldDefinition() {
+    return new SpecificationFieldDto()
+      .id(UUID.randomUUID())
+      .repeatable(false)
+      .indicators(List.of(new FieldIndicatorDto(), new FieldIndicatorDto()));
+  }
+
   private static List<MarcIndicator> getIndicators(char ind1, char ind2) {
+
     return List.of(
-      new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 0), ind1),
-      new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 1), ind2)
+      new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 1), ind1),
+      new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 2), ind2)
     );
   }
 }

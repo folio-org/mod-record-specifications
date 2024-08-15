@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @UnitTest
-public class MatcherUtilsTest {
+class MatcherUtilsTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"000", "123", "555", "876", "999"})

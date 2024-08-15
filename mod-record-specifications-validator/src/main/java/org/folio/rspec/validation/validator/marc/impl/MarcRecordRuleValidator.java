@@ -7,19 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.folio.rspec.domain.dto.DefinitionType;
+import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
+import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
+import org.folio.rspec.validation.validator.marc.model.MarcIndicator;
 import org.folio.rspec.validation.validator.marc.model.MarcRecord;
 
 public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcRecord, SpecificationDto> {
 
   private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
+  private final List<SpecificationRuleValidator<List<MarcIndicator>, List<FieldIndicatorDto>>> indicatorValidators;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
@@ -30,7 +34,9 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       new MarcFieldNonRepeatableRequired1xxFieldRuleValidator(translationProvider)
     );
     this.fieldValidators = List.of(
-      new MarcFieldNonRepeatableFieldRuleValidator(translationProvider),
+      new MarcFieldNonRepeatableFieldRuleValidator(translationProvider)
+    );
+    this.indicatorValidators = List.of(
       new InvalidIndicatorRuleValidator(translationProvider)
     );
   }
@@ -54,8 +60,12 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
               validationErrors.addAll(validator.validate(marcField, fieldDefinition));
             }
           }
+          for (var validator : indicatorValidators) {
+            if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
+              validationErrors.addAll(validator.validate(field.indicators(), fieldDefinition.getIndicators()));
+            }
+          }
         });
-
     }
     return validationErrors;
   }
