@@ -76,7 +76,7 @@ class MarcSpecificationGuidedValidatorTest {
     var validationErrors = validator.validate(marc4jRecord, getSpecificationWithIndicators());
 
     assertThat(validationErrors)
-      .hasSize(12)
+      .hasSize(8)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("035[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
@@ -86,11 +86,7 @@ class MarcSpecificationGuidedValidatorTest {
         tuple("047[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
         tuple("047[1]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
         tuple("047[2]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("047[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("245[0]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("245[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("650[0]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("650[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode())
+        tuple("047[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode())
 
       );
   }

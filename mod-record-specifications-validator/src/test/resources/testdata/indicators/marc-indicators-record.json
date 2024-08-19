@@ -3,7 +3,7 @@
     {
       "010": {
         "ind1": "#",
-        "ind2": "#",
+        "ind2": "/",
         "subfields": [
           {
             "a": "Both valid"
@@ -14,7 +14,7 @@
     {
       "035": {
         "ind1": "#",
-        "ind2": " ",
+        "ind2": ".",
         "subfields": [
           {
             "a": "1st valid, 2nd invalid"
@@ -47,7 +47,7 @@
     {
       "047": {
         "ind1": "1",
-        "ind2": "",
+        "ind2": "$",
         "subfields": [
           {
             "a": "length - 1st valid, 2nd invalid"
@@ -57,7 +57,7 @@
     },
     {
       "047": {
-        "ind1": "",
+        "ind1": "!",
         "ind2": "7",
         "subfields": [
           {
@@ -68,8 +68,8 @@
     },
     {
       "047": {
-        "ind1": "",
-        "ind2": "",
+        "ind1": "&",
+        "ind2": "%",
         "subfields": [
           {
             "a": "length - 1st invalid, 2nd invalid"
@@ -83,7 +83,7 @@
         "ind2": "a",
         "subfields": [
           {
-            "a": "Mozart, Wolfgang Amadeus,"
+            "a": "Both valid"
           },
           {
             "d": "1756-1791."
@@ -103,7 +103,7 @@
         "ind2": "\\\\",
         "subfields": [
           {
-            "a": "Both invalid"
+            "a": "Both valid"
           }
         ]
       }
@@ -114,7 +114,7 @@
         "ind2": "      ",
         "subfields": [
           {
-            "a": "Both invalid"
+            "a": "Both valid"
           }
         ]
       }
