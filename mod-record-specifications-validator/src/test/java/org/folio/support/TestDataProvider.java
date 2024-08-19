@@ -99,7 +99,7 @@ public class TestDataProvider {
   }
 
   private static SpecificationFieldDto defaultFieldWithIndicator(String tag) {
-    return defaultField(tag).indicators(List.of(getIndicator(), getIndicator()));
+    return defaultField(tag).indicators(List.of(getIndicator(1), getIndicator(2)));
   }
 
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
@@ -120,7 +120,10 @@ public class TestDataProvider {
     return new SpecificationRuleDto().id(UUID.randomUUID()).code(ruleCode.getCode()).enabled(true);
   }
 
-  private static FieldIndicatorDto getIndicator() {
-    return new FieldIndicatorDto().id(UUID.randomUUID()).addCodesItem(new IndicatorCodeDto().code("code"));
+  private static FieldIndicatorDto getIndicator(int order) {
+    return new FieldIndicatorDto()
+      .id(UUID.randomUUID())
+      .order(order)
+      .addCodesItem(new IndicatorCodeDto().code("code"));
   }
 }

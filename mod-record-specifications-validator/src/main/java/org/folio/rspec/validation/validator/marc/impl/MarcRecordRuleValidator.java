@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.folio.rspec.domain.dto.DefinitionType;
-import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.ValidationError;
@@ -23,7 +22,7 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
 
   private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
-  private final List<SpecificationRuleValidator<List<MarcIndicator>, List<FieldIndicatorDto>>> indicatorValidators;
+  private final List<SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto>> indicatorValidators;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
@@ -62,7 +61,7 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
           }
           for (var validator : indicatorValidators) {
             if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
-              validationErrors.addAll(validator.validate(field.indicators(), fieldDefinition.getIndicators()));
+              validationErrors.addAll(validator.validate(field.indicators(), fieldDefinition));
             }
           }
         });

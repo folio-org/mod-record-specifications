@@ -4,13 +4,14 @@ import java.util.List;
 import org.folio.rspec.domain.dto.DefinitionType;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.SeverityType;
+import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
 import org.folio.rspec.validation.validator.marc.model.MarcIndicator;
 
 abstract class AbstractIndicatorRuleValidator
-  implements SpecificationRuleValidator<List<MarcIndicator>, List<FieldIndicatorDto>> {
+  implements SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto> {
 
   private final TranslationProvider translationProvider;
 
@@ -34,7 +35,7 @@ abstract class AbstractIndicatorRuleValidator
     return ValidationError.builder()
       .path(marcIndicator.reference().toString())
       .definitionType(definitionType())
-      .definitionId(indicatorDefinition.getId())
+      .definitionId(indicatorDefinition != null ? indicatorDefinition.getId() : null)
       .severity(severity())
       .ruleCode(ruleCode())
       .message(message)
