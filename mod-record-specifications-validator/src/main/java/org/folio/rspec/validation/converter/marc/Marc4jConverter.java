@@ -84,15 +84,8 @@ public class Marc4jConverter implements Converter<Record, MarcRecord> {
 
   private MarcIndicator toMarcIndicator(Reference fieldReference, char indicatorValue, int indicatorIndex) {
     var reference = Reference.forIndicator(fieldReference, indicatorIndex);
-    return new MarcIndicator(reference, toIndicatorCommonEmptyValue(indicatorValue));
-  }
-
-  private char toIndicatorCommonEmptyValue(char value) {
-    return switch (value) {
-      // handle empty space and space (32), slash (47) and backslash (92)
-      case 32, 47, 92 -> '#';
-      default -> value;
-    };
+    var value = indicatorValue == 32 ? '#' : indicatorValue;
+    return new MarcIndicator(reference, value);
   }
 
   private MarcSubfield toMarcSubfield(Reference parentReference, List<Subfield> subfieldList, Subfield subfield) {

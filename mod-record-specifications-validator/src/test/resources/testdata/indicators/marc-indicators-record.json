@@ -3,7 +3,7 @@
     {
       "010": {
         "ind1": "#",
-        "ind2": "/",
+        "ind2": " ",
         "subfields": [
           {
             "a": "Both valid"
@@ -50,7 +50,7 @@
         "ind2": "$",
         "subfields": [
           {
-            "a": "length - 1st valid, 2nd invalid"
+            "a": "1st valid, 2nd invalid"
           }
         ]
       }
@@ -61,7 +61,7 @@
         "ind2": "7",
         "subfields": [
           {
-            "a": "length - 1st invalid, 2nd valid"
+            "a": "1st invalid, 2nd valid"
           }
         ]
       }
@@ -72,7 +72,7 @@
         "ind2": "%",
         "subfields": [
           {
-            "a": "length - 1st invalid, 2nd invalid"
+            "a": "1st invalid, 2nd invalid"
           }
         ]
       }
@@ -99,8 +99,8 @@
     },
     {
       "245": {
-        "ind1": "\\",
-        "ind2": "\\\\",
+        "ind1": "##",
+        "ind2": "####",
         "subfields": [
           {
             "a": "Both valid"

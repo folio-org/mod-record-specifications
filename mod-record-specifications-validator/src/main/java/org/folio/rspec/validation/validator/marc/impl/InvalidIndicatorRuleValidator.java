@@ -19,13 +19,13 @@ class InvalidIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
   }
 
   @Override
-  public List<ValidationError> validate(List<MarcIndicator> indicators, SpecificationFieldDto specification) {
-    var indicatorSpecificationMap = specification.getIndicators().stream()
+  public List<ValidationError> validate(List<MarcIndicator> indicators, SpecificationFieldDto fieldDefinition) {
+    var fieldDefinitionIndicatorsMap = fieldDefinition.getIndicators().stream()
       .collect(Collectors.toMap(FieldIndicatorDto::getOrder, Function.identity()));
 
     return indicators.stream()
       .filter(indicator -> !MatcherUtils.matchesValidIndicator(indicator.value()))
-      .map(indicator -> buildError(indicator, indicatorSpecificationMap.get(indicator.order())))
+      .map(indicator -> buildError(indicator, fieldDefinitionIndicatorsMap.get(indicator.order())))
       .toList();
   }
 
