@@ -18,6 +18,9 @@ import org.marc4j.marc.VariableField;
 
 public class Marc4jConverter implements Converter<Record, MarcRecord> {
 
+  private static final char EMPTY_SPACE = 32;
+  private static final char MARC_INDICATOR_EMPTY_VALUE = '#';
+
   @Override
   public MarcRecord convert(Record rec) {
     var controlFields = convertControlFields(rec);
@@ -84,7 +87,7 @@ public class Marc4jConverter implements Converter<Record, MarcRecord> {
 
   private MarcIndicator toMarcIndicator(Reference fieldReference, char indicatorValue, int indicatorIndex) {
     var reference = Reference.forIndicator(fieldReference, indicatorIndex);
-    var value = indicatorValue == 32 ? '#' : indicatorValue;
+    var value = indicatorValue == EMPTY_SPACE ? MARC_INDICATOR_EMPTY_VALUE : indicatorValue;
     return new MarcIndicator(reference, value);
   }
 
