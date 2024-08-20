@@ -17,8 +17,8 @@
     },
     {
       "010": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": " ",
+        "ind2": " ",
         "subfields": [
           {
             "a": "  2001000234"
@@ -34,8 +34,8 @@
     },
     {
       "1OO": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": "1",
+        "ind2": "1",
         "subfields": [
           {
             "a": "double O instead of zero"
@@ -54,8 +54,8 @@
     },
     {
       "11I": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": "1",
+        "ind2": "1",
         "subfields": [
           {
             "a": "I instead of 1"
@@ -74,8 +74,8 @@
     },
     {
       "XXX": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": "1",
+        "ind2": "1",
         "subfields": [
           {
             "a": "Xander 'XXX' Cage"
@@ -94,8 +94,8 @@
     },
     {
       "100": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": " ",
+        "ind2": " ",
         "subfields": [
           {
             "a": "Mozart, Wolfgang Amadeus,"

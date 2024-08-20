@@ -40,7 +40,7 @@ class InvalidIndicatorRuleValidatorTest {
 
     when(translationProvider.format(validator.supportedRule().getCode())).thenReturn("message");
 
-    var errors = validator.validate(marcField.indicators(), fieldDefinition.getIndicators());
+    var errors = validator.validate(marcField.indicators(), fieldDefinition);
 
     assertEquals(1, errors.size());
     assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
@@ -57,7 +57,7 @@ class InvalidIndicatorRuleValidatorTest {
       getIndicators('#', '#'),
       null);
 
-    List<ValidationError> errors = validator.validate(marcField.indicators(), fieldDefinition.getIndicators());
+    List<ValidationError> errors = validator.validate(marcField.indicators(), fieldDefinition);
 
     assertTrue(errors.isEmpty());
   }
@@ -66,11 +66,10 @@ class InvalidIndicatorRuleValidatorTest {
     return new SpecificationFieldDto()
       .id(UUID.randomUUID())
       .repeatable(false)
-      .indicators(List.of(new FieldIndicatorDto(), new FieldIndicatorDto()));
+      .indicators(List.of(new FieldIndicatorDto().order(1), new FieldIndicatorDto().order(2)));
   }
 
   private static List<MarcIndicator> getIndicators(char ind1, char ind2) {
-
     return List.of(
       new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 1), ind1),
       new MarcIndicator(Reference.forIndicator(Reference.forTag("ind"), 2), ind2)
