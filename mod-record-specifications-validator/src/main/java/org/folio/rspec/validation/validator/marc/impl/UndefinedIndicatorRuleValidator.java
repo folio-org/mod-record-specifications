@@ -1,8 +1,11 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.SeverityType;
+import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.ValidationError;
 import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
@@ -17,10 +20,16 @@ class UndefinedIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
   }
 
   @Override
-  public List<ValidationError> validate(List<MarcIndicator> indicators, List<FieldIndicatorDto> specification) {
+  public List<ValidationError> validate(List<MarcIndicator> indicators, SpecificationFieldDto fieldDefinition) {
+    if (!indicators.isEmpty()) {
+      return List.of();
+    }
+    var fieldDefinitionIndicatorsMap = fieldDefinition.getIndicators().stream()
+      .collect(Collectors.toMap(FieldIndicatorDto::getOrder, Function.identity()));
+
     return indicators.stream()
-      .filter(indicator -> indicator.value().equals(specification.get(indicator.order() - 1).getCodes().get(0))) // todo
-      .map(indicator -> buildError(indicator, specification.get(indicator.order() - 1)))
+      .filter(indicator -> !MatcherUtils.matchesValidIndicator(indicator.value()))
+      .map(indicator -> buildError(indicator, fieldDefinitionIndicatorsMap.get(indicator.order())))
       .toList();
   }
 
@@ -31,6 +40,6 @@ class UndefinedIndicatorRuleValidator extends AbstractIndicatorRuleValidator {
 
   @Override
   public SpecificationRuleCode supportedRule() {
-    return MarcRuleCode.INVALID_INDICATOR;
+    return MarcRuleCode.UNDEFINED_INDICATOR;
   }
 }
