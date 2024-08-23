@@ -13,7 +13,7 @@ import org.folio.rspec.validation.validator.marc.model.MarcIndicator;
 abstract class AbstractIndicatorRuleValidator
   implements SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto> {
 
-  private final TranslationProvider translationProvider;
+  protected final TranslationProvider translationProvider;
 
   AbstractIndicatorRuleValidator(TranslationProvider translationProvider) {
     this.translationProvider = translationProvider;
