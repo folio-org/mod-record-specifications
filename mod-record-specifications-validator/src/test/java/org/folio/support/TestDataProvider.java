@@ -118,13 +118,6 @@ public class TestDataProvider {
     return new SpecificationRuleDto().id(UUID.randomUUID()).code(ruleCode.getCode()).enabled(true);
   }
 
-  private static FieldIndicatorDto getIndicator(int order) {
-    return new FieldIndicatorDto()
-      .id(UUID.randomUUID())
-      .order(order)
-      .addCodesItem(new IndicatorCodeDto().code("c"));
-  }
-
   private static List<FieldIndicatorDto> getFieldIndicatorDtoListByTag(String tag) {
     return switch (tag) {
       case "010", "035" -> List.of(

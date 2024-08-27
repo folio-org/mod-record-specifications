@@ -39,8 +39,8 @@ class UndefinedIndicatorRuleValidatorTest {
 
   @ParameterizedTest
   @MethodSource("undefinedIndicatorsTestSource")
-  void validate_whenInvalidIndicators_shouldReturnValidationError(char ind1, char ind2) {
-    var fieldDefinition = getFieldDefinition();
+  void validate_whenUndefinedIndicators_shouldReturnValidationError(char ind1, char ind2) {
+    var fieldDefinition = getFieldDefinition(true);
     var marcField = new MarcDataField(
       Reference.forTag("tag", 1),
       getIndicators(ind1, ind2),
@@ -59,8 +59,24 @@ class UndefinedIndicatorRuleValidatorTest {
   }
 
   @Test
+  void validate_whenNoIndicators_shouldReturnValidationErrorForBothIndicators() {
+    var fieldDefinition = getFieldDefinition(false);
+    var marcField = new MarcDataField(
+      Reference.forTag("tag", 1),
+      getIndicators('#', '#'),
+      null);
+
+    when(translationProvider.format(anyString(),
+      anyString(), anyString(), anyString(), anyString())).thenReturn("message");
+
+    var errors = validator.validate(marcField.indicators(), fieldDefinition);
+
+    assertEquals(2, errors.size());
+  }
+
+  @Test
   void validate_whenValidIndicators_shouldReturnEmptyList() {
-    var fieldDefinition = getFieldDefinition();
+    var fieldDefinition = getFieldDefinition(true);
     var marcField = new MarcDataField(
       Reference.forTag("tag", 0),
       getIndicators('1', 'a'),
@@ -80,14 +96,15 @@ class UndefinedIndicatorRuleValidatorTest {
     );
   }
 
-  private static SpecificationFieldDto getFieldDefinition() {
+  private static SpecificationFieldDto getFieldDefinition(boolean withIndicators) {
     return new SpecificationFieldDto()
       .id(UUID.randomUUID())
       .repeatable(false)
-      .indicators(List.of(
-        new FieldIndicatorDto().order(1).codes(getIndicatorCodes()),
-        new FieldIndicatorDto().order(2).codes(getIndicatorCodes())
-      ));
+      .indicators(withIndicators
+        ? List.of(
+          new FieldIndicatorDto().order(1).codes(getIndicatorCodes()),
+          new FieldIndicatorDto().order(2).codes(getIndicatorCodes()))
+        : null);
   }
 
   private static List<MarcIndicator> getIndicators(char ind1, char ind2) {

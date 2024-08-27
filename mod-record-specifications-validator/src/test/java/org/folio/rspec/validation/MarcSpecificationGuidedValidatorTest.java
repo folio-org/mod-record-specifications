@@ -177,19 +177,4 @@ class MarcSpecificationGuidedValidatorTest {
       )
     );
   }
-
-  private static Stream<Arguments> provideUndefinedIndicatorArguments() {
-    return Stream.of(
-      Arguments.of("marc-undefined-indicators-record", new String[] {},
-        new Tuple[] {
-          tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      )
-    );
-  }
 }
