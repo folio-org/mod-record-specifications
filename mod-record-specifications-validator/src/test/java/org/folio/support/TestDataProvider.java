@@ -57,12 +57,13 @@ public class TestDataProvider {
   private static List<SpecificationFieldDto> indicatorsFieldDefinitions() {
     List<SpecificationFieldDto> fields = new ArrayList<>();
     fields.add(requiredNonRepeatableField("000"));
-    fields.add(defaultFieldWithIndicator("010"));
-    fields.add(defaultFieldWithIndicator("035"));
-    fields.add(defaultFieldWithIndicator("047"));
-    fields.add(defaultFieldWithIndicator("100"));
-    fields.add(defaultFieldWithIndicator("245"));
-    fields.add(defaultFieldWithIndicator("650"));
+    fields.add(defaultField("010"));
+    fields.add(defaultField("035"));
+    fields.add(defaultField("047"));
+    fields.add(defaultField("100"));
+    fields.add(defaultField("130"));
+    fields.add(defaultField("245"));
+    fields.add(defaultField("650"));
     return fields;
   }
 
@@ -98,15 +99,12 @@ public class TestDataProvider {
     return fieldDefinition(tag, false, false, true);
   }
 
-  private static SpecificationFieldDto defaultFieldWithIndicator(String tag) {
-    return defaultField(tag).indicators(List.of(getIndicator(1), getIndicator(2)));
-  }
-
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
                                                        boolean repeatable) {
     return new SpecificationFieldDto()
       .id(UUID.randomUUID())
       .tag(tag)
+      .indicators(getFieldIndicatorDtoListByTag(tag))
       .required(required)
       .deprecated(deprecated)
       .repeatable(repeatable);
@@ -124,6 +122,35 @@ public class TestDataProvider {
     return new FieldIndicatorDto()
       .id(UUID.randomUUID())
       .order(order)
-      .addCodesItem(new IndicatorCodeDto().code("code"));
+      .addCodesItem(new IndicatorCodeDto().code("c"));
+  }
+
+  private static List<FieldIndicatorDto> getFieldIndicatorDtoListByTag(String tag) {
+    return switch (tag) {
+      case "010", "035" -> List.of(
+        getFieldIndicatorDto(1, List.of("#")),
+        getFieldIndicatorDto(2, List.of("#")));
+      case "047" -> List.of(
+        getFieldIndicatorDto(1, List.of("#")),
+        getFieldIndicatorDto(2, List.of("#", "7")));
+      case "100" -> List.of(
+        getFieldIndicatorDto(1, List.of("0", "1", "2", "3")),
+        getFieldIndicatorDto(2, List.of("#")));
+      case "130" -> List.of(
+        getFieldIndicatorDto(1, List.of("#", "0", "1", "2", "3", "4", "5", "6", "7")),
+        getFieldIndicatorDto(2, List.of("#")));
+      case "245" -> List.of(
+        getFieldIndicatorDto(1, List.of("0", "1")),
+        getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")));
+      case "650" -> List.of(
+        getFieldIndicatorDto(1, List.of("#", "0", "1", "2")),
+        getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7")));
+      default -> null;
+    };
+  }
+
+  private static FieldIndicatorDto getFieldIndicatorDto(int order, List<String> codes) {
+    var indicatorCodeDto = codes.stream().map(code -> new IndicatorCodeDto().code(code)).toList();
+    return new FieldIndicatorDto().order(order).codes(indicatorCodeDto);
   }
 }

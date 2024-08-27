@@ -2,11 +2,13 @@ package org.folio.rspec.validation.validator.marc.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -18,6 +20,9 @@ import org.folio.rspec.validation.validator.marc.model.Reference;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,12 +37,13 @@ class UndefinedIndicatorRuleValidatorTest {
   @InjectMocks
   private UndefinedIndicatorRuleValidator validator;
 
-  @Test
-  void validate_whenInvalidIndicators_shouldReturnValidationError() {
+  @ParameterizedTest
+  @MethodSource("undefinedIndicatorsTestSource")
+  void validate_whenInvalidIndicators_shouldReturnValidationError(char ind1, char ind2) {
     var fieldDefinition = getFieldDefinition();
     var marcField = new MarcDataField(
       Reference.forTag("tag", 1),
-      getIndicators('0', 's'),
+      getIndicators(ind1, ind2),
       null);
 
     when(translationProvider.format(anyString(),
@@ -63,6 +69,15 @@ class UndefinedIndicatorRuleValidatorTest {
     List<ValidationError> errors = validator.validate(marcField.indicators(), fieldDefinition);
 
     assertTrue(errors.isEmpty());
+  }
+
+  public static Stream<Arguments> undefinedIndicatorsTestSource() {
+    return Stream.of(
+      arguments('0', 's'),
+      arguments('s', '0'),
+      arguments('#', 'l'),
+      arguments('l', '#')
+    );
   }
 
   private static SpecificationFieldDto getFieldDefinition() {

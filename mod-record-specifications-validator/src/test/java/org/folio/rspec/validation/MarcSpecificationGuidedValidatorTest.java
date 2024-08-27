@@ -76,18 +76,54 @@ class MarcSpecificationGuidedValidatorTest {
     var validationErrors = validator.validate(marc4jRecord, getSpecificationWithIndicators());
 
     assertThat(validationErrors)
-      .hasSize(8)
+      .hasSize(17)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("035[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[0]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("035[1]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[1]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("035[2]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[2]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("035[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("035[2]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[0]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("047[0]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[0]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("047[1]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[1]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("047[2]^1", MarcRuleCode.INVALID_INDICATOR.getCode()),
-        tuple("047[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode())
+        tuple("047[2]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[2]^2", MarcRuleCode.INVALID_INDICATOR.getCode()),
+        tuple("047[2]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode())
+      );
+  }
 
+  @Test
+  void testUndefinedIndicatorValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord(
+      "testdata/indicators/marc-undefined-indicators-record.json");
+
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithIndicators());
+
+    assertThat(validationErrors)
+      .hasSize(14)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("035[0]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("035[1]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[0]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[0]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[1]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("047[2]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("100[0]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("100[0]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[0]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[1]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[2]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[2]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[3]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
+        tuple("245[3]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode())
       );
   }
 
@@ -117,26 +153,41 @@ class MarcSpecificationGuidedValidatorTest {
       // Multiple 1xx fields with different tags (one undefined tag)
       Arguments.of("marc-different1xx-record", new String[] {"100"},
         new Tuple[] {
-          tuple("131[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+          tuple("130[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       ),
       // Multiple 1xx fields with different defined tags
-      Arguments.of("marc-different1xx-record", new String[] {"100", "131"},
+      Arguments.of("marc-different1xx-record", new String[] {"100", "130"},
         new Tuple[] {
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
           tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("131[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       ),
       // No 1xx fields
       Arguments.of("marc-no1xx-record", new String[] {},
         new Tuple[] {
           tuple("1XX[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+        }
+      )
+    );
+  }
+
+  private static Stream<Arguments> provideUndefinedIndicatorArguments() {
+    return Stream.of(
+      Arguments.of("marc-undefined-indicators-record", new String[] {},
+        new Tuple[] {
+          tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
         }
       )
     );
