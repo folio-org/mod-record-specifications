@@ -28,7 +28,7 @@ class SpecificationRuleRepositoryIT {
 
     assertThat(specificationRuleList)
       .isNotEmpty()
-      .hasSize(13);
+      .hasSize(14);
   }
 
   @Test
