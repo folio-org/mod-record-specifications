@@ -231,7 +231,7 @@
 
     <insert tableName="rule">
       <column name="id" value="eaaa6357-7a95-460e-960d-73f5f6863ffe"/>
-      <column name="name" value="Undefined Indicator"/>
+      <column name="name" value="Undefined Indicator Code"/>
       <column name="code" value="undefinedIndicatorCode"/>
       <column name="description"
               value="Indicator code is not defined but exists in a record's field"/>
