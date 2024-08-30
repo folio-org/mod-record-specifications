@@ -29,7 +29,7 @@
   "validation.nonRepeatableRequired1XXField": "Field 1XX is non-repeatable and required.",
   "validation.nonRepeatableField": "Field is non-repeatable.",
   "validation.undefinedField": "Field is undefined.",
-  "validation.undefinedIndicator": "{order} Indicator '{code}' is undefined.",
+  "validation.undefinedIndicatorCode": "{order} Indicator '{code}' is undefined.",
   "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'."
 
 }

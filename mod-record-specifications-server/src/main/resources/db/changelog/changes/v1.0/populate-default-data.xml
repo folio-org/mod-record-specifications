@@ -218,7 +218,7 @@
     </insert>
   </changeSet>
 
-  <changeSet id="MRSPECS-46@@default-data:rule-undefinedIndicator" labels="default-data" author="viacheslav_poliakov">
+  <changeSet id="MRSPECS-46@@default-data:rule-undefinedIndicatorCode" labels="default-data" author="viacheslav_poliakov">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
         SELECT COUNT(id)
@@ -232,7 +232,7 @@
     <insert tableName="rule">
       <column name="id" value="eaaa6357-7a95-460e-960d-73f5f6863ffe"/>
       <column name="name" value="Undefined Indicator"/>
-      <column name="code" value="undefinedIndicator"/>
+      <column name="code" value="undefinedIndicatorCode"/>
       <column name="description"
               value="Indicator code is not defined but exists in a record's field"/>
       <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
@@ -546,7 +546,7 @@
     </insert>
   </changeSet>
 
-  <changeSet id="MRSPECS-46@@default-data:specification-rule-authority-undefinedIndicator" labels="default-data"
+  <changeSet id="MRSPECS-46@@default-data:specification-rule-authority-undefinedIndicatorCode" labels="default-data"
              author="viacheslav_poliakov">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
@@ -557,7 +557,7 @@
       </sqlCheck>
     </preConditions>
 
-    <comment>Populate default data for authority-undefinedIndicator rule</comment>
+    <comment>Populate default data for authority-undefinedIndicatorCode rule</comment>
 
     <insert tableName="specification_rule">
       <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
@@ -829,7 +829,7 @@
     </insert>
   </changeSet>
 
-  <changeSet id="MRSPECS-46@@default-data:specification-rule-bibliographic-undefinedIndicator" labels="default-data"
+  <changeSet id="MRSPECS-46@@default-data:specification-rule-bibliographic-undefinedIndicatorCode" labels="default-data"
              author="viacheslav_poliakov">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
@@ -840,7 +840,7 @@
       </sqlCheck>
     </preConditions>
 
-    <comment>Populate default data for bibliographic-undefinedIndicator rule</comment>
+    <comment>Populate default data for bibliographic-undefinedIndicatorCode rule</comment>
 
     <insert tableName="specification_rule">
       <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
