@@ -227,7 +227,7 @@
       </sqlCheck>
     </preConditions>
 
-    <comment>Populate default data for invalidIndicatorCode rule</comment>
+    <comment>Populate default data for undefinedIndicatorCode rule</comment>
 
     <insert tableName="rule">
       <column name="id" value="eaaa6357-7a95-460e-960d-73f5f6863ffe"/>
