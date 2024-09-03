@@ -37,10 +37,9 @@ class MissingSubfieldRuleValidatorTest {
   @ParameterizedTest
   @MethodSource("missingSubfieldTestSource")
   void validate_whenMissingSubfield_shouldReturnValidationError(char subfield1, char subfield2) {
-    var fieldDefinition = getFieldDefinition();
     when(translationProvider.format(anyString(), anyString())).thenReturn("message");
 
-    var errors = validator.validate(getSubfields(subfield1, subfield2), fieldDefinition);
+    var errors = validator.validate(getSubfields(subfield1, subfield2), getFieldDefinition());
 
     assertEquals(1, errors.size());
     ValidationError error = errors.get(0);
@@ -52,9 +51,7 @@ class MissingSubfieldRuleValidatorTest {
 
   @Test
   void validate_whenMissingSubfield_shouldReturnEmptyList() {
-    var fieldDefinition = getFieldDefinition();
-
-    List<ValidationError> errors = validator.validate(getSubfields('a', 'b'), fieldDefinition);
+    List<ValidationError> errors = validator.validate(getSubfields('a', 'b'), getFieldDefinition());
 
     assertTrue(errors.isEmpty());
   }
