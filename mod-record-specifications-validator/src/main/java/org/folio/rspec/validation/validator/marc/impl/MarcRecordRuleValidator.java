@@ -17,12 +17,14 @@ import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcField;
 import org.folio.rspec.validation.validator.marc.model.MarcIndicator;
 import org.folio.rspec.validation.validator.marc.model.MarcRecord;
+import org.folio.rspec.validation.validator.marc.model.MarcSubfield;
 
 public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcRecord, SpecificationDto> {
 
   private final List<SpecificationRuleValidator<Map<String, List<MarcField>>, SpecificationDto>> fieldSetValidators;
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
   private final List<SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto>> indicatorValidators;
+  private final List<SpecificationRuleValidator<List<MarcSubfield>, SpecificationFieldDto>> subfieldValidators;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
@@ -41,6 +43,7 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       new UndefinedIndicatorRuleValidator(translationProvider)
 
     );
+    this.subfieldValidators = List.of(new MissingSubfieldRuleValidator(translationProvider));
   }
 
   @Override
@@ -73,6 +76,11 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
               validationErrors.addAll(errors.stream()
                 .filter(error -> !invalidIndicatorsErrorPaths.contains(error.getPath()))
                 .toList());
+            }
+          }
+          for (var validator : subfieldValidators) {
+            if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
+              validationErrors.addAll(validator.validate(field.subfields(), fieldDefinition));
             }
           }
         });

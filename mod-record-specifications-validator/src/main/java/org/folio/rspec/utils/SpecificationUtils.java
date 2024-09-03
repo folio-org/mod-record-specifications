@@ -9,6 +9,7 @@ import lombok.experimental.UtilityClass;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
 
 @UtilityClass
 public class SpecificationUtils {
@@ -34,5 +35,12 @@ public class SpecificationUtils {
     return specification.getFields().stream()
       .filter(fieldDto -> tag.equals(fieldDto.getTag()))
       .findFirst();
+  }
+
+  public static Map<Character, SubfieldDto> requiredSubfields(List<SubfieldDto> subfieldDto) {
+    return subfieldDto == null ? Map.of() : subfieldDto
+      .stream()
+      .filter(subfield -> Boolean.TRUE.equals(subfield.getRequired()))
+      .collect(Collectors.toMap(subfield -> subfield.getCode().charAt(0), Function.identity()));
   }
 }

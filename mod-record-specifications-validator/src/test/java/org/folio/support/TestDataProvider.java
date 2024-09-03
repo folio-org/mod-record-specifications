@@ -11,6 +11,7 @@ import org.folio.rspec.domain.dto.IndicatorCodeDto;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 
 public class TestDataProvider {
@@ -42,6 +43,15 @@ public class TestDataProvider {
       .fields(indicatorsFieldDefinitions());
   }
 
+  public static SpecificationDto getSpecificationWithSubfields() {
+    return new SpecificationDto()
+      .id(UUID.randomUUID())
+      .family(Family.MARC)
+      .profile(FamilyProfile.BIBLIOGRAPHIC)
+      .rules(allEnabledRules())
+      .fields(subfieldDefinitions());
+  }
+
   private static List<SpecificationFieldDto> commonFieldDefinitions() {
     List<SpecificationFieldDto> fields = new ArrayList<>();
     fields.add(requiredNonRepeatableField("000"));
@@ -65,6 +75,16 @@ public class TestDataProvider {
     fields.add(defaultField("245"));
     fields.add(defaultField("650"));
     return fields;
+  }
+
+  private static List<SpecificationFieldDto> subfieldDefinitions() {
+    return List.of(requiredNonRepeatableField("000"),
+      defaultFieldWithSubfields("010"),
+      defaultFieldWithSubfields("035"),
+      defaultFieldWithSubfields("047"),
+      defaultFieldWithSubfields("100"),
+      defaultFieldWithSubfields("245"),
+      defaultFieldWithSubfields("650"));
   }
 
   private static List<SpecificationFieldDto> fieldDefinitions() {
@@ -97,6 +117,10 @@ public class TestDataProvider {
 
   private static SpecificationFieldDto defaultField(String tag) {
     return fieldDefinition(tag, false, false, true);
+  }
+
+  private static SpecificationFieldDto defaultFieldWithSubfields(String tag) {
+    return defaultField(tag).subfields(List.of(getSubfield("a"), getSubfield("d")));
   }
 
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
@@ -145,5 +169,14 @@ public class TestDataProvider {
   private static FieldIndicatorDto getFieldIndicatorDto(int order, List<String> codes) {
     var indicatorCodeDto = codes.stream().map(code -> new IndicatorCodeDto().code(code)).toList();
     return new FieldIndicatorDto().order(order).codes(indicatorCodeDto);
+  }
+
+  private static SubfieldDto getSubfield(String code) {
+    return new SubfieldDto()
+      .id(UUID.randomUUID())
+      .required(true)
+      .deprecated(false)
+      .repeatable(true)
+      .code(code);
   }
 }
