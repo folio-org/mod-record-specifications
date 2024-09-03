@@ -228,8 +228,8 @@ class SpecificationStorageApiIT extends SpecificationITBase {
   @Test
   void getSpecificationRules_shouldReturn200AndCollectionOfRules() throws Exception {
     doGet(specificationRulesPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
-      .andExpect(jsonPath("totalRecords", is(13)))
-      .andExpect(jsonPath("rules.size()", is(13)))
+      .andExpect(jsonPath("totalRecords", is(14)))
+      .andExpect(jsonPath("rules.size()", is(14)))
       .andExpect(jsonPath("rules[0].id", notNullValue()))
       .andExpect(jsonPath("rules[0].name", notNullValue()))
       .andExpect(jsonPath("rules[0].description", notNullValue()))

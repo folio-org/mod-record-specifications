@@ -36,7 +36,10 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       new MarcFieldNonRepeatableFieldRuleValidator(translationProvider)
     );
     this.indicatorValidators = List.of(
-      new InvalidIndicatorRuleValidator(translationProvider)
+      // InvalidIndicatorRuleValidator must be first to avoid duplication errors from UndefinedIndicatorRuleValidator
+      new InvalidIndicatorRuleValidator(translationProvider),
+      new UndefinedIndicatorRuleValidator(translationProvider)
+
     );
   }
 
@@ -59,9 +62,17 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
               validationErrors.addAll(validator.validate(marcField, fieldDefinition));
             }
           }
+
           for (var validator : indicatorValidators) {
             if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
-              validationErrors.addAll(validator.validate(field.indicators(), fieldDefinition));
+              List<ValidationError> errors = validator.validate(field.indicators(), fieldDefinition);
+              List<String> invalidIndicatorsErrorPaths = validationErrors.stream()
+                .filter(e -> DefinitionType.INDICATOR.equals(e.getDefinitionType()))
+                .map(ValidationError::getPath)
+                .toList();
+              validationErrors.addAll(errors.stream()
+                .filter(error -> !invalidIndicatorsErrorPaths.contains(error.getPath()))
+                .toList());
             }
           }
         });
