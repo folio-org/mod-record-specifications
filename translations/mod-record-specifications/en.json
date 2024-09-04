@@ -30,6 +30,6 @@
   "validation.nonRepeatableField": "Field is non-repeatable.",
   "validation.undefinedField": "Field is undefined.",
   "validation.undefinedIndicatorCode": "{order} Indicator '{code}' is undefined.",
-  "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'."
-
+  "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
+  "validation.missingSubfield": "Subfield {code} is required."
 }

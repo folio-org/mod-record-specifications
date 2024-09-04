@@ -1,0 +1,77 @@
+{
+  "fields": [
+    {
+      "010": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "LC control number"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "System control number"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "Form of musical composition code"
+          }
+        ]
+      }
+    },
+    {
+      "100": {
+        "ind1": "0",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "Personal name"
+          },
+          {
+            "d": "1756-1791."
+          },
+          {
+            "0": "12345"
+          }
+        ]
+      }
+    },
+    {
+      "245": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "Title"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "Topical term"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}

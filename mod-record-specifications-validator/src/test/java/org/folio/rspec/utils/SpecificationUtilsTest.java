@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
+import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 
@@ -77,5 +78,22 @@ class SpecificationUtilsTest {
 
     assertTrue(result.isPresent());
     assertEquals("tag1", result.get().getTag());
+  }
+
+  @Test
+  void requiredSubfields_returnsRequiredSubfields() {
+    Map<Character, SubfieldDto> result = SpecificationUtils.requiredSubfields(
+      List.of(
+        getSubfieldDto('a', true),
+        getSubfieldDto('b', false),
+        getSubfieldDto('c', true)));
+
+    assertEquals(2, result.size());
+    assertTrue(result.containsKey('a'));
+    assertTrue(result.containsKey('c'));
+  }
+
+  private SubfieldDto getSubfieldDto(Character code, boolean isRequired) {
+    return new SubfieldDto().code(code.toString()).required(isRequired);
   }
 }

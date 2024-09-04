@@ -11,7 +11,8 @@ public enum MarcRuleCode implements SpecificationRuleCode {
   NON_REPEATABLE_REQUIRED_1XX_FIELD("nonRepeatableRequired1XXField"),
   NON_REPEATABLE_FIELD("nonRepeatableField"),
   UNDEFINED_INDICATOR("undefinedIndicatorCode"),
-  INVALID_INDICATOR("invalidIndicator");
+  INVALID_INDICATOR("invalidIndicator"),
+  MISSING_SUBFIELD("missingSubfield");
 
   private final String code;
 

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.folio.support.TestDataProvider.getSpecification;
 import static org.folio.support.TestDataProvider.getSpecificationWithIndicators;
+import static org.folio.support.TestDataProvider.getSpecificationWithSubfields;
 import static org.folio.support.TestDataProvider.getSpecificationWithTags;
 
 import java.util.stream.Stream;
@@ -115,6 +116,22 @@ class MarcSpecificationGuidedValidatorTest {
         tuple("245[2]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("245[3]^1", MarcRuleCode.UNDEFINED_INDICATOR.getCode()),
         tuple("245[3]^2", MarcRuleCode.UNDEFINED_INDICATOR.getCode())
+      );
+  }
+
+  @Test
+  void testMarcRecordSubfieldValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/marc-subfield-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithSubfields());
+    assertThat(validationErrors)
+      .hasSize(5)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("650[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("035[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("047[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("245[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("010[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode())
       );
   }
 
