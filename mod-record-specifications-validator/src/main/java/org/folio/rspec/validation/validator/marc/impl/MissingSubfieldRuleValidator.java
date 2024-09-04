@@ -52,7 +52,7 @@ public class MissingSubfieldRuleValidator
   }
 
   private ValidationError buildError(String tag, SubfieldDto definition) {
-    var message = translationProvider.format(ruleCode(), CODE_KEY);
+    var message = translationProvider.format(ruleCode(), CODE_KEY, definition.getCode());
     return ValidationError.builder()
       .path(Reference.forSubfield(Reference.forTag(tag), definition.getCode().charAt(0)).toString())
       .definitionType(definitionType())
