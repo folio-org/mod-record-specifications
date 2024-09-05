@@ -37,7 +37,7 @@ class MissingSubfieldRuleValidatorTest {
   @ParameterizedTest
   @MethodSource("missingSubfieldTestSource")
   void validate_whenMissingSubfield_shouldReturnValidationError(char subfield1, char subfield2) {
-    when(translationProvider.format(anyString(), anyString())).thenReturn("message");
+    when(translationProvider.format(anyString(), anyString(), anyString())).thenReturn("message");
 
     var errors = validator.validate(getSubfields(subfield1, subfield2), getFieldDefinition());
 
