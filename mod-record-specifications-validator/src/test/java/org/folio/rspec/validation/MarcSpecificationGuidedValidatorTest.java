@@ -120,17 +120,19 @@ class MarcSpecificationGuidedValidatorTest {
   }
 
   @Test
-  void testMarcRecordSubfieldValidation() {
+  void testMissingSubfieldValidation() {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/marc-subfield-record.json");
     var validationErrors = validator.validate(marc4jRecord, getSpecificationWithSubfields());
     assertThat(validationErrors)
-      .hasSize(5)
+      .hasSize(7)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
         tuple("650[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
         tuple("035[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
         tuple("047[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
         tuple("245[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("246[0]$a[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
+        tuple("246[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
         tuple("010[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode())
       );
   }

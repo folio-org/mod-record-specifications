@@ -1,6 +1,7 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.folio.rspec.domain.dto.DefinitionType;
 import org.folio.rspec.domain.dto.SeverityType;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -65,7 +66,7 @@ public class MissingSubfieldRuleValidator
 
   private boolean isMissing(List<MarcSubfield> marcSubfields, Character subFieldCode) {
     return CollectionUtils.isEmpty(marcSubfields) || marcSubfields.stream()
-      .noneMatch(subfield -> isSubfieldEquals(subfield, subFieldCode));
+      .noneMatch(subfield -> isSubfieldEquals(subfield, subFieldCode) && StringUtils.isNotBlank(subfield.value()));
   }
 
   private boolean isSubfieldEquals(MarcSubfield subfield, Character subFieldCode) {
