@@ -91,8 +91,8 @@ class UndefinedIndicatorRuleValidatorTest {
     return Stream.of(
       arguments('0', 's'),
       arguments('s', '0'),
-      arguments('#', 'l'),
-      arguments('l', '#')
+      arguments('\\', 'l'),
+      arguments('l', '\\')
     );
   }
 
@@ -116,7 +116,7 @@ class UndefinedIndicatorRuleValidatorTest {
 
   private static List<IndicatorCodeDto> getIndicatorCodes() {
     return List.of(
-      new IndicatorCodeDto().code("#"),
+      new IndicatorCodeDto().code("\\"),
       new IndicatorCodeDto().code("0"),
       new IndicatorCodeDto().code("1"),
       new IndicatorCodeDto().code("a"),

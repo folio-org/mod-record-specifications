@@ -19,7 +19,7 @@ import org.marc4j.marc.VariableField;
 public class Marc4jConverter implements Converter<Record, MarcRecord> {
 
   private static final char EMPTY_SPACE_VALUE = 32;
-  private static final char MARC_INDICATOR_EMPTY_VALUE = '#';
+  private static final char MARC_INDICATOR_EMPTY_VALUE = '\\';
 
   @Override
   public MarcRecord convert(Record rec) {

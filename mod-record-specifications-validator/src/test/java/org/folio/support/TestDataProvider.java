@@ -145,22 +145,22 @@ public class TestDataProvider {
   private static List<FieldIndicatorDto> getFieldIndicatorDtoListByTag(String tag) {
     return switch (tag) {
       case "010", "035" -> List.of(
-        getFieldIndicatorDto(1, List.of("#")),
-        getFieldIndicatorDto(2, List.of("#")));
+        getFieldIndicatorDto(1, List.of("\\")),
+        getFieldIndicatorDto(2, List.of("\\")));
       case "047" -> List.of(
-        getFieldIndicatorDto(1, List.of("#")),
-        getFieldIndicatorDto(2, List.of("#", "7")));
+        getFieldIndicatorDto(1, List.of("\\")),
+        getFieldIndicatorDto(2, List.of("\\", "7")));
       case "100" -> List.of(
         getFieldIndicatorDto(1, List.of("0", "1", "2", "3")),
-        getFieldIndicatorDto(2, List.of("#")));
+        getFieldIndicatorDto(2, List.of("\\")));
       case "130" -> List.of(
-        getFieldIndicatorDto(1, List.of("#", "0", "1", "2", "3", "4", "5", "6", "7")),
-        getFieldIndicatorDto(2, List.of("#")));
+        getFieldIndicatorDto(1, List.of("\\", "0", "1", "2", "3", "4", "5", "6", "7")),
+        getFieldIndicatorDto(2, List.of("\\")));
       case "245" -> List.of(
         getFieldIndicatorDto(1, List.of("0", "1")),
         getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")));
       case "650" -> List.of(
-        getFieldIndicatorDto(1, List.of("#", "0", "1", "2")),
+        getFieldIndicatorDto(1, List.of("\\", "0", "1", "2")),
         getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7")));
       default -> null;
     };

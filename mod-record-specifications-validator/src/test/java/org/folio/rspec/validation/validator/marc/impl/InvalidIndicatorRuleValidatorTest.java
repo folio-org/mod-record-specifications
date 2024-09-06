@@ -54,7 +54,7 @@ class InvalidIndicatorRuleValidatorTest {
     var fieldDefinition = getFieldDefinition();
     var marcField = new MarcDataField(
       Reference.forTag("tag", 0),
-      getIndicators('#', '#'),
+      getIndicators('\\', '\\'),
       null);
 
     List<ValidationError> errors = validator.validate(marcField.indicators(), fieldDefinition);

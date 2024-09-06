@@ -36,13 +36,13 @@ class MatcherUtilsTest {
   }
 
   @ParameterizedTest
-  @ValueSource(chars = {'#', '0', '5', '9', 'a', 'o', 'z'})
+  @ValueSource(chars = {'\\', '0', '5', '9', 'a', 'o', 'z'})
   void whenValidIndicatorValue_shouldValidateIndicator(char indicator) {
     assertTrue(MatcherUtils.matchesValidIndicator(indicator));
   }
 
   @ParameterizedTest
-  @ValueSource(chars = {'!', ' ', '/', '\\', 'X', 'O', 'I'})
+  @ValueSource(chars = {'!', ' ', '/', '#', 'X', 'O', 'I'})
   void whenInvalidIndicatorValue_shouldNotValidateIndicator(char indicator) {
     assertFalse(MatcherUtils.matchesValidIndicator(indicator));
   }

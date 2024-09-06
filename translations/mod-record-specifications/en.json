@@ -11,7 +11,7 @@
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
-  "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
+  "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9, letters a-z or a '\\'.",
   "Pattern.SubfieldChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or letters a-z.",
   "Min.FieldIndicatorChangeDto.order":  "The indicator ''{parameter}'' field can only accept numbers 1-2.",
   "Max.FieldIndicatorChangeDto.order":  "The indicator ''{parameter}'' field can only accept numbers 1-2.",
@@ -30,6 +30,6 @@
   "validation.nonRepeatableField": "Field is non-repeatable.",
   "validation.undefinedField": "Field is undefined.",
   "validation.undefinedIndicatorCode": "{order} Indicator ''{code}'' is undefined.",
-  "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
+  "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '\\'.",
   "validation.missingSubfield": "Subfield ''{code}'' is required."
 }

@@ -6,7 +6,7 @@ properties:
   code:
     description: Indicator code
     type: string
-    pattern: '[0-9a-z#]'
+    pattern: '[0-9a-z\\]'
   label:
     description: Code description
     type: string

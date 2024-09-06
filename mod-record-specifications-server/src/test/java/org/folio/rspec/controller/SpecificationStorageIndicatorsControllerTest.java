@@ -84,7 +84,7 @@ class SpecificationStorageIndicatorsControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"#", "5", "c"})
+  @ValueSource(strings = {"\\\\", "5", "c"})
   void createIndicatorLocalCode_createNewLocalCode(String code, @Random IndicatorCodeDto codeDto) throws Exception {
     var indicatorId = UUID.randomUUID();
     codeDto.setCode(code);
@@ -145,7 +145,7 @@ class SpecificationStorageIndicatorsControllerTest {
       .andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors.[*].message",
         hasItem(is("A 'code' field must contain one character and can only accept "
-                   + "numbers 0-9, letters a-z or a '#'."))))
+                   + "numbers 0-9, letters a-z or a '\\'."))))
       .andExpect(jsonPath("$.errors.[*].code", hasItem(is("103"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].key", hasItem(is("code"))))
       .andExpect(jsonPath("$.errors.[*].parameters.[*].value", hasItem(is(code))));

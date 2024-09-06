@@ -65,7 +65,7 @@ class SpecificationStorageIndicatorsApiIT extends SpecificationITBase {
   void getIndicatorCodes_shouldReturn200AndAllCodesForIndicator() throws Exception {
     var fieldId = createLocalField("101");
     var indId = createLocalIndicator(fieldId);
-    var code1 = localTestCode("#");
+    var code1 = localTestCode("\\");
     var code2 = localTestCode("1");
     code2.deprecated(false);
     doPost(indicatorCodesPath(indId), code1);

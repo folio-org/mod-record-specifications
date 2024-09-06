@@ -14,7 +14,7 @@
     {
       "035": {
         "ind1": "0",
-        "ind2": "#",
+        "ind2": "\\",
         "subfields": [
           {
             "a": "First and Second must be '#'"
@@ -24,7 +24,7 @@
     },
     {
       "035": {
-        "ind1": "#",
+        "ind1": "\\",
         "ind2": "1",
         "subfields": [
           {
@@ -57,7 +57,7 @@
     },
     {
       "047": {
-        "ind1": "#",
+        "ind1": "\\",
         "ind2": "a",
         "subfields": [
           {
@@ -121,8 +121,8 @@
     },
     {
       "245": {
-        "ind1": "#",
-        "ind2": "#",
+        "ind1": "\\",
+        "ind2": "\\",
         "subfields": [
           {
             "a": "First must be '0' or '1', Second must be from '0' to '9'"

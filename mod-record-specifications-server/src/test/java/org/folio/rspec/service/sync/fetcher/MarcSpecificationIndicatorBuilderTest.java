@@ -29,14 +29,14 @@ class MarcSpecificationIndicatorBuilderTest {
   private static Stream<Arguments> provideParametersForBuildTest() {
     var lines1 = List.of(
       "First - Simple Indicator1",
-      "# - Undefined",
+      "\\ - Undefined",
       "Second - Simple Indicator2",
-      "# - Undefined"
+      "\\ - Undefined"
     );
     var expected1 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
-        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("#", "Undefined")))
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("\\", "Undefined"))),
+        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("\\", "Undefined")))
       );
 
     var lines2 = List.of(
@@ -44,25 +44,25 @@ class MarcSpecificationIndicatorBuilderTest {
       "a - Code a",
       "b - Code b",
       "Second - Simple Indicator2",
-      "# - Undefined"
+      "\\ - Undefined"
     );
     var expected2 =
       newArrayNode(
         newObjectNode(1, "Indicator With Codes",
           newArrayNode(newObjectNode("a", "Code a"), newObjectNode("b", "Code b"))),
-        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("#", "Undefined")))
+        newObjectNode(2, "Simple Indicator2", newArrayNode(newObjectNode("\\", "Undefined")))
       );
 
     var lines3 = List.of(
       "First - Simple Indicator1",
-      "# - Undefined",
+      "\\ - Undefined",
       "Second - Indicator With Codes",
       "a - Code a",
       "b - Code b"
     );
     var expected3 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("\\", "Undefined"))),
         newObjectNode(2, "Indicator With Codes",
           newArrayNode(newObjectNode("a", "Code a"), newObjectNode("b", "Code b")))
       );
@@ -85,19 +85,19 @@ class MarcSpecificationIndicatorBuilderTest {
 
     var lines5 = List.of(
       "First - Indicator [OBSOLETE]",
-      "# - Undefined",
+      "\\ - Undefined",
       "First - Indicator With Codes1",
       "a - Code a",
       "b - Code b",
       "First - Indicator [OBSOLETE]",
-      "# - Undefined",
+      "\\ - Undefined",
       "Second - Indicator [OBSOLETE]",
-      "# - Undefined",
+      "\\ - Undefined",
       "Second - Indicator With Codes2",
       "c - Code c [OBSOLETE]",
       "d - Code d",
       "Second - Indicator [OBSOLETE]",
-      "# - Undefined"
+      "\\ - Undefined"
     );
     var expected5 =
       newArrayNode(
@@ -109,13 +109,13 @@ class MarcSpecificationIndicatorBuilderTest {
 
     var lines6 = List.of(
       "First - Simple Indicator1",
-      "# - Undefined",
+      "\\ - Undefined",
       "Second - Indicator With Codes",
       "0-9 - Code x"
     );
     var expected6 =
       newArrayNode(
-        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("#", "Undefined"))),
+        newObjectNode(1, "Simple Indicator1", newArrayNode(newObjectNode("\\", "Undefined"))),
         newObjectNode(2, "Indicator With Codes", newArrayNode(IntStream.range(0, 10).boxed()
           .map(num -> newObjectNode(String.valueOf(num), "Code x"))
           .toArray(ObjectNode[]::new)))
