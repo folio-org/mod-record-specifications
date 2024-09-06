@@ -84,6 +84,7 @@ public class TestDataProvider {
       defaultFieldWithSubfields("047"),
       defaultFieldWithSubfields("100"),
       defaultFieldWithSubfields("245"),
+      defaultFieldWithSubfields("246"),
       defaultFieldWithSubfields("650"));
   }
 
@@ -157,6 +158,9 @@ public class TestDataProvider {
         getFieldIndicatorDto(1, List.of("\\", "0", "1", "2", "3", "4", "5", "6", "7")),
         getFieldIndicatorDto(2, List.of("\\")));
       case "245" -> List.of(
+        getFieldIndicatorDto(1, List.of("0", "1")),
+        getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")));
+      case "246" -> List.of(
         getFieldIndicatorDto(1, List.of("0", "1")),
         getFieldIndicatorDto(2, List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")));
       case "650" -> List.of(
