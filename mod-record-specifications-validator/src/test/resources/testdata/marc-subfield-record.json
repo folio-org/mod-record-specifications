@@ -79,12 +79,40 @@
       }
     },
     {
+      "246": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "test"
+          },
+          {
+            "d": "test"
+          },
+          {
+            "k": " "
+          }
+        ]
+      }
+    },
+    {
       "650": {
         "ind1": "0",
         "ind2": "0",
         "subfields": [
           {
             "a": "Topical term"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "d": "Topical term"
           }
         ]
       }
