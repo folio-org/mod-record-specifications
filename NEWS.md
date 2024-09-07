@@ -28,6 +28,7 @@
 * implement Invalid Indicator validation ([MRSPECS-45](https://folio-org.atlassian.net/browse/MRSPECS-45))
 * implement Undefined Indicator validation ([MRSPECS-46](https://folio-org.atlassian.net/browse/MRSPECS-46))
 * implement Missing Subfield validation([MRSPECS-47](https://folio-org.atlassian.net/browse/MRSPECS-47))
+* implement Undefined Subfield validation ([MRSPECS-49](https://folio-org.atlassian.net/browse/MRSPECS-49))
 
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
