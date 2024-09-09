@@ -121,7 +121,12 @@ public class TestDataProvider {
   }
 
   private static SpecificationFieldDto defaultFieldWithSubfields(String tag) {
-    return defaultField(tag).subfields(List.of(getSubfield("a"), getSubfield("d")));
+    return defaultField(tag).subfields(List.of(
+      getSubfield("a", true),
+      getSubfield("d", true),
+      getSubfield("k", false),
+      getSubfield("s", false),
+      getSubfield("0", false)));
   }
 
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
@@ -130,6 +135,15 @@ public class TestDataProvider {
       .id(UUID.randomUUID())
       .tag(tag)
       .indicators(getFieldIndicatorDtoListByTag(tag))
+      .subfields(List.of(
+        getSubfield("a", false),
+        getSubfield("b", false),
+        getSubfield("c", false),
+        getSubfield("d", false),
+        getSubfield("z", false),
+        getSubfield("0", false),
+        getSubfield("2", false),
+        getSubfield("9", false)))
       .required(required)
       .deprecated(deprecated)
       .repeatable(repeatable);
@@ -175,10 +189,10 @@ public class TestDataProvider {
     return new FieldIndicatorDto().order(order).codes(indicatorCodeDto);
   }
 
-  private static SubfieldDto getSubfield(String code) {
+  private static SubfieldDto getSubfield(String code, boolean required) {
     return new SubfieldDto()
       .id(UUID.randomUUID())
-      .required(true)
+      .required(required)
       .deprecated(false)
       .repeatable(true)
       .code(code);

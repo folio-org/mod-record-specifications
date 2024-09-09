@@ -6,7 +6,7 @@
         "ind2": "#",
         "subfields": [
           {
-            "a": "LC control number"
+            "a": "required subfield"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "ind2": "#",
         "subfields": [
           {
-            "a": "System control number"
+            "a": "required subfield"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "ind2": "#",
         "subfields": [
           {
-            "a": "Form of musical composition code"
+            "a": "required subfield"
           }
         ]
       }
@@ -39,13 +39,13 @@
         "ind2": "#",
         "subfields": [
           {
-            "a": "Personal name"
+            "a": "required subfield"
           },
           {
-            "d": "1756-1791."
+            "d": "required subfield"
           },
           {
-            "0": "12345"
+            "0": "optional subfield"
           }
         ]
       }
@@ -56,7 +56,7 @@
         "ind2": "0",
         "subfields": [
           {
-            "a": "Title"
+            "a": "required subfield"
           }
         ]
       }
@@ -84,10 +84,10 @@
         "ind2": "0",
         "subfields": [
           {
-            "a": "test"
+            "a": "required subfield"
           },
           {
-            "d": "test"
+            "d": "required subfield"
           },
           {
             "k": " "
@@ -101,7 +101,7 @@
         "ind2": "0",
         "subfields": [
           {
-            "a": "Topical term"
+            "a": "required subfield"
           }
         ]
       }
@@ -112,7 +112,7 @@
         "ind2": "0",
         "subfields": [
           {
-            "d": "Topical term"
+            "d": "required subfield"
           }
         ]
       }

@@ -1,0 +1,107 @@
+{
+  "fields": [
+    {
+      "010": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": "subfield value"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "t": "undefined subfield"
+          },
+          {
+            "b": "undefined subfield"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "f": "undefined subfield"
+          },
+          {
+            "r": "undefined subfield"
+          },
+          {
+            "d": "subfield value"
+          }
+        ]
+      }
+    },
+    {
+      "100": {
+        "ind1": "0",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": "subfield value"
+          },
+          {
+            "5": "undefined subfield"
+          }
+        ]
+      }
+    },
+    {
+      "245": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": "subfield value"
+          },
+          {
+            "c": "undefined subfield"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": "subfield value"
+          },
+          {
+            "w": "undefined subfield"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}
