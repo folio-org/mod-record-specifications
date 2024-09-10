@@ -57,7 +57,7 @@ jobs:
             !~/.m2/repository/org/folio/mod-record-specifications
           key: mod-quick-marc-${{ hashFiles('**/pom.xml') }}
           restore-keys: mod-quick-marc-
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: mod-record-specifications
           path: ~/.m2/repository/org/folio/mod-record-specifications
