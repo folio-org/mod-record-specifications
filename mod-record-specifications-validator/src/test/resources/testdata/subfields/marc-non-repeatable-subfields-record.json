@@ -1,0 +1,122 @@
+{
+  "fields": [
+    {
+      "010": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          }
+        ]
+      }
+    },
+    {
+      "035": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          }
+        ]
+      }
+    },
+    {
+      "047": {
+        "ind1": "#",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "w": "nonRepeatable subfield"
+          },
+          {
+            "w": "nonRepeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          }
+        ]
+      }
+    },
+    {
+      "100": {
+        "ind1": "0",
+        "ind2": "#",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": ""
+          },
+          {
+            "d": "nonRepeatable subfield"
+          }
+        ]
+      }
+    },
+    {
+      "245": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          }
+        ]
+      }
+    },
+    {
+      "650": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "a": "repeatable subfield"
+          },
+          {
+            "d": "nonRepeatable subfield"
+          },
+          {
+            "w": "nonRepeatable subfield"
+          },
+          {
+            "w": "nonRepeatable subfield"
+          },
+          {
+            "c": "repeatable subfield"
+          },
+          {
+            "c": "repeatable subfield"
+          }
+        ]
+      }
+    }
+  ],
+  "leader": "01750ccm a2200421   4500"
+}

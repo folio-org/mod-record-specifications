@@ -27,19 +27,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
-public class UndefinedSubfieldRuleValidatorTest {
+public class NonRepeatableSubfieldRuleValidatorTest {
 
   @Mock
   private TranslationProvider translationProvider;
   @InjectMocks
-  private UndefinedSubfieldRuleValidator validator;
+  private NonRepeatableSubfieldRuleValidator validator;
+
 
   @ParameterizedTest
-  @MethodSource("undefinedSubfieldTestSource")
-  void validate_whenUndefinedSubfield_shouldReturnValidationError(char subfield1, char subfield2) {
+  @MethodSource("nonRepeatableSubfieldTestSource")
+  void validate_whenNonRepeatableSubfield_shouldReturnValidationError(char subfield1, char subfield2, char subfield3) {
     when(translationProvider.format(any(), any(), any())).thenReturn("message");
 
-    var errors = validator.validate(getSubfields(subfield1, subfield2), getFieldDefinition());
+    var errors = validator.validate(
+      List.of(getSubfield(subfield1), getSubfield(subfield2), getSubfield(subfield3)), getFieldDefinition());
 
     assertEquals(1, errors.size());
     ValidationError error = errors.get(0);
@@ -50,17 +52,18 @@ public class UndefinedSubfieldRuleValidatorTest {
   }
 
   @Test
-  void validate_whenUndefinedSubfield_shouldReturnEmptyList() {
-    List<ValidationError> errors = validator.validate(getSubfields('a', 'b'), getFieldDefinition());
+  void validate_whenNonRepeatableSubfield_shouldReturnEmptyList() {
+    List<ValidationError> errors = validator.validate(
+      List.of(getSubfield('f'), getSubfield('b'), getSubfield('t')), getFieldDefinition());
 
     assertTrue(errors.isEmpty());
   }
 
-  public static Stream<Arguments> undefinedSubfieldTestSource() {
+  public static Stream<Arguments> nonRepeatableSubfieldTestSource() {
     return Stream.of(
-      arguments('f', 'a'),
-      arguments('c', 'b'),
-      arguments('t', 'k'));
+      arguments('f', 'a', 'f'),
+      arguments('c', 'b', 'b'),
+      arguments('t', 't', 'k'));
   }
 
   private static SpecificationFieldDto getFieldDefinition() {
@@ -69,15 +72,15 @@ public class UndefinedSubfieldRuleValidatorTest {
       .repeatable(false)
       .tag("tag")
       .subfields(List.of(
-        new SubfieldDto().code("a"),
-        new SubfieldDto().code("b"),
-        new SubfieldDto().code("k")));
+        new SubfieldDto().code("a").repeatable(true),
+        new SubfieldDto().code("c").repeatable(true),
+        new SubfieldDto().code("k").repeatable(true),
+        new SubfieldDto().code("b").repeatable(false),
+        new SubfieldDto().code("f").repeatable(false),
+        new SubfieldDto().code("t").repeatable(false)));
   }
 
-  private static List<MarcSubfield> getSubfields(char subfield1, char subfield2) {
-    return List.of(
-      new MarcSubfield(Reference.forSubfield(Reference.forTag("tag"), subfield1), "subfield value"),
-      new MarcSubfield(Reference.forSubfield(Reference.forTag("tag"), subfield2), "subfield value")
-    );
+  private static MarcSubfield getSubfield(char subfield) {
+    return new MarcSubfield(Reference.forSubfield(Reference.forTag("tag"), subfield), "subfield value");
   }
 }

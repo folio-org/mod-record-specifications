@@ -84,16 +84,29 @@ class SpecificationUtilsTest {
   void requiredSubfields_returnsRequiredSubfields() {
     Map<Character, SubfieldDto> result = SpecificationUtils.requiredSubfields(
       List.of(
-        getSubfieldDto('a', true),
-        getSubfieldDto('b', false),
-        getSubfieldDto('c', true)));
+        getSubfieldDto('a', true, true),
+        getSubfieldDto('b', false, true),
+        getSubfieldDto('c', true, true)));
 
     assertEquals(2, result.size());
     assertTrue(result.containsKey('a'));
     assertTrue(result.containsKey('c'));
   }
 
-  private SubfieldDto getSubfieldDto(Character code, boolean isRequired) {
-    return new SubfieldDto().code(code.toString()).required(isRequired);
+  @Test
+  void nonRepeatableSubfields_returnsNonRepeatableSubfields() {
+    Map<Character, SubfieldDto> result = SpecificationUtils.nonRepeatableSubfields(
+      List.of(
+        getSubfieldDto('a', true, true),
+        getSubfieldDto('b', false, false),
+        getSubfieldDto('c', true, false)));
+
+    assertEquals(2, result.size());
+    assertTrue(result.containsKey('b'));
+    assertTrue(result.containsKey('c'));
+  }
+
+  private SubfieldDto getSubfieldDto(Character code, boolean isRequired, boolean isRepeatable) {
+    return new SubfieldDto().code(code.toString()).required(isRequired).repeatable(isRepeatable);
   }
 }

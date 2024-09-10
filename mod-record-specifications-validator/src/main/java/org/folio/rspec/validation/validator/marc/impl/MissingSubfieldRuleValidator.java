@@ -65,8 +65,14 @@ public class MissingSubfieldRuleValidator
   }
 
   private boolean isMissing(List<MarcSubfield> marcSubfields, Character subFieldCode) {
-    return CollectionUtils.isEmpty(marcSubfields) || marcSubfields.stream()
-      .noneMatch(subfield -> isSubfieldEquals(subfield, subFieldCode) && StringUtils.isNotBlank(subfield.value()));
+    var requiredSubfields = marcSubfields.stream()
+      .filter(subfield -> isSubfieldEquals(subfield, subFieldCode))
+      .toList();
+    return CollectionUtils.isEmpty(requiredSubfields) || containsEmptySubfieldValue(requiredSubfields);
+  }
+
+  private boolean containsEmptySubfieldValue(List<MarcSubfield> requiredSubfields) {
+    return requiredSubfields.stream().anyMatch(subField -> StringUtils.isBlank(subField.value()));
   }
 
   private boolean isSubfieldEquals(MarcSubfield subfield, Character subFieldCode) {
