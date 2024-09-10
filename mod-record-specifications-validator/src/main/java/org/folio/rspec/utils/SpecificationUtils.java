@@ -44,8 +44,8 @@ public class SpecificationUtils {
       .collect(Collectors.toMap(subfield -> subfield.getCode().charAt(0), Function.identity()));
   }
 
-  public static Map<Character, SubfieldDto> nonRepeatableSubfields(List<SubfieldDto> subfieldDto) {
-    return subfieldDto == null ? Map.of() : subfieldDto
+  public static Map<Character, SubfieldDto> nonRepeatableSubfields(List<SubfieldDto> subfieldDtos) {
+    return subfieldDtos == null ? Map.of() : subfieldDtos
       .stream()
       .filter(subfield -> Boolean.FALSE.equals(subfield.getRepeatable()))
       .collect(Collectors.toMap(subfield -> subfield.getCode().charAt(0), Function.identity()));

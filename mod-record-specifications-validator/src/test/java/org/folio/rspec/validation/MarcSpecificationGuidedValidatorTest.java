@@ -168,12 +168,12 @@ class MarcSpecificationGuidedValidatorTest {
       .hasSize(6)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
-        tuple("100[0]$d[0]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("100[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
         tuple("100[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
-        tuple("650[0]$w[0]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
-        tuple("047[0]$w[0]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
-        tuple("047[0]$d[0]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
-        tuple("245[0]$d[0]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode())
+        tuple("650[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("047[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("047[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("245[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode())
       );
   }
 

@@ -1,7 +1,6 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.folio.rspec.domain.dto.DefinitionType;
 import org.folio.rspec.domain.dto.SeverityType;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
@@ -30,11 +29,9 @@ public class NonRepeatableSubfieldRuleValidator
     var nonRepeatableSubfields = SpecificationUtils.nonRepeatableSubfields(specification.getSubfields());
 
     return marcSubfields.stream()
-      .collect(Collectors.groupingBy(MarcSubfield::code))
-      .entrySet()
-      .stream()
-      .filter(subfield -> subfield.getValue().size() > 1 && nonRepeatableSubfields.get(subfield.getKey()) != null)
-      .map(subfield -> buildError(subfield.getValue().get(0), nonRepeatableSubfields.get(subfield.getKey())))
+      .filter(subfield ->
+        subfield.reference().getSubfieldIndex() > 0 && nonRepeatableSubfields.get(subfield.code()) != null)
+      .map(subfield -> buildError(subfield, nonRepeatableSubfields.get(subfield.code())))
       .toList();
   }
 

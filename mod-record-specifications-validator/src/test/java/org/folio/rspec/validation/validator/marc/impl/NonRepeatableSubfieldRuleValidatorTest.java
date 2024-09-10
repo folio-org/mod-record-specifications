@@ -41,7 +41,11 @@ public class NonRepeatableSubfieldRuleValidatorTest {
     when(translationProvider.format(any(), any(), any())).thenReturn("message");
 
     var errors = validator.validate(
-      List.of(getSubfield(subfield1), getSubfield(subfield2), getSubfield(subfield3)), getFieldDefinition());
+      List.of(
+        getSubfield(subfield1, 0),
+        getSubfield(subfield2, 0),
+        getSubfield(subfield3, 1)),
+      getFieldDefinition());
 
     assertEquals(1, errors.size());
     ValidationError error = errors.get(0);
@@ -54,16 +58,20 @@ public class NonRepeatableSubfieldRuleValidatorTest {
   @Test
   void validate_whenNonRepeatableSubfield_shouldReturnEmptyList() {
     List<ValidationError> errors = validator.validate(
-      List.of(getSubfield('f'), getSubfield('b'), getSubfield('t')), getFieldDefinition());
+      List.of(
+        getSubfield('f', 0),
+        getSubfield('b', 0),
+        getSubfield('t', 0)),
+      getFieldDefinition());
 
     assertTrue(errors.isEmpty());
   }
 
   public static Stream<Arguments> nonRepeatableSubfieldTestSource() {
     return Stream.of(
-      arguments('f', 'a', 'f'),
+      arguments('a', 'f', 'f'),
       arguments('c', 'b', 'b'),
-      arguments('t', 't', 'k'));
+      arguments('k', 't', 't'));
   }
 
   private static SpecificationFieldDto getFieldDefinition() {
@@ -80,7 +88,7 @@ public class NonRepeatableSubfieldRuleValidatorTest {
         new SubfieldDto().code("t").repeatable(false)));
   }
 
-  private static MarcSubfield getSubfield(char subfield) {
-    return new MarcSubfield(Reference.forSubfield(Reference.forTag("tag"), subfield), "subfield value");
+  private static MarcSubfield getSubfield(char subfield, int subfieldIndex) {
+    return new MarcSubfield(Reference.forSubfield(Reference.forTag("tag"), subfield, subfieldIndex), "subfield value");
   }
 }
