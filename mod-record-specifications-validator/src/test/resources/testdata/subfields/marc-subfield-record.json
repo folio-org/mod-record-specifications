@@ -45,9 +45,6 @@
             "d": "required subfield"
           },
           {
-            "d": ""
-          },
-          {
             "0": "optional subfield"
           }
         ]
