@@ -32,7 +32,7 @@ jobs:
           key: mod-record-specifications-${{ hashFiles('**/pom.xml') }}
           restore-keys: mod-record-specifications-
       - run: mvn -B clean install -DskipTests
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: mod-record-specifications
           path: ~/.m2/repository/org/folio/mod-record-specifications
@@ -57,7 +57,7 @@ jobs:
             !~/.m2/repository/org/folio/mod-record-specifications
           key: mod-quick-marc-${{ hashFiles('**/pom.xml') }}
           restore-keys: mod-quick-marc-
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: mod-record-specifications
           path: ~/.m2/repository/org/folio/mod-record-specifications

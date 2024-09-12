@@ -52,6 +52,25 @@ public class TestDataProvider {
       .fields(subfieldDefinitions());
   }
 
+  public static SpecificationDto getSpecificationWithNonRepeatableSubfields() {
+    return new SpecificationDto()
+      .id(UUID.randomUUID())
+      .family(Family.MARC)
+      .profile(FamilyProfile.BIBLIOGRAPHIC)
+      .rules(allEnabledRules())
+      .fields(getNonRepeatableSubfieldDefinitions());
+  }
+
+  private static List<SpecificationFieldDto> getNonRepeatableSubfieldDefinitions() {
+    return List.of(requiredNonRepeatableField("000"),
+      defaultFieldWithNonRepeatableSubfields("010"),
+      defaultFieldWithNonRepeatableSubfields("035"),
+      defaultFieldWithNonRepeatableSubfields("047"),
+      defaultFieldWithNonRepeatableSubfields("100"),
+      defaultFieldWithNonRepeatableSubfields("245"),
+      defaultFieldWithNonRepeatableSubfields("650"));
+  }
+
   private static List<SpecificationFieldDto> commonFieldDefinitions() {
     List<SpecificationFieldDto> fields = new ArrayList<>();
     fields.add(requiredNonRepeatableField("000"));
@@ -122,11 +141,21 @@ public class TestDataProvider {
 
   private static SpecificationFieldDto defaultFieldWithSubfields(String tag) {
     return defaultField(tag).subfields(List.of(
-      getSubfield("a", true),
-      getSubfield("d", true),
-      getSubfield("k", false),
-      getSubfield("s", false),
-      getSubfield("0", false)));
+      getSubfield("a", true, true),
+      getSubfield("d", true, true),
+      getSubfield("k", false, true),
+      getSubfield("s", false, true),
+      getSubfield("0", false, true)));
+  }
+
+  private static SpecificationFieldDto defaultFieldWithNonRepeatableSubfields(String tag) {
+    return defaultField(tag).subfields(List.of(
+      getSubfield("a", true, true),
+      getSubfield("d", true, false),
+      getSubfield("k", false, true),
+      getSubfield("s", false, true),
+      getSubfield("c", false, true),
+      getSubfield("w", false, false)));
   }
 
   private static SpecificationFieldDto fieldDefinition(String tag, boolean required, boolean deprecated,
@@ -136,14 +165,14 @@ public class TestDataProvider {
       .tag(tag)
       .indicators(getFieldIndicatorDtoListByTag(tag))
       .subfields(List.of(
-        getSubfield("a", false),
-        getSubfield("b", false),
-        getSubfield("c", false),
-        getSubfield("d", false),
-        getSubfield("z", false),
-        getSubfield("0", false),
-        getSubfield("2", false),
-        getSubfield("9", false)))
+        getSubfield("a", false, true),
+        getSubfield("b", false, true),
+        getSubfield("c", false, true),
+        getSubfield("d", false, true),
+        getSubfield("z", false, true),
+        getSubfield("0", false, true),
+        getSubfield("2", false, true),
+        getSubfield("9", false, true)))
       .required(required)
       .deprecated(deprecated)
       .repeatable(repeatable);
@@ -189,12 +218,12 @@ public class TestDataProvider {
     return new FieldIndicatorDto().order(order).codes(indicatorCodeDto);
   }
 
-  private static SubfieldDto getSubfield(String code, boolean required) {
+  private static SubfieldDto getSubfield(String code, boolean required, boolean repeatable) {
     return new SubfieldDto()
       .id(UUID.randomUUID())
       .required(required)
       .deprecated(false)
-      .repeatable(true)
+      .repeatable(repeatable)
       .code(code);
   }
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.folio.support.TestDataProvider.getSpecification;
 import static org.folio.support.TestDataProvider.getSpecificationWithIndicators;
+import static org.folio.support.TestDataProvider.getSpecificationWithNonRepeatableSubfields;
 import static org.folio.support.TestDataProvider.getSpecificationWithSubfields;
 import static org.folio.support.TestDataProvider.getSpecificationWithTags;
 
@@ -154,6 +155,23 @@ class MarcSpecificationGuidedValidatorTest {
         tuple("047[0]$f[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode()),
         tuple("047[0]$r[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode()),
         tuple("245[0]$c[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode())
+      );
+  }
+
+  @Test
+  void testNonRepeatableSubfieldValidation() {
+    var marc4jRecord = TestRecordProvider.getMarc4jRecord(
+      "testdata/subfields/marc-non-repeatable-subfields-record.json");
+    var validationErrors = validator.validate(marc4jRecord, getSpecificationWithNonRepeatableSubfields());
+    assertThat(validationErrors)
+      .hasSize(5)
+      .extracting(ValidationError::getPath, ValidationError::getRuleCode)
+      .containsExactlyInAnyOrder(
+        tuple("100[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("650[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("047[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("047[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("245[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode())
       );
   }
 

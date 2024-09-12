@@ -45,7 +45,8 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
     );
     this.subfieldValidators = List.of(
       new MissingSubfieldRuleValidator(translationProvider),
-      new UndefinedSubfieldRuleValidator(translationProvider));
+      new UndefinedSubfieldRuleValidator(translationProvider),
+      new NonRepeatableSubfieldRuleValidator(translationProvider));
   }
 
   @Override

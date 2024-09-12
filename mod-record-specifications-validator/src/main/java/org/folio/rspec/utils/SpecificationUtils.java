@@ -43,4 +43,11 @@ public class SpecificationUtils {
       .filter(subfield -> Boolean.TRUE.equals(subfield.getRequired()))
       .collect(Collectors.toMap(subfield -> subfield.getCode().charAt(0), Function.identity()));
   }
+
+  public static Map<Character, SubfieldDto> nonRepeatableSubfields(List<SubfieldDto> subfieldDtos) {
+    return subfieldDtos == null ? Map.of() : subfieldDtos
+      .stream()
+      .filter(subfield -> Boolean.FALSE.equals(subfield.getRepeatable()))
+      .collect(Collectors.toMap(subfield -> subfield.getCode().charAt(0), Function.identity()));
+  }
 }
