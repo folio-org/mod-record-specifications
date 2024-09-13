@@ -3,6 +3,7 @@ package org.folio.rspec.validation.converter.marc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.folio.rspec.validation.converter.Converter;
 import org.folio.rspec.validation.validator.marc.model.MarcControlField;
 import org.folio.rspec.validation.validator.marc.model.MarcDataField;
@@ -73,6 +74,7 @@ public class Marc4jConverter implements Converter<Record, MarcRecord> {
   private List<MarcSubfield> convertSubfields(Reference parentReference, List<Subfield> subfields) {
     var marcSubfields = new ArrayList<MarcSubfield>();
     subfields.stream()
+      .filter(subfield -> StringUtils.isNotBlank(subfield.getData()))
       .collect(Collectors.groupingBy(Subfield::getCode))
       .forEach((code, subfieldList) -> subfieldList.forEach(subfield ->
         marcSubfields.add(toMarcSubfield(parentReference, subfieldList, subfield))));
