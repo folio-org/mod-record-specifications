@@ -144,10 +144,9 @@ class MarcSpecificationGuidedValidatorTest {
     var marc4jRecord = TestRecordProvider.getMarc4jRecord("testdata/subfields/marc-undefined-subfields-record.json");
     var validationErrors = validator.validate(marc4jRecord, getSpecificationWithSubfields());
     assertThat(validationErrors)
-      .hasSize(8)
+      .hasSize(7)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
-        tuple("100[0]$5[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode()),
         tuple("650[0]$w[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode()),
         tuple("035[0]$b[0]", MarcRuleCode.UNDEFINED_SUBFIELD.getCode()),
         tuple("035[0]$d[0]", MarcRuleCode.MISSING_SUBFIELD.getCode()),
@@ -164,14 +163,13 @@ class MarcSpecificationGuidedValidatorTest {
       "testdata/subfields/marc-non-repeatable-subfields-record.json");
     var validationErrors = validator.validate(marc4jRecord, getSpecificationWithNonRepeatableSubfields());
     assertThat(validationErrors)
-      .hasSize(5)
+      .hasSize(4)
       .extracting(ValidationError::getPath, ValidationError::getRuleCode)
       .containsExactlyInAnyOrder(
-        tuple("100[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
         tuple("650[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
-        tuple("047[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
         tuple("047[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
-        tuple("245[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode())
+        tuple("245[0]$d[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode()),
+        tuple("035[0]$w[1]", MarcRuleCode.NON_REPEATABLE_SUBFIELD.getCode())
       );
   }
 
