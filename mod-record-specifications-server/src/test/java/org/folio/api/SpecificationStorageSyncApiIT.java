@@ -83,22 +83,22 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
     var recreatedIndicatorCodes = executeInContext(() -> indicatorCodeRepository.findAll());
 
     assertThat(recreatedFields)
-      .hasSize(293)
+      .hasSize(442)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdFieldIds);
 
     assertThat(recreatedSubfields)
-      .hasSize(2826)
+      .hasSize(4523)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 
     assertThat(recreatedIndicator)
-      .hasSize(528)
+      .hasSize(816)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorIds);
 
     assertThat(recreatedIndicatorCodes)
-      .hasSize(1193)
+      .hasSize(1784)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorCodeIds);
 
