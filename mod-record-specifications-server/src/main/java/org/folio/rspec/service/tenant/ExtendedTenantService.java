@@ -2,7 +2,6 @@ package org.folio.rspec.service.tenant;
 
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.IncludeParam;
-import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.service.SpecificationService;
 import org.folio.spring.FolioExecutionContext;
 import org.folio.spring.liquibase.FolioSpringLiquibase;
@@ -49,14 +48,13 @@ public class ExtendedTenantService extends TenantService {
   public synchronized void createOrUpdateTenant(TenantAttributes tenantAttributes) {
     if (Boolean.FALSE.equals(tenantExists())) {
       super.createOrUpdateTenant(tenantAttributes);
-      var specificationIds = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
-        .getSpecifications().stream()
-        .map(SpecificationDto::getId)
-        .toList();
+      var specifications = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
+        .getSpecifications();
 
-      log.info("About to start record specifications syncing");
-      for (var id : specificationIds) {
-        specificationService.sync(id);
+      for (var spec : specifications) {
+        log.info("About to start syncing record specification: [id: {}, family: {}, profile: {}, url: {}] ",
+          spec.getId(), spec.getFamily(), spec.getProfile(), spec.getUrl());
+        specificationService.sync(spec.getId());
       }
     }
   }

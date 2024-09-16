@@ -98,6 +98,7 @@ public class SpecificationService {
     );
   }
 
+  @RunOnProfile("!dev")
   public void sync(UUID specificationId) {
     log.info("sync::specificationId={}", specificationId);
     var specification = doForSpecificationOrFail(specificationId, Function.identity());
