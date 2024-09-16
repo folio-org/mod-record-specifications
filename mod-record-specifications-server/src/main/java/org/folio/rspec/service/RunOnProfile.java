@@ -22,7 +22,7 @@ public @interface RunOnProfile {
 
     private final Environment env;
 
-    public RunOnProfileAspect(Environment env) {
+    RunOnProfileAspect(Environment env) {
       this.env = env;
     }
 
