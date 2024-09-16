@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -21,8 +20,11 @@ public @interface RunOnProfile {
   @Configuration
   class RunOnProfileAspect {
 
-    @Autowired
-    Environment env;
+    private final Environment env;
+
+    public RunOnProfileAspect(Environment env) {
+      this.env = env;
+    }
 
     @Around("@annotation(runOnProfile)")
     public Object around(ProceedingJoinPoint joinPoint, RunOnProfile runOnProfile) throws Throwable {
