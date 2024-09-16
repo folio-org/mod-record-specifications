@@ -30,7 +30,7 @@
           ],
           "pathPattern": "/specification-storage/specifications/{specificationId}/sync",
           "permissionsRequired": [
-            "specification-storage.specification.item.sync"
+            "specification-storage.specification.item.sync.execute"
           ]
         },
         {
@@ -221,7 +221,7 @@
       "description": "Get specification"
     },
     {
-      "permissionName": "specification-storage.specification.item.sync",
+      "permissionName": "specification-storage.specification.item.sync.execute",
       "displayName": "Specification Storage - Sync specification",
       "description": "Sync specification"
     },
