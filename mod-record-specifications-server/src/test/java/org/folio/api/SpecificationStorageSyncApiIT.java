@@ -25,9 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles(profiles = "test")
 @EnableOkapi
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
@@ -48,7 +46,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   @BeforeAll
   static void beforeAll() {
-    setUpTenant();
+    setUpTenant(false);
   }
 
   @BeforeEach
@@ -83,22 +81,22 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
     var recreatedIndicatorCodes = executeInContext(() -> indicatorCodeRepository.findAll());
 
     assertThat(recreatedFields)
-      .hasSize(442)
+      .hasSize(293)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdFieldIds);
 
     assertThat(recreatedSubfields)
-      .hasSize(4523)
+      .hasSize(2826)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 
     assertThat(recreatedIndicator)
-      .hasSize(816)
+      .hasSize(528)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorIds);
 
     assertThat(recreatedIndicatorCodes)
-      .hasSize(1784)
+      .hasSize(1193)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorCodeIds);
 

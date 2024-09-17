@@ -78,21 +78,26 @@ public class IntegrationTestBase {
   }
 
   protected static void setUpTenant() {
-    setUpTenant(false);
+    setUpTenant(false, true);
   }
 
-  protected static void setUpTenant(boolean loadReference) {
-    setUpTenant(TENANT_ID, loadReference);
+  protected static void setUpTenant(boolean syncSpecifications) {
+    setUpTenant(false, syncSpecifications);
   }
 
-  protected static void setUpTenant(String tenantId, boolean loadReference) {
+  protected static void setUpTenant(boolean loadReference, boolean syncSpecifications) {
+    setUpTenant(TENANT_ID, loadReference, syncSpecifications);
+  }
+
+  protected static void setUpTenant(String tenantId, boolean loadReference, boolean syncSpecifications) {
     var httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(APPLICATION_JSON);
     httpHeaders.add(XOkapiHeaders.TENANT, tenantId);
     httpHeaders.add(XOkapiHeaders.USER_ID, USER_ID);
 
     var tenantAttributes = new TenantAttributes().moduleTo("mod-record-specifications")
-      .addParametersItem(new Parameter("loadReference").value(String.valueOf(loadReference)));
+      .addParametersItem(new Parameter("loadReference").value(String.valueOf(loadReference)))
+      .addParametersItem(new Parameter("syncSpecifications").value(String.valueOf(syncSpecifications)));
     doPost("/_/tenant", tenantAttributes, httpHeaders);
   }
 
