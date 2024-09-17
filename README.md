@@ -60,7 +60,7 @@ Run the module locally on the default listening port (8081) with the prescribed 
 
 ```shell
 DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \ 
-java -Dserver.port=8081 -jar target/mod-record-specifications-*.jar
+java -Dserver.port=8081 -jar mod-record-specifications-server/target/mod-record-specifications-fat.jar
 ```
 
 #### Using Docker
