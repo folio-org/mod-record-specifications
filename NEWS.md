@@ -35,6 +35,7 @@
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
 * Adjust build dependants github action to be triggered only on dto/validator submodules changes ([MRSPECS-26](https://folio-org.atlassian.net//browse/MRSPECS-26))
+* Add module descriptor validator plugin and fix permission name validation issue ([MRSPECS-55](https://folio-org.atlassian.net//browse/MRSPECS-55))
 * Fix link to OAS file ([MRSPECS-56](https://folio-org.atlassian.net//browse/MRSPECS-56))
 
 ### Bug fixes
