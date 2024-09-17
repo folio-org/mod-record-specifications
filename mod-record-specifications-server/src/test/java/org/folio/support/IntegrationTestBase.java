@@ -78,11 +78,7 @@ public class IntegrationTestBase {
   }
 
   protected static void setUpTenant() {
-    setUpTenant(false, true);
-  }
-
-  protected static void setUpTenant(boolean syncSpecifications) {
-    setUpTenant(false, syncSpecifications);
+    setUpTenant(false, false);
   }
 
   protected static void setUpTenant(boolean loadReference, boolean syncSpecifications) {

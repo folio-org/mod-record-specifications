@@ -46,7 +46,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   @BeforeAll
   static void beforeAll() {
-    setUpTenant(false);
+    setUpTenant();
   }
 
   @BeforeEach
