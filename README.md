@@ -14,11 +14,20 @@ mod-record-specifications is a module for managing and validating records agains
 
 ### Compiling
 
-To compile mod-record-specifications, use the command: 
+To compile mod-record-specifications, use the command:
 
 ```shell
 mvn clean install
 ```
+
+### Tenant attributes
+
+It is possible to define specific tenant parameters during module's initialization for particular tenant.
+
+| Tenant parameter    | Default value | Description                                                 |
+|:--------------------|:-------------:|:------------------------------------------------------------|
+| syncSpecifications  |     true      | Sync Specifications as module is enabled for the new tenant |
+
 
 ### Environment Variables
 
@@ -59,7 +68,7 @@ Change these variables as per your requirements.
 Run the module locally on the default listening port (8081) with the prescribed command:
 
 ```shell
-DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \ 
+DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \
 java -Dserver.port=8081 -jar mod-record-specifications-server/target/mod-record-specifications-fat.jar
 ```
 
