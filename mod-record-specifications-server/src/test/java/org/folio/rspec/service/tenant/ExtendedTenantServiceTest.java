@@ -17,6 +17,7 @@ import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.liquibase.FolioSpringLiquibase;
 import org.folio.spring.testing.type.UnitTest;
 import org.folio.spring.tools.kafka.KafkaAdminService;
+import org.folio.tenant.domain.dto.TenantAttributes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,7 +58,7 @@ class ExtendedTenantServiceTest {
     when(specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0))
       .thenReturn(new SpecificationDtoCollection().specifications(List.of(spec1, spec2)));
 
-    service.createOrUpdateTenant(null);
+    service.createOrUpdateTenant(new TenantAttributes());
 
     verify(specificationService).findSpecifications(null, null, IncludeParam.NONE, 100, 0);
     verify(specificationService).sync(spec1.getId());
