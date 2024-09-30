@@ -1,6 +1,7 @@
 package org.folio.rspec.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.folio.rspec.domain.entity.Field;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,7 @@ public interface FieldRepository extends JpaRepository<Field, UUID> {
   @Modifying
   @Query("delete from Field f where f.specification.id = ?1")
   void deleteBySpecificationId(UUID specificationId);
+
+  @Query("select f from Field f where f.specification.id = ?1 and f.tag = ?2")
+  Optional<Field> findBySpecificationIdAndTag(UUID specificationId, String targetFieldTag);
 }
