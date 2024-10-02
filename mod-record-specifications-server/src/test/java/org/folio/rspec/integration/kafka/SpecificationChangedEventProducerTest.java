@@ -22,10 +22,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class SpecificationChangeProducerTest {
+class SpecificationChangedEventProducerTest {
 
   @InjectMocks
-  private SpecificationChangeProducer producer;
+  private SpecificationChangedEventProducer producer;
 
   @Mock
   private KafkaTemplate<String, SpecificationUpdatedEvent> template;

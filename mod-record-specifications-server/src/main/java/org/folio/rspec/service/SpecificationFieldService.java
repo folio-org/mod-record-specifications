@@ -132,6 +132,17 @@ public class SpecificationFieldService {
     );
   }
 
+  public SubfieldDto saveSubfield(UUID specificationId, String fieldTag, SubfieldDto dto) {
+    log.debug("saveSubfield::dto={}", dto);
+    return doForFieldOrFail(specificationId, fieldTag,
+      field -> {
+        var saved = subfieldService.saveSubfield(field, dto);
+        eventProducer.sendEvent(field.getSpecification().getId());
+        return saved;
+      }
+    );
+  }
+
   public SubfieldDto createLocalSubfield(UUID fieldId, SubfieldChangeDto createDto) {
     log.debug("createLocalSubfield::fieldId={}, createDto={}", fieldId, createDto);
     return doForFieldOrFail(fieldId,
@@ -161,5 +172,11 @@ public class SpecificationFieldService {
     return fieldRepository.findById(fieldId)
       .map(action)
       .orElseThrow(() -> ResourceNotFoundException.forField(fieldId));
+  }
+
+  private <T> T doForFieldOrFail(UUID specificationId, String fieldTag, Function<Field, T> action) {
+    return fieldRepository.findBySpecificationIdAndTag(specificationId, fieldTag)
+      .map(action)
+      .orElseThrow(() -> ResourceNotFoundException.forField(specificationId, fieldTag));
   }
 }

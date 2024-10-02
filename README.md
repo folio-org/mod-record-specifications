@@ -56,8 +56,6 @@ Below are the environment variables used by this module:
 | KAFKA_SSL_KEYSTORE_PASSWORD                         | -             | The store password for the Kafka key store file. This is optional for client and only needed if 'ssl.keystore.location' is configured.                     |
 | KAFKA_SSL_TRUSTSTORE_LOCATION                       | -             | The location of the Kafka trust store file.                                                                                                                |
 | KAFKA_SSL_TRUSTSTORE_PASSWORD                       | -             | The password for the Kafka trust store file. If a password is not set, trust store file configured will still be used, but integrity checking is disabled. |
-| KAFKA_SPECIFICATION_UPDATE_TOPIC_PARTITIONS         | 1             | Amount of partitions for `specification-storage.specification.updated` topic.                                                                              |
-| KAFKA_SPECIFICATION_UPDATE_TOPIC_REPLICATION_FACTOR | -             | Replication factor for `specification-storage.specification.updated` topic.                                                                                |
 
 Change these variables as per your requirements.
 

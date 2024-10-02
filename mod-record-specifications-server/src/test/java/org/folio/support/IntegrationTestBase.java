@@ -1,5 +1,6 @@
 package org.folio.support;
 
+import static java.lang.System.setProperty;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
@@ -46,11 +47,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -62,7 +59,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @SpringBootTest(classes = RecordSpecificationsApp.class)
 @ActiveProfiles("dev")
 @AutoConfigureMockMvc
-@Import(IntegrationTestBase.IntegrationTestConfiguration.class)
 public class IntegrationTestBase {
 
   protected static MockMvc mockMvc;
@@ -75,24 +71,24 @@ public class IntegrationTestBase {
   @BeforeAll
   protected static void setUpBeans(@Autowired MockMvc mockMvc) {
     IntegrationTestBase.mockMvc = mockMvc;
+    setProperty("env", "folio");
   }
 
   protected static void setUpTenant() {
-    setUpTenant(false, false);
+    setUpTenant(false);
   }
 
-  protected static void setUpTenant(boolean loadReference, boolean syncSpecifications) {
-    setUpTenant(TENANT_ID, loadReference, syncSpecifications);
+  protected static void setUpTenant(boolean syncSpecifications) {
+    setUpTenant(TENANT_ID, syncSpecifications);
   }
 
-  protected static void setUpTenant(String tenantId, boolean loadReference, boolean syncSpecifications) {
+  protected static void setUpTenant(String tenantId, boolean syncSpecifications) {
     var httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(APPLICATION_JSON);
     httpHeaders.add(XOkapiHeaders.TENANT, tenantId);
     httpHeaders.add(XOkapiHeaders.USER_ID, USER_ID);
 
     var tenantAttributes = new TenantAttributes().moduleTo("mod-record-specifications")
-      .addParametersItem(new Parameter("loadReference").value(String.valueOf(loadReference)))
       .addParametersItem(new Parameter("syncSpecifications").value(String.valueOf(syncSpecifications)));
     doPost("/_/tenant", tenantAttributes, httpHeaders);
   }
@@ -351,15 +347,6 @@ public class IntegrationTestBase {
   @NotNull
   private static ResultActions tryDoHttpMethod(MockHttpServletRequestBuilder builder, Object body) throws Exception {
     return tryDoHttpMethod(builder, body, defaultHeaders());
-  }
-
-  @TestConfiguration
-  public static class IntegrationTestConfiguration {
-
-    @Bean
-    public DatabaseHelper databaseHelper(JdbcTemplate jdbcTemplate, FolioModuleMetadata moduleMetadata) {
-      return new DatabaseHelper(moduleMetadata, jdbcTemplate);
-    }
   }
 
 }

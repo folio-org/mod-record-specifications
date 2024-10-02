@@ -459,16 +459,6 @@
         "name": "KAFKA_SSL_TRUSTSTORE_PASSWORD",
         "value": "",
         "description": "The password for the Kafka trust store file. If a password is not set, trust store file configured will still be used, but integrity checking is disabled."
-      },
-      {
-        "name": "KAFKA_SPECIFICATION_UPDATE_TOPIC_PARTITIONS",
-        "value": "1",
-        "description": "Amount of partitions for `specification-storage.specification.updated` topic."
-      },
-      {
-        "name": "KAFKA_SPECIFICATION_UPDATE_TOPIC_REPLICATION_FACTOR",
-        "value": "",
-        "description": "Replication factor for `specification-storage.specification.updated` topic."
       }
     ]
   }

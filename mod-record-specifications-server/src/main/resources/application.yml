@@ -50,11 +50,18 @@ spring:
         retries: 5
 
 folio:
+  environment: ${ENV:folio}
   kafka:
     topics:
+      - name: specification-storage.specification.update
+        numPartitions: 1
       - name: specification-storage.specification.updated
-        numPartitions: ${KAFKA_SPECIFICATION_UPDATE_TOPIC_PARTITIONS:1}
-        replicationFactor: ${KAFKA_SPECIFICATION_UPDATE_TOPIC_REPLICATION_FACTOR:}
+        numPartitions: 1
+    listener:
+      update-requests:
+        concurrency: 1
+        topic-pattern: (${folio.environment}\.)(.*\.)specification-storage\.specification\.update
+        group-id: ${folio.environment}-mod-record-specification-group
   logging:
     request:
       enabled: true

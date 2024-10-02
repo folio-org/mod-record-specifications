@@ -40,6 +40,7 @@ public class ExtendedTenantService extends TenantService {
   protected void afterTenantUpdate(TenantAttributes tenantAttributes) {
     super.afterTenantUpdate(tenantAttributes);
     kafkaAdminService.createTopics(folioExecutionContext.getTenantId());
+    kafkaAdminService.restartEventListeners();
   }
 
   @Override
