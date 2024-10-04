@@ -132,6 +132,7 @@ public class SpecificationFieldService {
     );
   }
 
+  @Transactional
   public SubfieldDto saveSubfield(UUID specificationId, String fieldTag, SubfieldDto dto) {
     log.debug("saveSubfield::dto={}", dto);
     return doForFieldOrFail(specificationId, fieldTag,
