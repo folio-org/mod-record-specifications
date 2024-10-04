@@ -404,6 +404,30 @@
     </insert>
   </changeSet>
 
+  <changeSet id="MRSPECS-59@@default-data:rule-invalidLccnSubfieldValue" labels="default-data"
+             author="mukhiddin_yusupov">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(id)
+        FROM rule
+        WHERE id = '0a769f6a-fe60-4ef1-bfa6-bcdd88908d04';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for invalidLccnSubfieldValue rule</comment>
+
+    <insert tableName="rule">
+      <column name="id" value="0a769f6a-fe60-4ef1-bfa6-bcdd88908d04"/>
+      <column name="name" value="Invalid LCCN Subfield Value"/>
+      <column name="code" value="invalidLccnSubfieldValue"/>
+      <column name="description" value="Subfield value is not valid based on LCCN structure"/>
+      <column name="created_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="created_date" valueComputed="now()"/>
+      <column name="updated_by_user_id" value="00000000-0000-0000-0000-000000000000"/>
+      <column name="updated_date" valueComputed="now()"/>
+    </insert>
+  </changeSet>
+
   <!-- Authority specification rules -->
 
   <changeSet id="MRSPECS-4@@default-data:specification-rule-authority-undefinedField" labels="default-data"
@@ -687,6 +711,27 @@
     </insert>
   </changeSet>
 
+  <changeSet id="MRSPECS-59@@default-data:specification-rule-authority-invalidLccnSubfieldValue"
+             labels="default-data"
+             author="mukhiddin_yusupov">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = 'a37d01ba-75c7-4a0c-997e-309823f1df3f'
+        AND rule_id = '0a769f6a-fe60-4ef1-bfa6-bcdd88908d04';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for authority-invalidLccnSubfieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="a37d01ba-75c7-4a0c-997e-309823f1df3f"/>
+      <column name="rule_id" value="0a769f6a-fe60-4ef1-bfa6-bcdd88908d04"/>
+      <column name="enabled" value="false"/>
+    </insert>
+  </changeSet>
+
   <!-- Bibliographic specification rules -->
 
   <changeSet id="MRSPECS-4@@default-data:specification-rule-bibliographic-undefinedField" labels="default-data"
@@ -966,6 +1011,27 @@
       <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
       <column name="rule_id" value="ed98f7ce-ee87-47a3-a509-367e3fae540f"/>
       <column name="enabled" value="true"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="MRSPECS-59@@default-data:specification-rule-bibliographic-invalidLccnSubfieldValue"
+             labels="default-data"
+             author="mukhiddin_yusupov">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM specification_rule
+        WHERE specification_id = '6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3'
+        AND rule_id = '0a769f6a-fe60-4ef1-bfa6-bcdd88908d04';
+      </sqlCheck>
+    </preConditions>
+
+    <comment>Populate default data for bibliographic-invalidLccnSubfieldValue rule</comment>
+
+    <insert tableName="specification_rule">
+      <column name="specification_id" value="6eefa4c6-bbf7-4845-ad82-de7fc4abd0e3"/>
+      <column name="rule_id" value="0a769f6a-fe60-4ef1-bfa6-bcdd88908d04"/>
+      <column name="enabled" value="false"/>
     </insert>
   </changeSet>
 

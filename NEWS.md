@@ -31,6 +31,7 @@
 * implement Missing Subfield validation([MRSPECS-47](https://folio-org.atlassian.net/browse/MRSPECS-47))
 * implement Undefined Subfield validation ([MRSPECS-49](https://folio-org.atlassian.net/browse/MRSPECS-49))
 * implement Non-Repeatable Subfield validation ([MRSPECS-48](https://folio-org.atlassian.net/browse/MRSPECS-48))
+* implement Invalid LCCN Subfield validation ([MRSPECS-59](https://folio-org.atlassian.net/browse/MRSPECS-59))
 
 #### General
 * Implement build dependants GitHub workflow on PR creation ([MRSPECS-9](https://folio-org.atlassian.net//browse/MRSPECS-9))
