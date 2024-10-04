@@ -9,7 +9,8 @@ import lombok.Data;
 @Data
 @JsonTypeInfo(
   use = Id.NAME,
-  property = "definitionType"
+  property = "definitionType",
+  visible = true
 )
 @JsonSubTypes({
   @Type(value = SubfieldUpdateRequestEvent.class, name = "SUBFIELD")
