@@ -43,6 +43,14 @@ public class SubfieldService {
     return new SubfieldDtoCollection().subfields(subfieldDtos).totalRecords(subfieldDtos.size());
   }
 
+  public SubfieldDto saveSubfield(Field field, SubfieldDto dto) {
+    log.debug("saveSubfield::fieldId={}, dto={}", field.getId(), dto);
+    var entity = mapper.toEntity(dto);
+    entity.setField(field);
+    var created = repository.save(entity);
+    return mapper.toDto(created);
+  }
+
   public SubfieldDto createLocalSubfield(Field field, SubfieldChangeDto createDto) {
     log.info("createLocalSubfield::fieldId={}, dto={}", field.getId(), createDto);
     var entity = mapper.toEntity(createDto);
@@ -82,5 +90,4 @@ public class SubfieldService {
   public void setValidators(List<ScopeValidator<SubfieldChangeDto, Subfield>> validators) {
     validators.forEach(validator -> this.validators.put(validator.scope(), validator));
   }
-
 }

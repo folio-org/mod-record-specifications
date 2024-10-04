@@ -300,6 +300,24 @@ class SpecificationFieldServiceTest {
   }
 
   @Test
+  void testSaveSubfield() {
+    var fieldId = UUID.randomUUID();
+    var field = local().id(fieldId).buildEntity();
+    var subfieldDto = new SubfieldDto().fieldId(fieldId);
+    var specificationId = field.getSpecification().getId();
+
+    when(fieldRepository.findBySpecificationIdAndTag(specificationId, field.getTag()))
+      .thenReturn(Optional.of(field));
+    when(subfieldService.saveSubfield(field, subfieldDto)).thenReturn(subfieldDto);
+
+    var actual = service.saveSubfield(specificationId, field.getTag(), subfieldDto);
+
+    assertThat(actual).isEqualTo(subfieldDto);
+
+    verify(eventProducer).sendEvent(specificationId);
+  }
+
+  @Test
   void testCreateLocalSubfield() {
     var fieldId = UUID.randomUUID();
     var field = local().id(fieldId).buildEntity();

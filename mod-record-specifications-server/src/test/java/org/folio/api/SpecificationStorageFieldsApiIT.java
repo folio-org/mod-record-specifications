@@ -30,7 +30,6 @@ import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ResourceValidationFailedException;
-import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.SpecificationITBase;
@@ -47,8 +46,6 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
 
   @Autowired
   private FieldRepository fieldRepository;
-  @Autowired
-  private FolioModuleMetadata moduleMetadata;
 
   @BeforeAll
   static void beforeAll() {

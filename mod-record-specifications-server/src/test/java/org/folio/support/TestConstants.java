@@ -1,10 +1,10 @@
 package org.folio.support;
 
-import static org.folio.rspec.integration.kafka.SpecificationChangeProducer.SPECIFICATION_UPDATED_TOPIC;
 import static org.folio.support.KafkaUtils.fullTopicName;
 
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
+import org.folio.rspec.integration.kafka.KafkaTopicName;
 
 @UtilityClass
 public class TestConstants {
@@ -19,6 +19,14 @@ public class TestConstants {
   }
 
   public static String specificationUpdatedTopic(String tenantId) {
-    return fullTopicName(SPECIFICATION_UPDATED_TOPIC, tenantId);
+    return fullTopicName(KafkaTopicName.SPECIFICATION_UPDATED.getTopicName(), tenantId);
+  }
+
+  public static String specificationUpdateTopic() {
+    return specificationUpdateTopic(TENANT_ID);
+  }
+
+  public static String specificationUpdateTopic(String tenantId) {
+    return fullTopicName(KafkaTopicName.SPECIFICATION_UPDATE.getTopicName(), tenantId);
   }
 }

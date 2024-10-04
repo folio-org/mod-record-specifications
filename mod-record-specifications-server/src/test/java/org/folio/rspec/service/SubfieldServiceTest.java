@@ -58,7 +58,7 @@ class SubfieldServiceTest {
   private UUID specificationId;
   private Field field;
   private Subfield subfield;
-  private SubfieldDto fieldSubfieldDto;
+  private SubfieldDto subfieldDto;
   private SubfieldChangeDto changeDto;
 
   @BeforeEach
@@ -75,7 +75,7 @@ class SubfieldServiceTest {
     subfield = new Subfield();
     subfield.setField(field);
 
-    fieldSubfieldDto = new SubfieldDto();
+    subfieldDto = new SubfieldDto();
     changeDto = new SubfieldChangeDto();
   }
 
@@ -84,7 +84,7 @@ class SubfieldServiceTest {
     var subfields = new ArrayList<>(Collections.singletonList(subfield));
 
     when(subfieldRepository.findByFieldId(any(UUID.class))).thenReturn(subfields);
-    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(fieldSubfieldDto);
+    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(subfieldDto);
 
     var result = subfieldService.findFieldSubfields(subfieldId);
 
@@ -94,22 +94,35 @@ class SubfieldServiceTest {
   }
 
   @Test
+  void testSaveSubfield() {
+    when(subfieldMapper.toEntity(any(SubfieldDto.class))).thenReturn(subfield);
+    when(subfieldRepository.save(any(Subfield.class))).thenReturn(subfield);
+    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(subfieldDto);
+
+    var result = subfieldService.saveSubfield(field, subfieldDto);
+
+    verify(subfieldRepository).save(subfield);
+
+    assertEquals(subfieldDto, result);
+  }
+
+  @Test
   void testCreateLocalSubfield() {
     when(subfieldMapper.toEntity(any(SubfieldChangeDto.class))).thenReturn(subfield);
     when(subfieldRepository.save(any(Subfield.class))).thenReturn(subfield);
-    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(fieldSubfieldDto);
+    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(subfieldDto);
 
     var result = subfieldService.createLocalSubfield(field, changeDto);
 
     verify(subfieldRepository).save(any(Subfield.class));
 
-    assertEquals(fieldSubfieldDto, result);
+    assertEquals(subfieldDto, result);
   }
 
   @Test
   void testUpdateSubfield_positive() {
     doNothing().when(subfieldMapper).update(subfield, changeDto);
-    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(fieldSubfieldDto);
+    when(subfieldMapper.toDto(any(Subfield.class))).thenReturn(subfieldDto);
     when(subfieldRepository.save(any(Subfield.class))).thenReturn(subfield);
     when(subfieldRepository.findById(subfieldId)).thenReturn(Optional.of(subfield));
     subfield.setScope(Scope.LOCAL);
@@ -119,7 +132,7 @@ class SubfieldServiceTest {
     verify(subfieldRepository).save(any(Subfield.class));
     verify(eventProducer).sendEvent(specificationId);
 
-    assertEquals(fieldSubfieldDto, result);
+    assertEquals(subfieldDto, result);
   }
 
   @Test

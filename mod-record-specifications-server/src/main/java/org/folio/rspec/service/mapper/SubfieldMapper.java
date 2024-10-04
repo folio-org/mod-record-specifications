@@ -30,11 +30,14 @@ public interface SubfieldMapper {
   @Mapping(target = "id", ignore = true)
   Subfield toEntity(SubfieldChangeDto createDto);
 
+  @Mapping(target = "field", ignore = true)
+  @Mapping(target = "metadata", ignore = true)
+  Subfield toEntity(SubfieldDto dto);
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "scope", ignore = true)
   @Mapping(target = "metadata", ignore = true)
   @Mapping(target = "field", ignore = true)
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
   void update(@MappingTarget Subfield subfield, SubfieldChangeDto changeDto);
-
 }
