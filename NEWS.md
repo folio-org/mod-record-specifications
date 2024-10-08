@@ -41,4 +41,4 @@
 * Fix link to OAS file ([MRSPECS-56](https://folio-org.atlassian.net//browse/MRSPECS-56))
 
 ### Bug fixes
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Validation errors triggered by different fields with the same tag return all errors for the zero-indexed tag only.([MRSPECS-66](https://folio-org.atlassian.net/browse/MRSPECS-66))
