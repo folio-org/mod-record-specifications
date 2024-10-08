@@ -95,14 +95,22 @@ public class InvalidLccnSubfieldRuleValidatorTest {
   public static Stream<Arguments> invalidLccn() {
     return Stream.of(
       // invalid structure A
-      arguments(" 12345678"),
-      arguments("1234567"),
-      arguments("123456789"),
-      arguments("nnnn12345678"),
+      arguments(" 12345678 "),
+      arguments("  12345678 "),
+      arguments(" n 12345678 "),
+      arguments("  n12345678 "),
+      arguments("   1234567 "),
+      arguments("   12345678"),
+      arguments(" nnn123456789 "),
+      arguments("nnn123456789 "),
+      arguments("nnnn12345678 "),
 
       // structure B
       arguments(" 0123456789"),
-      arguments("123456789"),
-      arguments("nnnn0123456789"));
+      arguments(" m123456789"),
+      arguments("  m123456789 "),
+      arguments(" mm123456789 "),
+      arguments("mm123456789 "),
+      arguments("mmm0123456789"));
   }
 }
