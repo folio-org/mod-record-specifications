@@ -25,6 +25,7 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
   private final List<SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto>> indicatorValidators;
   private final List<SpecificationRuleValidator<List<MarcSubfield>, SpecificationFieldDto>> subfieldValidators;
+  private final SpecificationRuleValidator<MarcDataField, SpecificationFieldDto> missingSubfieldValidator;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
@@ -43,8 +44,8 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       new UndefinedIndicatorRuleValidator(translationProvider)
 
     );
+    this.missingSubfieldValidator = new MissingSubfieldRuleValidator(translationProvider);
     this.subfieldValidators = List.of(
-      new MissingSubfieldRuleValidator(translationProvider),
       new UndefinedSubfieldRuleValidator(translationProvider),
       new NonRepeatableSubfieldRuleValidator(translationProvider));
   }
@@ -68,27 +69,45 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
               validationErrors.addAll(validator.validate(marcField, fieldDefinition));
             }
           }
-
-          for (var validator : indicatorValidators) {
-            if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
-              List<ValidationError> errors = validator.validate(field.indicators(), fieldDefinition);
-              List<String> invalidIndicatorsErrorPaths = validationErrors.stream()
-                .filter(e -> DefinitionType.INDICATOR.equals(e.getDefinitionType()))
-                .map(ValidationError::getPath)
-                .toList();
-              validationErrors.addAll(errors.stream()
-                .filter(error -> !invalidIndicatorsErrorPaths.contains(error.getPath()))
-                .toList());
-            }
-          }
-          for (var validator : subfieldValidators) {
-            if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {
-              validationErrors.addAll(validator.validate(field.subfields(), fieldDefinition));
-            }
+          if (marcField instanceof MarcDataField field) {
+            validateIndicators(specification, fieldDefinition, field, validationErrors);
+            validateSubfields(specification, fieldDefinition, field, validationErrors);
           }
         });
     }
     return validationErrors;
+  }
+
+  private void validateIndicators(
+    SpecificationDto specification, SpecificationFieldDto fieldDefinition,
+    MarcDataField field, List<ValidationError> validationErrors) {
+
+    for (var validator : indicatorValidators) {
+      if (ruleIsEnabled(validator.ruleCode(), specification)) {
+        List<ValidationError> errors = validator.validate(field.indicators(), fieldDefinition);
+        List<String> invalidIndicatorsErrorPaths = validationErrors.stream()
+          .filter(e -> DefinitionType.INDICATOR.equals(e.getDefinitionType()))
+          .map(ValidationError::getPath)
+          .toList();
+        validationErrors.addAll(errors.stream()
+          .filter(error -> !invalidIndicatorsErrorPaths.contains(error.getPath()))
+          .toList());
+      }
+    }
+  }
+
+  private void validateSubfields(
+    SpecificationDto specification, SpecificationFieldDto fieldDefinition,
+    MarcDataField field, List<ValidationError> validationErrors) {
+
+    if (ruleIsEnabled(missingSubfieldValidator.ruleCode(), specification)) {
+      validationErrors.addAll(missingSubfieldValidator.validate(field, fieldDefinition));
+    }
+    for (var validator : subfieldValidators) {
+      if (ruleIsEnabled(validator.ruleCode(), specification)) {
+        validationErrors.addAll(validator.validate(field.subfields(), fieldDefinition));
+      }
+    }
   }
 
   @Override
