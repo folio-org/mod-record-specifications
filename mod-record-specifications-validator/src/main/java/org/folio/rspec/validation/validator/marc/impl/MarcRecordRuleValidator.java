@@ -25,6 +25,7 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
   private final List<SpecificationRuleValidator<MarcField, SpecificationFieldDto>> fieldValidators;
   private final List<SpecificationRuleValidator<List<MarcIndicator>, SpecificationFieldDto>> indicatorValidators;
   private final List<SpecificationRuleValidator<List<MarcSubfield>, SpecificationFieldDto>> subfieldValidators;
+  private final SpecificationRuleValidator<MarcDataField, SpecificationFieldDto> missingSubfieldValidator;
 
   public MarcRecordRuleValidator(TranslationProvider translationProvider) {
     this.fieldSetValidators = List.of(
@@ -43,8 +44,8 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       new UndefinedIndicatorRuleValidator(translationProvider)
 
     );
+    this.missingSubfieldValidator = new MissingSubfieldRuleValidator(translationProvider);
     this.subfieldValidators = List.of(
-      new MissingSubfieldRuleValidator(translationProvider),
       new UndefinedSubfieldRuleValidator(translationProvider),
       new NonRepeatableSubfieldRuleValidator(translationProvider));
   }
@@ -80,6 +81,11 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
                 .filter(error -> !invalidIndicatorsErrorPaths.contains(error.getPath()))
                 .toList());
             }
+          }
+
+          if (ruleIsEnabled(missingSubfieldValidator.ruleCode(), specification)
+            && marcField instanceof MarcDataField field) {
+            validationErrors.addAll(missingSubfieldValidator.validate(field, fieldDefinition));
           }
           for (var validator : subfieldValidators) {
             if (ruleIsEnabled(validator.ruleCode(), specification) && marcField instanceof MarcDataField field) {

@@ -89,6 +89,23 @@
       }
     },
     {
+      "245": {
+        "ind1": "0",
+        "ind2": "0",
+        "subfields": [
+          {
+            "a": "subfield value"
+          },
+          {
+            "d": "subfield value"
+          },
+          {
+            "c": "undefined subfield"
+          }
+        ]
+      }
+    },
+    {
       "650": {
         "ind1": "0",
         "ind2": "0",

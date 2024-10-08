@@ -11,13 +11,14 @@ import org.folio.rspec.i18n.TranslationProvider;
 import org.folio.rspec.utils.SpecificationUtils;
 import org.folio.rspec.validation.validator.SpecificationRuleCode;
 import org.folio.rspec.validation.validator.SpecificationRuleValidator;
+import org.folio.rspec.validation.validator.marc.model.MarcDataField;
 import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 import org.folio.rspec.validation.validator.marc.model.MarcSubfield;
 import org.folio.rspec.validation.validator.marc.model.Reference;
 import org.springframework.util.CollectionUtils;
 
 public class MissingSubfieldRuleValidator
-  implements SpecificationRuleValidator<List<MarcSubfield>, SpecificationFieldDto> {
+  implements SpecificationRuleValidator<MarcDataField, SpecificationFieldDto> {
 
   private static final String CODE_KEY = "code";
 
@@ -28,12 +29,12 @@ public class MissingSubfieldRuleValidator
   }
 
   @Override
-  public List<ValidationError> validate(List<MarcSubfield> subfields, SpecificationFieldDto specification) {
+  public List<ValidationError> validate(MarcDataField marcDataField, SpecificationFieldDto specification) {
     var requiredSubFields = SpecificationUtils.requiredSubfields(specification.getSubfields());
 
     return requiredSubFields.keySet().stream()
-      .filter(subFieldCode -> isMissing(subfields, subFieldCode))
-      .map(subFieldCode -> buildError(specification.getTag(), requiredSubFields.get(subFieldCode)))
+      .filter(subFieldCode -> isMissing(marcDataField.subfields(), subFieldCode))
+      .map(subFieldCode -> buildError(marcDataField.reference(), requiredSubFields.get(subFieldCode)))
       .toList();
   }
 
@@ -52,10 +53,10 @@ public class MissingSubfieldRuleValidator
     return SeverityType.ERROR;
   }
 
-  private ValidationError buildError(String tag, SubfieldDto definition) {
+  private ValidationError buildError(Reference fieldReference, SubfieldDto definition) {
     var message = translationProvider.format(ruleCode(), CODE_KEY, definition.getCode());
     return ValidationError.builder()
-      .path(Reference.forSubfield(Reference.forTag(tag), definition.getCode().charAt(0)).toString())
+      .path(Reference.forSubfield(fieldReference, definition.getCode().charAt(0)).toString())
       .definitionType(definitionType())
       .definitionId(definition.getId())
       .severity(severity())
