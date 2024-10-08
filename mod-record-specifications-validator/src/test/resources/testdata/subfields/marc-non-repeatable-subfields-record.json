@@ -6,7 +6,7 @@
         "ind2": "#",
         "subfields": [
           {
-            "a": "12345678"
+            "a": "   12345678 "
           },
           {
             "d": "nonRepeatable subfield"
