@@ -5,7 +5,6 @@ import static java.lang.Math.toIntExact;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
@@ -26,12 +25,12 @@ import org.folio.rspec.integration.kafka.EventProducer;
 import org.folio.rspec.service.mapper.SpecificationMapper;
 import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class SpecificationService {
 
   private final SpecificationRepository specificationRepository;
@@ -39,7 +38,24 @@ public class SpecificationService {
   private final SpecificationRuleService specificationRuleService;
   private final SpecificationFieldService specificationFieldService;
   private final SpecificationSyncService specificationSyncService;
-  private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> partialChangeProducer;
+  private final EventProducer<UUID, SpecificationUpdatedEvent> fullChangeProducer;
+
+  public SpecificationService(SpecificationRepository specificationRepository, SpecificationMapper specificationMapper,
+                              SpecificationRuleService specificationRuleService,
+                              SpecificationFieldService specificationFieldService,
+                              SpecificationSyncService specificationSyncService,
+                              EventProducer<UUID, SpecificationUpdatedEvent> partialChangeProducer,
+                              @Qualifier("fullChangeProducer")
+                              EventProducer<UUID, SpecificationUpdatedEvent> fullChangeProducer) {
+    this.specificationRepository = specificationRepository;
+    this.specificationMapper = specificationMapper;
+    this.specificationRuleService = specificationRuleService;
+    this.specificationFieldService = specificationFieldService;
+    this.specificationSyncService = specificationSyncService;
+    this.partialChangeProducer = partialChangeProducer;
+    this.fullChangeProducer = fullChangeProducer;
+  }
 
   @Transactional
   public SpecificationDtoCollection findSpecifications(Family family, FamilyProfile profile, IncludeParam include,
@@ -75,7 +91,7 @@ public class SpecificationService {
     Objects.requireNonNull(toggleSpecificationRuleDto.getEnabled());
     specificationRuleService.toggleSpecificationRule(new SpecificationRuleId(specificationId, ruleId),
       toggleSpecificationRuleDto.getEnabled());
-    eventProducer.sendEvent(specificationId);
+    partialChangeProducer.sendEvent(specificationId);
   }
 
   @Transactional
@@ -92,7 +108,7 @@ public class SpecificationService {
     return doForSpecificationOrFail(specificationId,
       specification -> {
         var field = specificationFieldService.createLocalField(specification, createDto);
-        eventProducer.sendEvent(specificationId);
+        partialChangeProducer.sendEvent(specificationId);
         return field;
       }
     );
@@ -102,7 +118,7 @@ public class SpecificationService {
     log.info("sync::specificationId={}", specificationId);
     var specification = doForSpecificationOrFail(specificationId, Function.identity());
     specificationSyncService.sync(specification);
-    eventProducer.sendEvent(specificationId);
+    fullChangeProducer.sendEvent(specificationId);
   }
 
   private <T> T doForSpecificationOrFail(UUID specificationId, Function<Specification, T> action) {
