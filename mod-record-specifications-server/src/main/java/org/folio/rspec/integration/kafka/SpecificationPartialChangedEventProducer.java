@@ -3,13 +3,15 @@ package org.folio.rspec.integration.kafka;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.spring.FolioExecutionContext;
+import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+@Primary
 @Component
-public class SpecificationChangedEventProducer extends EventProducer<UUID, SpecificationUpdatedEvent> {
+public class SpecificationPartialChangedEventProducer extends EventProducer<UUID, SpecificationUpdatedEvent> {
 
-  public SpecificationChangedEventProducer(
+  public SpecificationPartialChangedEventProducer(
     KafkaTemplate<String, SpecificationUpdatedEvent> template,
     FolioExecutionContext context) {
     super(template, context);
@@ -22,6 +24,6 @@ public class SpecificationChangedEventProducer extends EventProducer<UUID, Speci
 
   @Override
   protected SpecificationUpdatedEvent buildEvent(UUID specificationId) {
-    return new SpecificationUpdatedEvent(specificationId, tenantId());
+    return new SpecificationUpdatedEvent(specificationId, tenantId(), SpecificationUpdatedEvent.UpdateExtent.PARTIAL);
   }
 }
