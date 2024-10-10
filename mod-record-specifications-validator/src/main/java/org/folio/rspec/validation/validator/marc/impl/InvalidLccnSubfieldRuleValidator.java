@@ -21,8 +21,8 @@ public class InvalidLccnSubfieldRuleValidator
   private static final String CODE_KEY = "code";
   private static final String TAG_010 = "010";
   private static final String LCCN_SUBFIELD = "a";
-  private static final Pattern LCCN_STRUCTURE_A_PATTERN = Pattern.compile("([' ']{3}|[a-z][|a-z]{2})\\d{8}[' ']");
-  private static final Pattern LCCN_STRUCTURE_B_PATTERN = Pattern.compile("([' ']{2}|[a-z][|a-z])\\d{10}");
+  private static final Pattern LCCN_STRUCTURE_A_PATTERN = Pattern.compile("( {3}|[a-z][|a-z]{2})\\d{8} ");
+  private static final Pattern LCCN_STRUCTURE_B_PATTERN = Pattern.compile("( {2}|[a-z][|a-z])\\d{10}");
 
   private final TranslationProvider translationProvider;
 
