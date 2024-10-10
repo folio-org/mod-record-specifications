@@ -29,9 +29,9 @@ import org.folio.spring.data.OffsetRequest;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
@@ -39,7 +39,6 @@ import org.springframework.data.domain.PageImpl;
 @ExtendWith({MockitoExtension.class, RandomParametersExtension.class})
 class SpecificationServiceTest {
 
-  @InjectMocks
   private SpecificationService service;
 
   @Mock
@@ -59,6 +58,14 @@ class SpecificationServiceTest {
 
   @Mock
   private EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
+  @Mock
+  private EventProducer<UUID, SpecificationUpdatedEvent> fullChangeProducer;
+
+  @BeforeEach
+  void setUp() {
+    service = new SpecificationService(repository, mapper, ruleService, fieldService, syncService,
+      eventProducer, fullChangeProducer);
+  }
 
   @Test
   void testFindSpecifications(@Random SpecificationDto specificationDto) {
@@ -167,6 +174,6 @@ class SpecificationServiceTest {
     service.sync(specificationId);
 
     verify(syncService).sync(specification);
-    verify(eventProducer).sendEvent(specificationId);
+    verify(fullChangeProducer).sendEvent(specificationId);
   }
 }
