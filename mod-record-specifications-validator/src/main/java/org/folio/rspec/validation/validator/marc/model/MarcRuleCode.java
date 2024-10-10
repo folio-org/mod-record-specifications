@@ -14,7 +14,8 @@ public enum MarcRuleCode implements SpecificationRuleCode {
   INVALID_INDICATOR("invalidIndicator"),
   MISSING_SUBFIELD("missingSubfield"),
   UNDEFINED_SUBFIELD("undefinedSubfield"),
-  NON_REPEATABLE_SUBFIELD("nonRepeatableSubfield");
+  NON_REPEATABLE_SUBFIELD("nonRepeatableSubfield"),
+  INVALID_LCCN_SUBFIELD("invalidLccnSubfieldValue");
 
   private final String code;
 

@@ -33,5 +33,6 @@
   "validation.invalidIndicator": "Indicator must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
   "validation.missingSubfield": "Subfield ''{code}'' is required.",
   "validation.undefinedSubfield": "Subfield ''{code}'' is undefined.",
-  "validation.nonRepeatableSubfield": "Subfield ''{code}'' is non-repeatable."
+  "validation.nonRepeatableSubfield": "Subfield ''{code}'' is non-repeatable.",
+  "validation.invalidLccnSubfieldValue": "LCCN value at 010 $a does not conform to the correct structure."
 }
