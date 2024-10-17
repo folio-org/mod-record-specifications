@@ -42,7 +42,7 @@ class FullMarcSpecificationParserTest {
     var result = doParseForFile("__files/marc/authority.html");
 
     assertThat(result).hasSize(147);
-    assertAllFieldsExist(result, 1668, 521);
+    assertAllFieldsExist(result, 1670, 521);
   }
 
   private void assertAllFieldsExist(ArrayNode result, int expectedSubfieldCount, int expectedIndicatorCodeCount) {
