@@ -114,6 +114,7 @@ public class InvalidLccnSubfieldRuleValidatorTest {
       arguments("  m123456789 "),
       arguments(" mm123456789 "),
       arguments("mm123456789 "),
+      arguments("h2001050268"),
       arguments("mmm0123456789"));
   }
 }
