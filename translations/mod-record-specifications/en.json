@@ -34,5 +34,5 @@
   "validation.missingSubfield": "Subfield ''{code}'' is required.",
   "validation.undefinedSubfield": "Subfield ''{code}'' is undefined.",
   "validation.nonRepeatableSubfield": "Subfield ''{code}'' is non-repeatable.",
-  "validation.invalidLccnSubfieldValue": "Fail: 010 $a is in an invalid format."
+  "validation.invalidLccnSubfieldValue": "010 $a is in an invalid format."
 }
