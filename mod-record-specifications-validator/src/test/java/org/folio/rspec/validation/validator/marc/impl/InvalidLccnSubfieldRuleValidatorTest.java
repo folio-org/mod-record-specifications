@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.folio.rspec.domain.dto.SpecificationFieldDto;
 import org.folio.rspec.domain.dto.SubfieldDto;
@@ -54,8 +55,10 @@ public class InvalidLccnSubfieldRuleValidatorTest {
   @MethodSource("validLccn")
   void validate_whenValidlccn_shouldReturnEmptyList(String lccn) {
     var subfield = new MarcSubfield(Reference.forSubfield(Reference.forTag("010"), 'a'), lccn);
+    var specificationFieldDto = new SpecificationFieldDto().tag("010")
+      .subfields(List.of(new SubfieldDto().id(UUID.randomUUID()).code("a")));
 
-    var errors = validator.validate(List.of(subfield), new SpecificationFieldDto().tag("010"));
+    var errors = validator.validate(List.of(subfield), specificationFieldDto);
 
     assertTrue(CollectionUtils.isEmpty(errors));
   }
@@ -65,10 +68,10 @@ public class InvalidLccnSubfieldRuleValidatorTest {
   void validate_whenInvalidlccn_shouldReturnValidationError(String lccn) {
     when(translationProvider.format(anyString(), anyString(), anyString())).thenReturn("message");
     var subfield = new MarcSubfield(Reference.forSubfield(Reference.forTag("010"), 'a'), lccn);
-    var specification = new SpecificationFieldDto().tag("010")
-      .subfields(List.of(new SubfieldDto().code("a")));
+    var specificationFieldDto = new SpecificationFieldDto().tag("010")
+      .subfields(List.of(new SubfieldDto().id(UUID.randomUUID()).code("a")));
 
-    var errors = validator.validate(List.of(subfield), specification);
+    var errors = validator.validate(List.of(subfield), specificationFieldDto);
 
     assertEquals(1, errors.size());
     ValidationError error = errors.get(0);
@@ -111,6 +114,7 @@ public class InvalidLccnSubfieldRuleValidatorTest {
       arguments("  m123456789 "),
       arguments(" mm123456789 "),
       arguments("mm123456789 "),
+      arguments("h2001050268"),
       arguments("mmm0123456789"));
   }
 }
