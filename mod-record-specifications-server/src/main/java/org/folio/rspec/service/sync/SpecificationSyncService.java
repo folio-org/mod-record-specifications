@@ -97,10 +97,13 @@ public class SpecificationSyncService {
       var field = new Field();
       field.setId(UUID.fromString(fieldMetadata.id()));
       field.setTag(fieldMetadata.tag());
-      field.setUrl(baseFieldUrlFormat.formatted(field.getTag()));
       field.setScope(Scope.valueOf(fieldMetadata.scope()));
       field.setLabel(getText(fieldElement, LABEL_PROP));
-      field.setDeprecated(getBoolean(fieldElement, DEPRECATED_PROP));
+      var isDeprecated = getBoolean(fieldElement, DEPRECATED_PROP);
+      field.setDeprecated(isDeprecated);
+      if (!isDeprecated) {
+        field.setUrl(baseFieldUrlFormat.formatted(field.getTag()));
+      }
       field.setRepeatable(getBoolean(fieldElement, REPEATABLE_PROP));
       field.setRequired(isRequired(fieldElement, fieldMetadata));
       field.setSubfields(prepareSubfields(fieldElement.get(SUBFIELDS_PROP), fieldMetadata));
