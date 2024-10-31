@@ -2,6 +2,7 @@ package org.folio.rspec.service.sync;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,7 @@ import org.folio.rspec.service.SpecificationFieldService;
 import org.folio.rspec.service.SpecificationMetadataService;
 import org.folio.rspec.service.sync.fetcher.MarcSpecificationFetcher;
 import org.folio.spring.testing.type.UnitTest;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -62,22 +65,30 @@ class SpecificationSyncServiceTest {
     verify(metadataService).saveSpecificationMetadata(metadata);
 
     assertThat(fieldsCaptor.getValue())
-      .extracting(Field::getTag)
-      .contains("111", "222");
+      .extracting(Field::getTag, Field::getUrl)
+      .contains(tuple("111", "url"), tuple("222", "format"), tuple("333", null));
 
-    assertThat(metadata.getFields()).containsOnlyKeys("111", "222");
+    assertThat(metadata.getFields()).containsOnlyKeys("111", "222", "333");
   }
 
   private ArrayNode prepareFetchedFields() {
-    var fieldNode = JsonNodeFactory.instance.objectNode();
-    fieldNode.put("tag", "222");
-    fieldNode.put("label", "label1");
-    fieldNode.put("deprecated", false);
-    fieldNode.put("repeatable", false);
-    fieldNode.put("required", false);
+    var fieldNode1 = prepareFieldNode("222", "label1", false, true, false);
+    var fieldNode2 = prepareFieldNode("333", "label2", true, false, true);
     var fieldsArray = JsonNodeFactory.instance.arrayNode();
-    fieldsArray.add(fieldNode);
+    fieldsArray.add(fieldNode1);
+    fieldsArray.add(fieldNode2);
     return fieldsArray;
+  }
+
+  private @NotNull ObjectNode prepareFieldNode(String number, String label1, boolean deprecated, boolean repeatable,
+                                               boolean required) {
+    var fieldNode1 = JsonNodeFactory.instance.objectNode();
+    fieldNode1.put("tag", number);
+    fieldNode1.put("label", label1);
+    fieldNode1.put("deprecated", deprecated);
+    fieldNode1.put("repeatable", repeatable);
+    fieldNode1.put("required", required);
+    return fieldNode1;
   }
 
   private SpecificationMetadata prepareMetadata() {

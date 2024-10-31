@@ -21,6 +21,7 @@
 * Implement GET specification by id endpoint ([MRSPECS-50](https://folio-org.atlassian.net//browse/MRSPECS-50))
 * Sync specifications on new tenant creation ([MRSPECS-53](https://folio-org.atlassian.net//browse/MRSPECS-53))
 * Consume specification update request events ([MRSPECS-60](https://folio-org.atlassian.net//browse/MRSPECS-60))
+* Empty url for deprecated fields on sync specifications ([MRSPECS-70](https://folio-org.atlassian.net//browse/MRSPECS-70))
 
 #### Validator
 * implement validation by MARC specification ([MRSPECS-38](https://folio-org.atlassian.net//browse/MRSPECS-38))
