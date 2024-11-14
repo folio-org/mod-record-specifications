@@ -1,3 +1,9 @@
+## v1.0.1 2024-11-14
+### Bug fixes
+* Fix tenant upgrade not being run on schema existence ([MRSPECS-71](https://folio-org.atlassian.net/browse/MRSPECS-71))
+
+---
+
 ## v1.0.0 2024-10-31
 ### New APIs versions
 * Provides `specification-storage v1.0`

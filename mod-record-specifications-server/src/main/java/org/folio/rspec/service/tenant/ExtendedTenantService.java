@@ -51,18 +51,17 @@ public class ExtendedTenantService extends TenantService {
 
   @Override
   public synchronized void createOrUpdateTenant(TenantAttributes tenantAttributes) {
-    if (Boolean.FALSE.equals(tenantExists())) {
-      super.createOrUpdateTenant(tenantAttributes);
+    var tenantCreation = Boolean.FALSE.equals(tenantExists());
+    super.createOrUpdateTenant(tenantAttributes);
 
-      if (shouldSyncSpecifications(tenantAttributes.getParameters())) {
-        var specifications = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
-          .getSpecifications();
+    if (tenantCreation && shouldSyncSpecifications(tenantAttributes.getParameters())) {
+      var specifications = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
+        .getSpecifications();
 
-        for (var spec : specifications) {
-          log.info("About to start syncing record specification: [id: {}, family: {}, profile: {}, url: {}] ",
-            spec.getId(), spec.getFamily(), spec.getProfile(), spec.getUrl());
-          specificationService.sync(spec.getId());
-        }
+      for (var spec : specifications) {
+        log.info("About to start syncing record specification: [id: {}, family: {}, profile: {}, url: {}] ",
+          spec.getId(), spec.getFamily(), spec.getProfile(), spec.getUrl());
+        specificationService.sync(spec.getId());
       }
     }
   }
