@@ -7,7 +7,7 @@
 * Requires `API_NAME vX.Y`
 
 ### Features
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Include specification `family`, `profile` into specification updated event ([MRSPECS-73](https://folio-org.atlassian.net/browse/MRSPECS-73))
 
 ### Bug fixes
 * Fix tenant upgrade not being ran on schema existence ([MRSPECS-71](https://folio-org.atlassian.net/browse/MRSPECS-71))
