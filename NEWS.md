@@ -1,3 +1,9 @@
+## v1.0.2 2024-11-19
+### Features
+* Include specification `family`, `profile` into specification updated event ([MRSPECS-73](https://folio-org.atlassian.net/browse/MRSPECS-73))
+
+---
+
 ## v1.0.1 2024-11-14
 ### Bug fixes
 * Fix tenant upgrade not being run on schema existence ([MRSPECS-71](https://folio-org.atlassian.net/browse/MRSPECS-71))
