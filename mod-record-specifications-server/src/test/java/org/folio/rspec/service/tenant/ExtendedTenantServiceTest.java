@@ -4,10 +4,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
+import lombok.SneakyThrows;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.dto.SpecificationDtoCollection;
@@ -47,6 +49,7 @@ class ExtendedTenantServiceTest {
   private ExtendedTenantService service;
 
   @Test
+  @SneakyThrows
   void createOrUpdateTenant_positive_shouldSyncSpecifications() {
     var folioMetadata = mock(FolioModuleMetadata.class);
     var spec1 = new SpecificationDto().id(UUID.randomUUID()).title("spec_bib").url("https://spec_bib_url.com");
@@ -60,8 +63,24 @@ class ExtendedTenantServiceTest {
 
     service.createOrUpdateTenant(new TenantAttributes());
 
+    verify(folioSpringLiquibase).performLiquibaseUpdate();
     verify(specificationService).findSpecifications(null, null, IncludeParam.NONE, 100, 0);
     verify(specificationService).sync(spec1.getId());
     verify(specificationService).sync(spec2.getId());
+  }
+
+  @Test
+  @SneakyThrows
+  void createOrUpdateTenant_positive_shouldNotSyncSpecifications() {
+    var folioMetadata = mock(FolioModuleMetadata.class);
+    when(jdbcTemplate.query(anyString(), any(ResultSetExtractor.class), any())).thenReturn(true);
+    when(folioExecutionContext.getFolioModuleMetadata()).thenReturn(folioMetadata);
+    when(folioExecutionContext.getTenantId()).thenReturn("test_tenant");
+    when(folioMetadata.getDBSchemaName(anyString())).thenReturn("schema");
+
+    service.createOrUpdateTenant(new TenantAttributes());
+
+    verify(folioSpringLiquibase).performLiquibaseUpdate();
+    verifyNoInteractions(specificationService);
   }
 }
