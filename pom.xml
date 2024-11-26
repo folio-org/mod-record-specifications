@@ -25,7 +25,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring-boot.version>3.4.0</spring-boot.version>
+    <spring-boot.version>3.3.5</spring-boot.version>
     <folio-spring-support.version>8.3.0-SNAPSHOT</folio-spring-support.version>
     <folio-service-tools.version>4.2.0-SNAPSHOT</folio-service-tools.version>
     <lombok.version>1.18.36</lombok.version>
