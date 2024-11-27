@@ -35,7 +35,8 @@ public class SpecificationPartialChangedEventProducer extends EventProducer<UUID
       specification.getId(),
       tenantId(),
       specification.getFamily(),
-      specification.getProfile()
+      specification.getProfile(),
+      updateExtent()
     );
   }
 
