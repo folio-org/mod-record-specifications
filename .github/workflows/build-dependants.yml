@@ -62,3 +62,5 @@ jobs:
           name: mod-record-specifications
           path: ~/.m2/repository/org/folio/mod-record-specifications
       - run: cd mod-quick-marc; mvn -B clean verify
+# mod-entities-links:
+#   needs: mod-record-specifications
