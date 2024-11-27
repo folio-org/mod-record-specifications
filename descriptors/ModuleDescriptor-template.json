@@ -31,6 +31,9 @@
           "pathPattern": "/specification-storage/specifications/{specificationId}/sync",
           "permissionsRequired": [
             "specification-storage.specification.item.sync.execute"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -49,6 +52,9 @@
           "pathPattern": "/specification-storage/specifications/{specificationId}/rules/{ruleId}",
           "permissionsRequired": [
             "specification-storage.specification.rules.item.patch"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -67,6 +73,9 @@
           "pathPattern": "/specification-storage/specifications/{specificationId}/fields",
           "permissionsRequired": [
             "specification-storage.specification.fields.item.post"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -76,6 +85,9 @@
           "pathPattern": "/specification-storage/fields/{id}",
           "permissionsRequired": [
             "specification-storage.fields.item.put"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -85,6 +97,9 @@
           "pathPattern": "/specification-storage/fields/{id}",
           "permissionsRequired": [
             "specification-storage.fields.item.delete"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -103,6 +118,9 @@
           "pathPattern": "/specification-storage/fields/{fieldId}/subfields",
           "permissionsRequired": [
             "specification-storage.field.subfields.item.post"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -121,6 +139,9 @@
           "pathPattern": "/specification-storage/fields/{fieldId}/indicators",
           "permissionsRequired": [
             "specification-storage.field.indicators.item.post"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -130,6 +151,9 @@
           "pathPattern": "/specification-storage/indicators/{indicatorId}",
           "permissionsRequired": [
             "specification-storage.indicators.item.put"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -148,6 +172,9 @@
           "pathPattern": "/specification-storage/indicators/{indicatorId}/indicator-codes",
           "permissionsRequired": [
             "specification-storage.indicator.indicator-codes.item.post"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -157,6 +184,9 @@
           "pathPattern": "/specification-storage/indicator-codes/{indicatorCodeId}",
           "permissionsRequired": [
             "specification-storage.indicator-codes.item.put"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -166,6 +196,9 @@
           "pathPattern": "/specification-storage/indicator-codes/{indicatorCodeId}",
           "permissionsRequired": [
             "specification-storage.indicator-codes.item.delete"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -175,6 +208,9 @@
           "pathPattern": "/specification-storage/subfields/{subfieldId}",
           "permissionsRequired": [
             "specification-storage.subfields.item.put"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         },
         {
@@ -184,6 +220,9 @@
           "pathPattern": "/specification-storage/subfields/{subfieldId}",
           "permissionsRequired": [
             "specification-storage.subfields.item.delete"
+          ],
+          "modulePermissions": [
+            "specification-storage.specifications.item.get"
           ]
         }
       ]
