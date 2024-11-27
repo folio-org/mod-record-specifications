@@ -5,8 +5,7 @@ import java.util.UUID;
 public record SpecificationUpdatedEvent(UUID specificationId,
                                         String tenantId,
                                         Family family,
-                                        FamilyProfile profile,
-                                        UpdateExtent updateExtent) {
+                                        FamilyProfile profile) {
 
   public enum UpdateExtent {
     FULL, PARTIAL
