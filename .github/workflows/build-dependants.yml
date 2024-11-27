@@ -19,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          repository: folio-org/mod-record-specifications
+          ref: ${{ github.ref_name }}
           submodules: recursive
       - uses: actions/setup-java@v2
         with:
