@@ -24,13 +24,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.m2
-            !~/.m2/repository/org/folio/mod-record-specifications
-          key: mod-record-specifications-${{ hashFiles('**/pom.xml') }}
-          restore-keys: mod-record-specifications-
       - run: mvn -B clean install -DskipTests
       - uses: actions/upload-artifact@v4
         with:
