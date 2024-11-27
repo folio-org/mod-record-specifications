@@ -50,13 +50,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - run: git clone --depth 1 --recurse-submodules https://github.com/folio-org/mod-quick-marc
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.m2
-            !~/.m2/repository/org/folio/mod-record-specifications
-          key: mod-quick-marc-${{ hashFiles('**/pom.xml') }}
-          restore-keys: mod-quick-marc-
       - uses: actions/download-artifact@v4
         with:
           name: mod-record-specifications
