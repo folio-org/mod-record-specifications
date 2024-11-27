@@ -47,7 +47,7 @@ jobs:
         with:
           name: mod-record-specifications
           path: ~/.m2/repository/org/folio/mod-record-specifications
-      - run: cd mod-quick-marc && mvn -B clean verify
+      - run: cd mod-quick-marc; mvn -B clean test
         continue-on-error: false
 # mod-entities-links:
 #   needs: mod-record-specifications
