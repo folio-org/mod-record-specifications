@@ -11,6 +11,7 @@
 
 ### Bug fixes
 * Fix tenant upgrade not being ran on schema existence ([MRSPECS-71](https://folio-org.atlassian.net/browse/MRSPECS-71))
+* Fix cache not being updated by dependant modules on specification update ([MRSPECS-76](https://folio-org.atlassian.net/browse/MRSPECS-76))
 
 ### Tech Dept
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
