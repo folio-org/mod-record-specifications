@@ -33,10 +33,7 @@ public class SpecificationPartialChangedEventProducer extends EventProducer<UUID
       .orElseThrow(() -> ResourceNotFoundException.forSpecification(specificationId));
     return new SpecificationUpdatedEvent(
       specification.getId(),
-      tenantId(),
-      specification.getFamily(),
-      specification.getProfile(),
-      updateExtent()
+      tenantId()
     );
   }
 
