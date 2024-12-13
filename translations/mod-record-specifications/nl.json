@@ -27,9 +27,9 @@
     "validation.nonRepeatableRequired1XXField": "Veld 1XX kan niet worden herhaald en is vereist.",
     "validation.invalidFieldTag": "Tag moet drie tekens bevatten en kan alleen getallen 0-9 accepteren.",
     "validation.invalidIndicator": "Indicator moet één teken bevatten en kan alleen getallen 0-9, letters a-z of een '#' accepteren.",
-    "validation.undefinedIndicatorCode": "{order} Indicator ''{code}'' is undefined.",
-    "validation.missingSubfield": "Subfield ''{code}'' is required.",
-    "validation.undefinedSubfield": "Subfield ''{code}'' is undefined.",
+    "validation.undefinedIndicatorCode": "{order} Indicator ''{code}'' is niet gedefinieerd.",
+    "validation.missingSubfield": "Subveld ''{code}'' is vereist.",
+    "validation.undefinedSubfield": "Subveld ''{code}'' is ongedefinieerd.",
     "validation.nonRepeatableSubfield": "Subfield ''{code}'' is non-repeatable.",
     "validation.invalidLccnSubfieldValue": "010 $a is in an invalid format."
 }
