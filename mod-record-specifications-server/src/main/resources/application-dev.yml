@@ -62,6 +62,7 @@ folio:
         concurrency: 1
         topic-pattern: (${folio.environment}\.)(.*\.)specification-storage\.specification\.update
         group-id: ${folio.environment}-mod-record-specification-group
+        auto-offset-reset: EARLIEST
   logging:
     request:
       enabled: true

@@ -1,13 +1,18 @@
 package org.folio.rspec.config;
 
+import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.folio.rspec.domain.dto.SpecificationUpdatedEvent;
 import org.folio.rspec.domain.dto.UpdateRequestEvent;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,8 +63,13 @@ public class KafkaConfiguration {
   }
 
   @Bean
-  public ConsumerFactory<String, UpdateRequestEvent> consumerFactory(KafkaProperties kafkaProperties) {
-    return new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties(null),
+  public ConsumerFactory<String, UpdateRequestEvent> consumerFactory(
+    KafkaProperties kafkaProperties,
+    @Value("#{folioKafkaProperties.listener['update-requests'].autoOffsetReset}")
+    OffsetResetStrategy autoOffsetReset) {
+    var config = new HashMap<>(kafkaProperties.buildConsumerProperties(null));
+    config.put(AUTO_OFFSET_RESET_CONFIG, autoOffsetReset.toString());
+    return new DefaultKafkaConsumerFactory<>(config,
       new StringDeserializer(),
       new JsonDeserializer<>(UpdateRequestEvent.class));
   }

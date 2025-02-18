@@ -14,6 +14,7 @@
 * Fix cache not being updated by dependant modules on specification update ([MRSPECS-76](https://folio-org.atlassian.net/browse/MRSPECS-76))
 * Fix build dependants workflow ([MRSPECS-68](https://folio-org.atlassian.net/browse/MRSPECS-68))
 * Fix documentation generation github workflow  ([MRSPECS-78](https://folio-org.atlassian.net/browse/MRSPECS-78))
+* Fix specification.update consumer startup  ([MRSPECS-82](https://folio-org.atlassian.net/browse/MRSPECS-82))
 
 ### Tech Dept
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
