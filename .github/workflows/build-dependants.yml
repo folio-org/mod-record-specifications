@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - uses: actions/cache@v4
         with:
           path: |
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - run: git clone --depth 1 --recurse-submodules https://github.com/folio-org/mod-quick-marc
       - uses: actions/cache@v4
         with:
@@ -72,7 +72,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - run: git clone --depth 1 --recurse-submodules https://github.com/folio-org/mod-entities-links
       - uses: actions/cache@v4
         with:

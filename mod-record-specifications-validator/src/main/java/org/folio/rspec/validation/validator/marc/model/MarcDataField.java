@@ -16,7 +16,7 @@ public record MarcDataField(
   }
 
   public MarcIndicator indicator1() {
-    return indicators.get(0);
+    return indicators.getFirst();
   }
 
   public MarcIndicator indicator2() {

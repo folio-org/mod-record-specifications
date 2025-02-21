@@ -57,9 +57,9 @@ class MethodArgumentTypeMismatchExceptionHandlerTest {
     assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrors()).isNotNull().hasSize(1);
-    assertThat(response.getBody().getErrors().get(0))
-      .extracting(Error::getMessage, Error::getType, Error::getCode, error -> error.getParameters().get(0).getKey(),
-        error -> error.getParameters().get(0).getValue())
+    assertThat(response.getBody().getErrors().getFirst())
+      .extracting(Error::getMessage, Error::getType, Error::getCode, error -> error.getParameters().getFirst().getKey(),
+        error -> error.getParameters().getFirst().getValue())
       .containsExactly(expectedMessage, "invalid-query-enum-value", "102", "arg1", "invalidValue");
   }
 
@@ -76,12 +76,12 @@ class MethodArgumentTypeMismatchExceptionHandlerTest {
     assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrors()).isNotNull().hasSize(1);
-    assertThat(response.getBody().getErrors().get(0))
+    assertThat(response.getBody().getErrors().getFirst())
       .extracting(Error::getMessage, Error::getType, Error::getCode, Error::getParameters)
       .containsExactly(expectedMessage, "unexpected", "500", emptyList());
   }
 
   private enum TestEnum {
-    V1, V2;
+    V1, V2
   }
 }

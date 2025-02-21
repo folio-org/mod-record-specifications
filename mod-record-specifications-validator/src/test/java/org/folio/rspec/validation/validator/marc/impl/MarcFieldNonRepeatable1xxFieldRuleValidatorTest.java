@@ -48,11 +48,12 @@ class MarcFieldNonRepeatable1xxFieldRuleValidatorTest {
     var errors = validator.validate(fields, specification);
 
     assertEquals(2, errors.size());
-    assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
-    assertEquals(validator.severity(), errors.get(0).getSeverity());
-    assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
-    assertEquals("message", errors.get(0).getMessage());
-    assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), errors.get(0).getRuleCode());
+    var validationError = errors.getFirst();
+    assertEquals(validator.definitionType(), validationError.getDefinitionType());
+    assertEquals(validator.severity(), validationError.getSeverity());
+    assertEquals(validator.supportedRule().getCode(), validationError.getRuleCode());
+    assertEquals("message", validationError.getMessage());
+    assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), validationError.getRuleCode());
     assertEquals(MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode(), errors.get(1).getRuleCode());
   }
 

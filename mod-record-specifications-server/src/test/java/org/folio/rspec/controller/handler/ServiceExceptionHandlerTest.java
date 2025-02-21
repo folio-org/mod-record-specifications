@@ -26,7 +26,8 @@ class ServiceExceptionHandlerTest {
     assertThat(responseEntity.getStatusCode().value()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(responseEntity.getBody()).isNotNull();
     assertThat(responseEntity.getBody().getErrors()).isNotNull().hasSize(1);
-    assertThat(responseEntity.getBody().getErrors().get(0).getMessage()).isEqualTo("Unexpected error: Test message");
+    assertThat(responseEntity.getBody().getErrors().getFirst().getMessage())
+      .isEqualTo("Unexpected error: Test message");
   }
 
   @Test
@@ -56,7 +57,7 @@ class ServiceExceptionHandlerTest {
 
     // Assert
     assertEquals(1, result.getErrors().size());
-    assertEquals("Error message", result.getErrors().get(0).getMessage());
+    assertEquals("Error message", result.getErrors().getFirst().getMessage());
   }
 
   @Test

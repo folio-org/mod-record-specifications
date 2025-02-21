@@ -1,7 +1,7 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -48,7 +48,7 @@ public class NonRepeatableSubfieldRuleValidatorTest {
       getFieldDefinition());
 
     assertEquals(1, errors.size());
-    ValidationError error = errors.get(0);
+    ValidationError error = errors.getFirst();
     assertEquals(validator.definitionType(), error.getDefinitionType());
     assertEquals(validator.severity(), error.getSeverity());
     assertEquals(validator.supportedRule().getCode(), error.getRuleCode());

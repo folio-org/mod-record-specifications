@@ -37,10 +37,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @UnitTest
@@ -55,10 +55,10 @@ class SpecificationStorageIndicatorsControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  @MockBean
+  @MockitoBean
   private FieldIndicatorService fieldIndicatorService;
 
-  @MockBean
+  @MockitoBean
   private IndicatorCodeService indicatorCodeService;
 
   @Test
@@ -227,7 +227,7 @@ class SpecificationStorageIndicatorsControllerTest {
   void updateIndicator_return400_invalidOrder(Integer orderValue) throws Exception {
     var requestBuilder = put(indicatorPath(randomUUID()))
       .contentType(APPLICATION_JSON)
-      .content("{\"order\": " + orderValue + ", \"label\": \"Ind 1\"}");
+      .content("{\"order\":  %d, \"label\": \"Ind 1\"}".formatted(orderValue));
 
     mockMvc.perform(requestBuilder)
       .andExpect(status().isBadRequest())

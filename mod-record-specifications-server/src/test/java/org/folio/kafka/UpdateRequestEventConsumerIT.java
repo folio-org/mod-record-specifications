@@ -62,7 +62,7 @@ class UpdateRequestEventConsumerIT extends SpecificationITBase {
   private void sendEvent(SubfieldUpdateRequestEvent requestEvent) {
     var producerRecord = new ProducerRecord<String, Object>(TestConstants.specificationUpdateTopic(), requestEvent);
     defaultHeaders().forEach(
-      (headerName, headerValues) -> producerRecord.headers().add(headerName, headerValues.get(0).getBytes()));
+      (headerName, headerValues) -> producerRecord.headers().add(headerName, headerValues.getFirst().getBytes()));
     kafkaTemplate.send(producerRecord);
   }
 }
