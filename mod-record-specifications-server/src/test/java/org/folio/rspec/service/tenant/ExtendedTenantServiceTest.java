@@ -22,6 +22,7 @@ import org.folio.spring.tools.kafka.KafkaAdminService;
 import org.folio.tenant.domain.dto.TenantAttributes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -54,7 +55,8 @@ class ExtendedTenantServiceTest {
     var folioMetadata = mock(FolioModuleMetadata.class);
     var spec1 = new SpecificationDto().id(UUID.randomUUID()).title("spec_bib").url("https://spec_bib_url.com");
     var spec2 = new SpecificationDto().id(UUID.randomUUID()).title("spec_auth").url("https://spec_auth_url.com");
-    when(jdbcTemplate.query(anyString(), any(ResultSetExtractor.class), any())).thenReturn(false);
+    when(jdbcTemplate.query(anyString(), ArgumentMatchers.<ResultSetExtractor<Boolean>>any(), any()))
+      .thenReturn(false);
     when(folioExecutionContext.getFolioModuleMetadata()).thenReturn(folioMetadata);
     when(folioExecutionContext.getTenantId()).thenReturn("test_tenant");
     when(folioMetadata.getDBSchemaName(anyString())).thenReturn("schema");
@@ -73,7 +75,7 @@ class ExtendedTenantServiceTest {
   @SneakyThrows
   void createOrUpdateTenant_positive_shouldNotSyncSpecifications() {
     var folioMetadata = mock(FolioModuleMetadata.class);
-    when(jdbcTemplate.query(anyString(), any(ResultSetExtractor.class), any())).thenReturn(true);
+    when(jdbcTemplate.query(anyString(), ArgumentMatchers.<ResultSetExtractor<Boolean>>any(), any())).thenReturn(true);
     when(folioExecutionContext.getFolioModuleMetadata()).thenReturn(folioMetadata);
     when(folioExecutionContext.getTenantId()).thenReturn("test_tenant");
     when(folioMetadata.getDBSchemaName(anyString())).thenReturn("schema");

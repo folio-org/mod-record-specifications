@@ -62,7 +62,7 @@ class IndicatorCodeServiceTest {
 
     assertThat(actual.getTotalRecords()).isEqualTo(1);
     assertThat(actual.getCodes()).hasSize(1);
-    assertThat(actual.getCodes().get(0)).isEqualTo(codeDto);
+    assertThat(actual.getCodes().getFirst()).isEqualTo(codeDto);
   }
 
   @Test

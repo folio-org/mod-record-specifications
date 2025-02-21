@@ -43,10 +43,11 @@ class InvalidIndicatorRuleValidatorTest {
     var errors = validator.validate(marcField.indicators(), fieldDefinition);
 
     assertEquals(1, errors.size());
-    assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
-    assertEquals(validator.severity(), errors.get(0).getSeverity());
-    assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
-    assertEquals("message", errors.get(0).getMessage());
+    var validationError = errors.getFirst();
+    assertEquals(validator.definitionType(), validationError.getDefinitionType());
+    assertEquals(validator.severity(), validationError.getSeverity());
+    assertEquals(validator.supportedRule().getCode(), validationError.getRuleCode());
+    assertEquals("message", validationError.getMessage());
   }
 
   @Test

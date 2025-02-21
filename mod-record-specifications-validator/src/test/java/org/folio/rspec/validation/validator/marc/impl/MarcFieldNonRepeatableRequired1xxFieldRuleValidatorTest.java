@@ -69,12 +69,13 @@ class MarcFieldNonRepeatableRequired1xxFieldRuleValidatorTest {
     var errors = validator.validate(fields, specification);
 
     assertEquals(1, errors.size());
-    assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
-    assertEquals(validator.severity(), errors.get(0).getSeverity());
-    assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
-    assertEquals("1xx error message", errors.get(0).getMessage());
-    assertEquals(MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode(), errors.get(0).getRuleCode());
-    assertNotNull(errors.get(0).getPath());
+    var validationError = errors.getFirst();
+    assertEquals(validator.definitionType(), validationError.getDefinitionType());
+    assertEquals(validator.severity(), validationError.getSeverity());
+    assertEquals(validator.supportedRule().getCode(), validationError.getRuleCode());
+    assertEquals("1xx error message", validationError.getMessage());
+    assertEquals(MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode(), validationError.getRuleCode());
+    assertNotNull(validationError.getPath());
   }
 
   @ParameterizedTest

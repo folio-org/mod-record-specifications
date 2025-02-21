@@ -68,7 +68,7 @@ class FieldIndicatorServiceTest {
 
     assertThat(result.getTotalRecords()).isEqualTo(1);
     assertThat(result.getIndicators()).hasSize(1);
-    assertThat(result.getIndicators().get(0)).isEqualTo(indicatorDto);
+    assertThat(result.getIndicators().getFirst()).isEqualTo(indicatorDto);
   }
 
   @Test
@@ -115,7 +115,7 @@ class FieldIndicatorServiceTest {
 
     assertThat(actual.getTotalRecords()).isNull();
     assertThat(actual.getCodes()).hasSize(1);
-    assertThat(actual.getCodes().get(0)).isEqualTo(expected.getCodes().get(0));
+    assertThat(actual.getCodes().getFirst()).isEqualTo(expected.getCodes().getFirst());
   }
 
   @Test

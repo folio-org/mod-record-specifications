@@ -69,7 +69,7 @@ public class IntegrationTestBase {
   protected FolioModuleMetadata moduleMetadata;
 
   @BeforeAll
-  protected static void setUpBeans(@Autowired MockMvc mockMvc) {
+  static void setUpBeans(@Autowired MockMvc mockMvc) {
     IntegrationTestBase.mockMvc = mockMvc;
     setProperty("env", "folio");
   }

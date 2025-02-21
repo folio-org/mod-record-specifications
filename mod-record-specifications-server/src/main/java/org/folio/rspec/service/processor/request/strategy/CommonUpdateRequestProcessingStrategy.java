@@ -26,7 +26,7 @@ public abstract class CommonUpdateRequestProcessingStrategy implements UpdateReq
       throw UpdateRequestProcessingException.specificationNotFound(family, profile);
     }
 
-    process(event, specifications.toList().get(0));
+    process(event, specifications.toList().getFirst());
   }
 
   protected abstract void process(UpdateRequestEvent event, Specification specification);

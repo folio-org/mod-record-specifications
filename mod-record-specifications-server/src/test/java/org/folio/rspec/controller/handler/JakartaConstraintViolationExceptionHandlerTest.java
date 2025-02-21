@@ -58,6 +58,6 @@ class JakartaConstraintViolationExceptionHandlerTest {
     assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrors()).isNotNull().hasSize(1);
-    assertThat(response.getBody().getErrors().get(0)).isEqualTo(expectedError);
+    assertThat(response.getBody().getErrors().getFirst()).isEqualTo(expectedError);
   }
 }

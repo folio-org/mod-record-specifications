@@ -47,7 +47,8 @@ public class SpecificationFieldService {
   private final FieldValidator fieldValidator;
   private final EventProducer<UUID, SpecificationUpdatedEvent> eventProducer;
 
-  private Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators = new EnumMap<>(Scope.class);
+  private final Map<Scope, ScopeValidator<SpecificationFieldChangeDto, Field>> fieldValidators =
+    new EnumMap<>(Scope.class);
 
   public SpecificationFieldDtoCollection findSpecificationFields(UUID specificationId) {
     log.debug("findSpecificationFields::specificationId={}", specificationId);

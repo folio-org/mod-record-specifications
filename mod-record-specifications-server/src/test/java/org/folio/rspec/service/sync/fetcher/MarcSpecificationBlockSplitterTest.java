@@ -33,8 +33,8 @@ class MarcSpecificationBlockSplitterTest {
     assertEquals(1, result.get(0).size());
     assertEquals(9, result.get(1).size());
     assertEquals(1, result.get(2).size());
-    assertEquals("123 - Field1/FieldVal (R)", result.get(0).get(0));
-    assertEquals("234 - Field-2 (R) [OBSOLETE]", result.get(1).get(0));
+    assertEquals("123 - Field1/FieldVal (R)", result.get(0).getFirst());
+    assertEquals("234 - Field-2 (R) [OBSOLETE]", result.get(1).getFirst());
   }
 
   @Test

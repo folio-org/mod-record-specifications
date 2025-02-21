@@ -58,12 +58,12 @@ class MethodArgumentNotValidExceptionHandlerTest {
     assertNotNull(errorCollection.getErrors());
     assertEquals(1, errorCollection.getErrors().size());
 
-    var error = errorCollection.getErrors().get(0);
+    var error = errorCollection.getErrors().getFirst();
     assertEquals(defaultMessage, error.getMessage());
     assertEquals(INVALID_REQUEST_PARAMETER.getCode(), error.getCode());
     assertEquals(INVALID_REQUEST_PARAMETER.getType(), error.getType());
 
-    var parameter = error.getParameters().get(0);
+    var parameter = error.getParameters().getFirst();
     assertEquals(field, parameter.getKey());
     assertEquals(rejectedValue, parameter.getValue());
   }

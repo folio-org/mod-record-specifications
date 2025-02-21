@@ -52,7 +52,7 @@ class HibernateConstraintViolationExceptionHandlerTest {
     var errorCollection = response.getBody();
     assertNotNull(errorCollection);
     assertEquals(1, errorCollection.getErrors().size());
-    assertEquals(expectedMessage, errorCollection.getErrors().get(0).getMessage());
+    assertEquals(expectedMessage, errorCollection.getErrors().getFirst().getMessage());
   }
 
   @Test
@@ -69,7 +69,7 @@ class HibernateConstraintViolationExceptionHandlerTest {
     var errorCollection = response.getBody();
     assertNotNull(errorCollection);
     assertEquals(1, errorCollection.getErrors().size());
-    assertEquals(expectedMessage, errorCollection.getErrors().get(0).getMessage());
+    assertEquals(expectedMessage, errorCollection.getErrors().getFirst().getMessage());
   }
 
   @Test

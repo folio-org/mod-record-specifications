@@ -46,7 +46,7 @@ public class MarcSpecificationParser {
   }
 
   private ObjectNode parseBlock(List<String> block) {
-    var fieldObject = fieldBuilder.build(block.get(0));
+    var fieldObject = fieldBuilder.build(block.getFirst());
 
     var subfieldLineNumber = fieldBlockSplitter.getSubfieldLineNumber(block);
     if (subfieldLineNumber == INDEX_NOT_FOUND) {

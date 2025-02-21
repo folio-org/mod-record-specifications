@@ -74,7 +74,7 @@ public class InvalidLccnSubfieldRuleValidatorTest {
     var errors = validator.validate(List.of(subfield), specificationFieldDto);
 
     assertEquals(1, errors.size());
-    ValidationError error = errors.get(0);
+    ValidationError error = errors.getFirst();
     assertEquals(validator.definitionType(), error.getDefinitionType());
     assertEquals(validator.severity(), error.getSeverity());
     assertEquals(validator.supportedRule().getCode(), error.getRuleCode());

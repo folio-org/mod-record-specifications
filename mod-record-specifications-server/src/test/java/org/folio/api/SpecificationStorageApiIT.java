@@ -254,19 +254,20 @@ class SpecificationStorageApiIT extends SpecificationITBase {
   @Test
   void toggleSpecificationRule_shouldReturn204AndToggleSpecificationRule() {
     var specificationRules = getSpecificationRules(BIBLIOGRAPHIC_SPECIFICATION_ID);
-    var specificationRuleToToggle = specificationRules.getRules().get(0);
+    var specificationRuleToToggle = specificationRules.getRules().getFirst();
     var stateBeforeToggle = specificationRuleToToggle.getEnabled();
 
     var specificationRuleId = specificationRuleToToggle.getId();
 
-    var stateAfterToggle = !stateBeforeToggle;
+    var stateAfterToggle = Boolean.FALSE.equals(stateBeforeToggle);
     var toggleDto = new ToggleSpecificationRuleDto(stateAfterToggle);
     doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
     assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID, stateAfterToggle);
 
     toggleDto = toggleDto.enabled(stateBeforeToggle);
     doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
-    assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID, stateBeforeToggle);
+    assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID,
+      Boolean.TRUE.equals(stateBeforeToggle));
 
     assertSpecificationUpdatedEvents(2);
   }

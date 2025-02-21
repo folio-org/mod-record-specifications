@@ -1,7 +1,7 @@
 package org.folio.rspec.validation.validator.marc.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -37,6 +37,13 @@ class MissingSubfieldRuleValidatorTest {
   @InjectMocks
   private MissingSubfieldRuleValidator validator;
 
+  public static Stream<Arguments> missingSubfieldTestSource() {
+    return Stream.of(
+      arguments('k', 'a', 0),
+      arguments('a', 'c', 1),
+      arguments('k', 'b', 2));
+  }
+
   @ParameterizedTest
   @MethodSource("missingSubfieldTestSource")
   void validate_whenMissingSubfield_shouldReturnValidationError(char subfield1, char subfield2, int tagIndex) {
@@ -46,7 +53,7 @@ class MissingSubfieldRuleValidatorTest {
     var errors = validator.validate(marcDataField, getFieldDefinition());
 
     assertEquals(1, errors.size());
-    ValidationError error = errors.get(0);
+    ValidationError error = errors.getFirst();
     assertTrue(error.getPath().startsWith(String.format("%s[%d]", TAG, tagIndex)));
     assertEquals(validator.definitionType(), error.getDefinitionType());
     assertEquals(validator.severity(), error.getSeverity());
@@ -60,13 +67,6 @@ class MissingSubfieldRuleValidatorTest {
     List<ValidationError> errors = validator.validate(marcDataField, getFieldDefinition());
 
     assertTrue(errors.isEmpty());
-  }
-
-  public static Stream<Arguments> missingSubfieldTestSource() {
-    return Stream.of(
-      arguments('k', 'a', 0),
-      arguments('a', 'c', 1),
-      arguments('k', 'b', 2));
   }
 
   private static SpecificationFieldDto getFieldDefinition() {

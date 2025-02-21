@@ -58,10 +58,11 @@ class FieldTagRuleValidatorTest {
     var errors = validator.validate(fields, specification);
 
     assertEquals(1, errors.size());
-    assertEquals(validator.definitionType(), errors.get(0).getDefinitionType());
-    assertEquals(validator.severity(), errors.get(0).getSeverity());
-    assertEquals(validator.supportedRule().getCode(), errors.get(0).getRuleCode());
-    assertEquals(expectedErrorMessage, errors.get(0).getMessage());
-    assertEquals(MarcRuleCode.INVALID_FIELD_TAG.getCode(), errors.get(0).getRuleCode());
+    var validationError = errors.getFirst();
+    assertEquals(validator.definitionType(), validationError.getDefinitionType());
+    assertEquals(validator.severity(), validationError.getSeverity());
+    assertEquals(validator.supportedRule().getCode(), validationError.getRuleCode());
+    assertEquals(expectedErrorMessage, validationError.getMessage());
+    assertEquals(MarcRuleCode.INVALID_FIELD_TAG.getCode(), validationError.getRuleCode());
   }
 }

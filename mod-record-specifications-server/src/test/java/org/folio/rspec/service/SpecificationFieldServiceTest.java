@@ -205,7 +205,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual.getTotalRecords()).isNull();
     assertThat(actual.getIndicators()).hasSize(1);
-    assertThat(actual.getIndicators().get(0)).isEqualTo(expected.getIndicators().get(0));
+    assertThat(actual.getIndicators().getFirst()).isEqualTo(expected.getIndicators().getFirst());
   }
 
   @Test
@@ -284,7 +284,7 @@ class SpecificationFieldServiceTest {
 
     assertThat(actual.getTotalRecords()).isNull();
     assertThat(actual.getSubfields()).hasSize(1);
-    assertThat(actual.getSubfields().get(0)).isEqualTo(expected.getSubfields().get(0));
+    assertThat(actual.getSubfields().getFirst()).isEqualTo(expected.getSubfields().getFirst());
   }
 
   @Test

@@ -55,7 +55,7 @@ class FieldSetMissingFieldRuleValidatorTest {
     List<ValidationError> errors = validator.validate(marcFields, specification);
 
     assertEquals(1, errors.size());
-    assertTrue(errors.get(0).getMessage().contains(expectedErrorMessage));
+    assertTrue(errors.getFirst().getMessage().contains(expectedErrorMessage));
   }
 
   @MethodSource("validationDataProvider")
@@ -75,7 +75,7 @@ class FieldSetMissingFieldRuleValidatorTest {
     verify(translationProvider).format(validator.supportedRule().getCode(), "tag", tag);
 
     assertEquals(1, errors.size());
-    var error = errors.get(0);
+    var error = errors.getFirst();
     assertEquals(validator.definitionType(), error.getDefinitionType());
     assertEquals(validator.severity(), error.getSeverity());
     assertEquals(validator.supportedRule().getCode(), error.getRuleCode());

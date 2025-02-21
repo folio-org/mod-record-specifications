@@ -47,7 +47,7 @@ class ResourceNotFoundExceptionHandlerTest {
     assertNotNull(errorCollection.getErrors());
     assertEquals(1, errorCollection.getErrors().size());
 
-    var error = errorCollection.getErrors().get(0);
+    var error = errorCollection.getErrors().getFirst();
     assertEquals(RESOURCE_NOT_FOUND.getCode(), error.getCode());
     assertEquals(RESOURCE_NOT_FOUND.getType(), error.getType());
     assertEquals(expectedMessage, error.getMessage());

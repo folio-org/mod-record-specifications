@@ -79,7 +79,7 @@ management:
       base-path: /admin
   endpoint:
     loggers:
-      enabled: true
+      access: unrestricted
 
 logging:
   level:

@@ -32,7 +32,7 @@ class SpecificationUtilsTest {
     List<String> result = SpecificationUtils.enabledRules(specification);
 
     assertEquals(1, result.size());
-    assertEquals("rule1", result.get(0));
+    assertEquals("rule1", result.getFirst());
   }
 
   @Test

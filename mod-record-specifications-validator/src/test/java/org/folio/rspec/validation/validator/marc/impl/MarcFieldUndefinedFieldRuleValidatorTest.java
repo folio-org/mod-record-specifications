@@ -40,7 +40,7 @@ class MarcFieldUndefinedFieldRuleValidatorTest {
     var errors = validator.validate(fields, specification);
 
     assertEquals(1, errors.size());
-    ValidationError error = errors.get(0);
+    ValidationError error = errors.getFirst();
     assertEquals(marcField.reference().toString(), error.getPath());
     assertEquals(validator.definitionType(), error.getDefinitionType());
     assertEquals(specification.getId(), error.getDefinitionId());
