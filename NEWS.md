@@ -15,6 +15,7 @@
 * Fix build dependants workflow ([MRSPECS-68](https://folio-org.atlassian.net/browse/MRSPECS-68))
 * Fix documentation generation github workflow  ([MRSPECS-78](https://folio-org.atlassian.net/browse/MRSPECS-78))
 * Fix specification.update consumer startup  ([MRSPECS-82](https://folio-org.atlassian.net/browse/MRSPECS-82))
+* Add retry for specification fetching in case of failure ([MRSPECS-85](https://folio-org.atlassian.net/browse/MRSPECS-85))
 
 ### Tech Dept
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
