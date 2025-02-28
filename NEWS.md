@@ -1,3 +1,9 @@
+## v1.0.3 2025-03-28
+### Bug fixes
+* Add retry for specification fetching in case of failure ([MRSPECS-85](https://folio-org.atlassian.net/browse/MRSPECS-85))
+
+---
+
 ## v1.0.2 2024-11-19
 ### Features
 * Include specification `family`, `profile` into specification updated event ([MRSPECS-73](https://folio-org.atlassian.net/browse/MRSPECS-73))
