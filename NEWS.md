@@ -1,10 +1,6 @@
-## v2.0.0 YYYY-mm-DD
+## v2.0.0 2025-03-03
 ### Breaking changes
 * Upgrade to Java 21 ([MRSPECS-81](https://folio-org.atlassian.net/browse/MRSPECS-81))
-
-### New APIs versions
-* Provides `API_NAME vX.Y`
-* Requires `API_NAME vX.Y`
 
 ### Features
 * Include specification `family`, `profile` into specification updated event ([MRSPECS-73](https://folio-org.atlassian.net/browse/MRSPECS-73))
@@ -17,13 +13,14 @@
 * Fix specification.update consumer startup  ([MRSPECS-82](https://folio-org.atlassian.net/browse/MRSPECS-82))
 * Add retry for specification fetching in case of failure ([MRSPECS-85](https://folio-org.atlassian.net/browse/MRSPECS-85))
 
-### Tech Dept
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
-
 ### Dependencies
-* Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`
-* Add `LIB_NAME` `VERSION`
-* Remove `LIB_NAME`
+* Bump `spring-boot` from `3.3.5` to `3.4.3`
+* Bump `folio-spring-support` from `8.2.0` to `9.0.0`
+* Bump `folio-service-tools` from `4.1.0` to `5.0.0`
+* Bump `lombok` from `1.18.34` to `1.18.36`
+* Bump `mapstruct` from `1.6.2` to `1.6.3`
+* Bump `jsoup` from `1.18.1` to `1.18.3`
+* Bump `commons-text` from `1.12.0` to `1.13.0`
 
 ---
 
