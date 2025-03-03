@@ -4,7 +4,7 @@
 
   <groupId>org.folio</groupId>
   <artifactId>mod-record-specifications</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <licenses>
@@ -26,8 +26,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <spring-boot.version>3.4.3</spring-boot.version>
-    <folio-spring-support.version>9.0.0-SNAPSHOT</folio-spring-support.version>
-    <folio-service-tools.version>5.0.0-SNAPSHOT</folio-service-tools.version>
+    <folio-spring-support.version>9.0.0</folio-spring-support.version>
+    <folio-service-tools.version>5.0.0</folio-service-tools.version>
     <lombok.version>1.18.36</lombok.version>
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
     <mapstruct.version>1.6.3</mapstruct.version>
@@ -35,10 +35,11 @@
     <jsoup.version>1.18.3</jsoup.version>
     <marc4j.version>2.9.6</marc4j.version>
     <commons-text.version>1.13.0</commons-text.version>
+    <guava.version>33.4.0-jre</guava.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
-    <openapi-generator.version>7.11.0</openapi-generator.version>
+    <openapi-generator.version>7.12.0</openapi-generator.version>
     <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
     <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
     <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
@@ -49,7 +50,7 @@
     <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-    <checkstyle.version>10.21.2</checkstyle.version>
+    <checkstyle.version>10.21.3</checkstyle.version>
     <folio-module-descriptor-validator.version>1.0.1</folio-module-descriptor-validator.version>
   </properties>
 
@@ -107,7 +108,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>33.4.0-jre</version>
+        <version>${guava.version}</version>
       </dependency>
 
       <dependency>
