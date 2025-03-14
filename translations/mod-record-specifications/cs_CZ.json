@@ -31,5 +31,5 @@
     "validation.missingSubfield": "Podpole ''{code}'' je povinné.",
     "validation.undefinedSubfield": "Podpole ''{code}'' není definováno.",
     "validation.nonRepeatableSubfield": "Podpole ''{code}'' je neopakovatelné.",
-    "validation.invalidLccnSubfieldValue": "010 $a is in an invalid format."
+    "validation.invalidLccnSubfieldValue": "010 $a je v neplatném formátu."
 }
