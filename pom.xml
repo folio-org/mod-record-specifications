@@ -35,7 +35,7 @@
     <jsoup.version>1.19.1</jsoup.version>
     <marc4j.version>2.9.6</marc4j.version>
     <commons-text.version>1.13.0</commons-text.version>
-    <guava.version>33.4.5-jre</guava.version>
+    <guava.version>33.4.6-jre</guava.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
