@@ -1,47 +1,55 @@
 package org.folio.rspec.service.sync.fetcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.folio.spring.testing.extension.EnableOkapi;
-import org.folio.spring.testing.extension.impl.OkapiConfiguration;
-import org.folio.spring.testing.type.IntegrationTest;
-import org.folio.support.IntegrationTestBase;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.folio.rspec.domain.dto.Family;
+import org.folio.rspec.domain.dto.FamilyProfile;
+import org.folio.rspec.exception.SpecificationFetchingFailedException;
+import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
-@EnableOkapi
-@IntegrationTest
-class MarcSpecificationFetcherIT extends IntegrationTestBase {
-
-  protected static OkapiConfiguration okapi;
+@UnitTest
+@Import(JacksonAutoConfiguration.class)
+@SpringBootTest(classes = {
+  MarcSpecificationFetcher.class
+})
+class MarcSpecificationFetcherIT {
 
   @Autowired
   private MarcSpecificationFetcher marcSpecificationFetcher;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @MockBean
   private MarcSpecificationParser parser;
 
   @Test
-  void testRetryLogic() {
+  void testFetch_positive() {
     var expected = objectMapper.createArrayNode();
+    when(parser.parse(any())).thenReturn(expected);
 
-    // Simulate a failure in the parser
-    when(parser.parse(any()))
-      .thenThrow(new IllegalArgumentException("Simulated failure 1"))
-      .thenThrow(new IllegalArgumentException("Simulated failure 2"))
-      .thenReturn(expected);
-
-    var actual = marcSpecificationFetcher.fetch(okapi.getOkapiUrl() + "/marc/bibliographic.html");
+    var actual = marcSpecificationFetcher.fetch(Family.MARC, FamilyProfile.AUTHORITY);
 
     assertEquals(expected, actual);
+    verify(parser).parse(any());
+  }
 
-    // Verify that the parser was called multiple times
-    verify(parser, times(3)).parse(any());
+  @Test
+  void testFetch_negative() {
+    when(parser.parse(any())).thenThrow(new RuntimeException("Test exception"));
+
+    assertThrows(SpecificationFetchingFailedException.class,
+      () -> marcSpecificationFetcher.fetch(Family.MARC, FamilyProfile.AUTHORITY));
   }
 
 }

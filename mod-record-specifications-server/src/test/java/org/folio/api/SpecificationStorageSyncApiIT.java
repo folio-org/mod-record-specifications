@@ -13,28 +13,19 @@ import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
 import org.folio.rspec.domain.repository.IndicatorRepository;
-import org.folio.rspec.domain.repository.SpecificationMetadataRepository;
 import org.folio.rspec.domain.repository.SubfieldRepository;
 import org.folio.spring.testing.extension.DatabaseCleanup;
-import org.folio.spring.testing.extension.EnableOkapi;
-import org.folio.spring.testing.extension.impl.OkapiConfiguration;
 import org.folio.spring.testing.type.IntegrationTest;
 import org.folio.support.SpecificationITBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@EnableOkapi
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
-  protected static OkapiConfiguration okapi;
-
-  @Autowired
-  private SpecificationMetadataRepository metadataRepository;
   @Autowired
   private FieldRepository fieldRepository;
   @Autowired
@@ -47,17 +38,6 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
   @BeforeAll
   static void beforeAll() {
     setUpTenant();
-  }
-
-  @BeforeEach
-  void setUp() {
-    executeInContext(() -> {
-      var specificationMetadata = metadataRepository.findBySpecificationId(BIBLIOGRAPHIC_SPECIFICATION_ID);
-      var newSyncUrl = okapi.getOkapiUrl() + "/marc/bibliographic.html";
-      specificationMetadata.setSyncUrl(newSyncUrl);
-      metadataRepository.save(specificationMetadata);
-      return null;
-    });
   }
 
   @Test
@@ -86,7 +66,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .containsExactlyInAnyOrder(createdFieldIds);
 
     assertThat(recreatedSubfields)
-      .hasSize(2826)
+      .hasSize(2832)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 

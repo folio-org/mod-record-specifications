@@ -1,3 +1,9 @@
+## v1.0.4 2025-04-18
+### Features
+* Refactor specification sync from URL to local copy ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))
+
+---
+
 ## v1.0.3 2025-03-28
 ### Bug fixes
 * Add retry for specification fetching in case of failure ([MRSPECS-85](https://folio-org.atlassian.net/browse/MRSPECS-85))
