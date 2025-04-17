@@ -1,3 +1,9 @@
+## v2.0.1 2025-04-18
+### Features
+* Refactor specification sync from URL to local copy ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))
+
+---
+
 ## v2.0.0 2025-03-03
 ### Breaking changes
 * Upgrade to Java 21 ([MRSPECS-81](https://folio-org.atlassian.net/browse/MRSPECS-81))

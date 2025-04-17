@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.folio.rspec.domain.dto.Family;
+import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Specification;
@@ -47,17 +49,19 @@ class SpecificationSyncServiceTest {
 
   @Test
   void sync_fetchesAndSyncsFields() {
-    var specId = randomUUID();
-    var metadata = prepareMetadata();
+    final var specId = randomUUID();
+    final var metadata = prepareMetadata();
 
     var specification = new Specification();
     specification.setId(specId);
+    specification.setFamily(Family.MARC);
+    specification.setProfile(FamilyProfile.AUTHORITY);
 
     var fieldsArray = prepareFetchedFields();
     ArgumentCaptor<Collection<Field>> fieldsCaptor = ArgumentCaptor.captor();
 
     when(metadataService.getSpecificationMetadata(specId)).thenReturn(metadata);
-    when(specificationFetcher.fetch(metadata.getSyncUrl())).thenReturn(fieldsArray);
+    when(specificationFetcher.fetch(Family.MARC, FamilyProfile.AUTHORITY)).thenReturn(fieldsArray);
     doNothing().when(specificationFieldService).syncFields(any(), fieldsCaptor.capture());
 
     specificationSyncService.sync(specification);

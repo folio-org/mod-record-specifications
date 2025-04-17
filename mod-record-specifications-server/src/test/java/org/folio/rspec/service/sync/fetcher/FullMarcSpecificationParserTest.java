@@ -30,16 +30,16 @@ class FullMarcSpecificationParserTest {
   @SneakyThrows
   @Test
   void parseBib() {
-    var result = doParseForFile("__files/marc/bibliographic.html");
+    var result = doParseForFile("spec/marc/bibliographic.html");
 
     assertThat(result).hasSize(293);
-    assertAllFieldsExist(result, 2803, 1130);
+    assertAllFieldsExist(result, 2809, 1130);
   }
 
   @SneakyThrows
   @Test
   void parseAuthority() {
-    var result = doParseForFile("__files/marc/authority.html");
+    var result = doParseForFile("spec/marc/authority.html");
 
     assertThat(result).hasSize(147);
     assertAllFieldsExist(result, 1670, 521);
