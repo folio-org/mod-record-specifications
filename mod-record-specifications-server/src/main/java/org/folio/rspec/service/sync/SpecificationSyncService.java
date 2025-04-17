@@ -59,7 +59,7 @@ public class SpecificationSyncService {
 
   private List<Field> evaluatorFetcher(Specification specification, SpecificationMetadata specificationMetadata) {
     var fieldsMetadata = specificationMetadata.getFields();
-    var specificationFields = specificationFetcher.fetch(specificationMetadata.getSyncUrl());
+    var specificationFields = specificationFetcher.fetch(specification.getFamily(), specification.getProfile());
     if (specificationFields != null && !specificationFields.isEmpty()) {
       return syncFields(specification, specificationFields, fieldsMetadata, specificationMetadata);
     }
