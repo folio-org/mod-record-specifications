@@ -4,7 +4,7 @@
 
   <groupId>org.folio</groupId>
   <artifactId>mod-record-specifications</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <licenses>
@@ -376,7 +376,7 @@
     <url>https://github.com/folio-org/mod-record-specifications</url>
     <connection>scm:git:git://github.com/folio-org/mod-record-specifications</connection>
     <developerConnection>scm:git:git@github.com:folio-org/mod-record-specifications.git</developerConnection>
-    <tag>v1.0.4</tag>
+    <tag>release/v1.0</tag>
   </scm>
 
 </project>
