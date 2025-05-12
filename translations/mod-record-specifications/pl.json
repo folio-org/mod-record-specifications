@@ -1,7 +1,7 @@
 {
-    "specification.field.tag.duplicate": "The 'tag' must be unique.",
-    "specification.resource.not-found": "{resourceName} with ID [{resourceId}] was not found.",
-    "specification.fetch.failed": "Specification fetching failed.",
+    "specification.field.tag.duplicate": "Tag musi być niepowtarzalny.",
+    "specification.resource.not-found": "Nie znaleziono {resourceName} o ID [{resourceId}].",
+    "specification.fetch.failed": "Pobieranie specyfikacji nie powiodło się.",
     "invalid.request.query-param.enum": "Nieoczekiwana wartość [{invalidValue}]. Możliwe wartości: [{possibleValues}].",
     "Pattern.SpecificationFieldChangeDto.tag": "Pole \"{parameter}\" musi zawierać trzy znaki i może zawierać wyłącznie cyfry 0-9.",
     "Min": "{parameter}\" musi być większy lub równy {value}.",
