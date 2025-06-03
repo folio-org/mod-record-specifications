@@ -146,5 +146,4 @@ class SpecificationStorageSubfieldsApiIT extends SpecificationITBase {
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
       .andExpect(errorMessageMatch(is("subfield with ID [%s] was not found.".formatted(notExistId))));
   }
-
 }

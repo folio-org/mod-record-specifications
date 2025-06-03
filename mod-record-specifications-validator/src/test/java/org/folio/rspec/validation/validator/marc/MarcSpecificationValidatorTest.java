@@ -39,5 +39,4 @@ class MarcSpecificationValidatorTest {
 
     assertThrows(IllegalArgumentException.class, () -> validator.validate(unsupportedRecord, specificationDto));
   }
-
 }

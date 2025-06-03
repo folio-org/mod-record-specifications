@@ -25,5 +25,4 @@ public class EventConsumer {
     log.info("Received update request [event={}]", updateRequestEvent);
     executor.runInContext(headers, () -> updateRequestProcessor.process(updateRequestEvent));
   }
-
 }

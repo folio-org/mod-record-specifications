@@ -20,5 +20,4 @@ public abstract class UpdateRequestEvent {
   private Family family;
   private FamilyProfile profile;
   private DefinitionType definitionType;
-
 }

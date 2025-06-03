@@ -307,5 +307,4 @@ class SpecificationStorageIndicatorsApiIT extends SpecificationITBase {
       .andExpect(exceptionMatch(ResourceNotFoundException.class))
       .andExpect(errorMessageMatch(is("indicator code with ID [%s] was not found.".formatted(notExistId))));
   }
-
 }

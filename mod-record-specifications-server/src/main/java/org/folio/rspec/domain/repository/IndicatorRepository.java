@@ -10,5 +10,4 @@ public interface IndicatorRepository extends JpaRepository<Indicator, UUID> {
 
   @Query("select i from Indicator i where i.field.id = ?1 order by i.order")
   List<Indicator> findByFieldId(UUID fieldId);
-
 }

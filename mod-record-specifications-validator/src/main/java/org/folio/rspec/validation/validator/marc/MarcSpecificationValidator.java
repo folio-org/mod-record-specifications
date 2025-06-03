@@ -42,5 +42,4 @@ public class MarcSpecificationValidator implements SpecificationValidator {
 
     return marcRecordRuleValidator.validate(marc, specification);
   }
-
 }

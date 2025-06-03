@@ -69,5 +69,4 @@ public class SpecificationStorageController implements SpecificationStorageApi {
     specificationService.toggleSpecificationRule(specificationId, id, toggleSpecificationRuleDto);
     return ResponseEntity.noContent().build();
   }
-
 }

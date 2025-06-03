@@ -36,5 +36,4 @@ public interface IndicatorCodeMapper {
   @Mapping(target = "indicator", ignore = true)
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
   void update(@MappingTarget IndicatorCode code, IndicatorCodeChangeDto changeDto);
-
 }

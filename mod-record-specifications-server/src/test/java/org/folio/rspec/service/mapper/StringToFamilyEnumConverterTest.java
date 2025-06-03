@@ -44,5 +44,4 @@ class StringToFamilyEnumConverterTest {
     // Assert
     assertNull(result);
   }
-
 }

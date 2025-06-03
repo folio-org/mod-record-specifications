@@ -298,5 +298,4 @@ class SpecificationStorageFieldsApiIT extends SpecificationITBase {
   private Object getRecordId(MvcResult result) throws UnsupportedEncodingException {
     return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
   }
-
 }

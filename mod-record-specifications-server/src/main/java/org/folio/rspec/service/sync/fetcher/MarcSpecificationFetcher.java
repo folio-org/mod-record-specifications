@@ -32,5 +32,4 @@ public class MarcSpecificationFetcher {
       throw new SpecificationFetchingFailedException(e);
     }
   }
-
 }

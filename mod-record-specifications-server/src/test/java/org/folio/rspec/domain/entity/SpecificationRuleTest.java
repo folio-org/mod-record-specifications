@@ -34,5 +34,4 @@ class SpecificationRuleTest {
 
     assertFalse(obj1.equals(obj2) && obj2.equals(obj1));
   }
-
 }

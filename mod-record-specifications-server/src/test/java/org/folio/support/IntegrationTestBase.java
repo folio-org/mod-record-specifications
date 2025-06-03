@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import lombok.SneakyThrows;
-import org.folio.rspec.RecordSpecificationsApp;
+import org.folio.rspec.RecordSpecificationsApplication;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
 import org.folio.rspec.domain.dto.FieldIndicatorDto;
 import org.folio.rspec.domain.dto.IndicatorCodeChangeDto;
@@ -56,7 +56,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @EnablePostgres
-@SpringBootTest(classes = RecordSpecificationsApp.class)
+@SpringBootTest(classes = RecordSpecificationsApplication.class)
 @ActiveProfiles("dev")
 @AutoConfigureMockMvc
 public class IntegrationTestBase {
@@ -348,5 +348,4 @@ public class IntegrationTestBase {
   private static ResultActions tryDoHttpMethod(MockHttpServletRequestBuilder builder, Object body) throws Exception {
     return tryDoHttpMethod(builder, body, defaultHeaders());
   }
-
 }

@@ -43,5 +43,4 @@ class SpecificationRuleRepositoryIT {
       .isNotEmpty()
       .hasValueSatisfying(specificationRule -> assertFalse(specificationRule.isEnabled()));
   }
-
 }

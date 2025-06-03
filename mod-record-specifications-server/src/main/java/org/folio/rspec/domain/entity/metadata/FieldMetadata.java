@@ -22,5 +22,4 @@ public record FieldMetadata(
     this(UUID.randomUUID().toString(), tag, scope, false, null, null, null,
       null, null, new HashMap<>(), new HashMap<>());
   }
-
 }

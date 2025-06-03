@@ -57,5 +57,4 @@ class UuidPersistableTest {
   }
 
   private static final class TestEntity extends UuidPersistable { }
-
 }

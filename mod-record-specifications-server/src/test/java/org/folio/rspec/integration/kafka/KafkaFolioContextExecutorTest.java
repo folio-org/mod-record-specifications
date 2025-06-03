@@ -73,7 +73,6 @@ class KafkaFolioContextExecutorTest {
       .containsExactly(tenantId, url, token, userId);
   }
 
-
   @Test
   void shouldHandleAbsentHeader() {
     // Arrange
@@ -90,5 +89,4 @@ class KafkaFolioContextExecutorTest {
         FolioExecutionContext::getUserId)
       .containsExactly("", "", "", null);
   }
-
 }

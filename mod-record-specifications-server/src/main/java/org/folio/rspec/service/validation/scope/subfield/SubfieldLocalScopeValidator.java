@@ -19,5 +19,4 @@ public class SubfieldLocalScopeValidator extends ScopeValidator<SubfieldChangeDt
   protected Function<Subfield, Scope> scopeFunction() {
     return Subfield::getScope;
   }
-
 }

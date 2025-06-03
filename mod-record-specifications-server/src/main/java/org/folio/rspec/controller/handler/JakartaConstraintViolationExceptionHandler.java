@@ -34,5 +34,4 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
 
     return new ErrorCollection().errors(errorList);
   }
-
 }

@@ -128,13 +128,14 @@ public class SpecificationService {
   }
 
   private Function<Specification, SpecificationDto> convertSpecification(IncludeParam include) {
-    return specification -> switch (include) {
-      case ALL -> specificationMapper.toFullDto(specification);
-      case NONE -> specificationMapper.toDto(specification);
-      case FIELDS_REQUIRED -> {
-        var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
-        yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
-      }
-    };
+    return specification ->
+      switch (include) {
+        case ALL -> specificationMapper.toFullDto(specification);
+        case NONE -> specificationMapper.toDto(specification);
+        case FIELDS_REQUIRED -> {
+          var specificationFields = specificationFieldService.findSpecificationFields(specification.getId(), true);
+          yield specificationMapper.toDto(specification).fields(specificationFields.getFields());
+        }
+      };
   }
 }

@@ -132,5 +132,4 @@ class SpecificationStorageSubfieldsControllerTest {
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("subfield with ID [%s] was not found."
         .formatted(fieldId)))));
   }
-
 }

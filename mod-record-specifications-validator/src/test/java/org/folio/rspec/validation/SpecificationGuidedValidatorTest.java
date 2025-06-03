@@ -50,5 +50,4 @@ class SpecificationGuidedValidatorTest {
       assertEquals(result, errors);
     }
   }
-
 }

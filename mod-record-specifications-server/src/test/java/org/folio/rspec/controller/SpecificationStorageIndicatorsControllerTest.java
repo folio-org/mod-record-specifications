@@ -266,5 +266,4 @@ class SpecificationStorageIndicatorsControllerTest {
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("field indicator with ID [%s] was not found."
         .formatted(indicatorId)))));
   }
-
 }

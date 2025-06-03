@@ -32,5 +32,4 @@ class TranslationProviderDelegateTest {
     assertEquals(formattedKey, result);
     verify(delegate, times(1)).format(formattedKey, args);
   }
-
 }

@@ -46,5 +46,4 @@ class SpecificationRepositoryIT {
 
     assertEquals(1, specifications.getTotalElements());
   }
-
 }

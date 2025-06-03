@@ -27,5 +27,4 @@ public class ApiExceptionHandler {
     log.error("Failed to handle exception", e);
     return ServiceExceptionHandler.fallback(e);
   }
-
 }

@@ -36,5 +36,4 @@ public class Metadata {
   @LastModifiedDate
   @Column(name = UPDATED_DATE_COLUMN, nullable = false)
   private Timestamp updatedDate;
-
 }

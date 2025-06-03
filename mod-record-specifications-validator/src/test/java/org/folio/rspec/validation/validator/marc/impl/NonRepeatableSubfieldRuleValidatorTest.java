@@ -34,7 +34,6 @@ public class NonRepeatableSubfieldRuleValidatorTest {
   @InjectMocks
   private NonRepeatableSubfieldRuleValidator validator;
 
-
   @ParameterizedTest
   @MethodSource("nonRepeatableSubfieldTestSource")
   void validate_whenNonRepeatableSubfield_shouldReturnValidationError(char subfield1, char subfield2, char subfield3) {

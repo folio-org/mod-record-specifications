@@ -354,5 +354,4 @@ class SpecificationStorageControllerTest {
       .andExpect(jsonPath("$.errors.[*].message",
         hasItem(is("The 'label' field has exceeded 350 character limit."))));
   }
-
 }
