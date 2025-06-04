@@ -94,5 +94,4 @@ public class KafkaConfiguration {
     return new DefaultKafkaProducerFactory<>(kafkaProperties.buildProducerProperties(null),
       new StringSerializer(), new JsonSerializer<>(objectMapper));
   }
-
 }

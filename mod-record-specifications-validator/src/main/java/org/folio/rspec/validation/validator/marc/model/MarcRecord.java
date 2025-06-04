@@ -29,5 +29,4 @@ public final class MarcRecord {
   public List<MarcDataField> dataFields() {
     return dataFields;
   }
-
 }

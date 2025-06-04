@@ -41,5 +41,4 @@ public abstract class EventProducer<T, D> {
   protected abstract String topicName();
 
   protected abstract D buildEvent(T data);
-
 }

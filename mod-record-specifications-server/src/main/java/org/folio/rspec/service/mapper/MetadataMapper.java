@@ -18,5 +18,4 @@ public interface MetadataMapper {
   default String map(Timestamp timestamp) {
     return timestamp != null ? DATE_TIME_FORMAT.format(timestamp) : null;
   }
-
 }

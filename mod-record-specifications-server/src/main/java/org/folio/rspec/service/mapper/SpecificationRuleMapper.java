@@ -28,5 +28,4 @@ public interface SpecificationRuleMapper {
   @Mapping(target = "description", source = "rule.description")
   @Named("ruleFullDto")
   SpecificationRuleDto toFullDto(SpecificationRule specificationRule);
-
 }

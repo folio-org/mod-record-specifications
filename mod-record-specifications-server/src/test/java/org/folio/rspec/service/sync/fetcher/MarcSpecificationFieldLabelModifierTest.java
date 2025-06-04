@@ -33,5 +33,4 @@ class MarcSpecificationFieldLabelModifierTest {
   void modifyTest(String input, String expected) {
     assertEquals(expected, modifier.modify(input));
   }
-
 }

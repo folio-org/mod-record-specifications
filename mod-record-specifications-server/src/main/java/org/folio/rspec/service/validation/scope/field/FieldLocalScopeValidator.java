@@ -19,5 +19,4 @@ public class FieldLocalScopeValidator extends ScopeValidator<SpecificationFieldC
   protected Function<Field, Scope> scopeFunction() {
     return Field::getScope;
   }
-
 }

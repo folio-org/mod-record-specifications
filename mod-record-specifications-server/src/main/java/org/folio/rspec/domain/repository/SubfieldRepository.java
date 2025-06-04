@@ -10,5 +10,4 @@ public interface SubfieldRepository extends JpaRepository<Subfield, UUID> {
 
   @Query("select s from Subfield s where s.field.id = ?1 order by s.code")
   List<Subfield> findByFieldId(UUID fieldId);
-
 }

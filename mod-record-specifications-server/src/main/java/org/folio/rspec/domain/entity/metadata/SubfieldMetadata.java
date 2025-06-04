@@ -17,5 +17,4 @@ public record SubfieldMetadata(
   public SubfieldMetadata(String code, String scope) {
     this(UUID.randomUUID().toString(), code, scope, false, null, null, null, null, null);
   }
-
 }

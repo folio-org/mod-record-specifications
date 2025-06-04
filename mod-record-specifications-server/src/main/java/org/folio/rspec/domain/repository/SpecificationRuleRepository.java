@@ -22,5 +22,4 @@ public interface SpecificationRuleRepository extends JpaRepository<Specification
   @Modifying
   @Query("update SpecificationRule s set s.enabled = ?1 where s.specificationRuleId = ?2")
   int updateEnabledBySpecificationRuleId(boolean enabled, SpecificationRuleId specificationRuleId);
-
 }

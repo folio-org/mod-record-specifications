@@ -13,5 +13,4 @@ public class UpdateRequestProcessingException extends RuntimeException {
     return new UpdateRequestProcessingException("Specification for family=%s, profile=%s not found"
       .formatted(family, profile));
   }
-
 }

@@ -69,5 +69,4 @@ public class IndicatorCode extends UuidPersistable {
   public boolean equals(Object o) {
     return super.equals(o);
   }
-
 }

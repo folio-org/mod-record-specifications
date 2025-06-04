@@ -86,5 +86,4 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
   private UUID @NotNull [] toIdArray(List<? extends UuidPersistable> all) {
     return all.stream().map(UuidPersistable::getId).toArray(UUID[]::new);
   }
-
 }

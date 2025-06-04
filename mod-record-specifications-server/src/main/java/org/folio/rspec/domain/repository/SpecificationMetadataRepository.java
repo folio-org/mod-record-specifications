@@ -9,5 +9,4 @@ public interface SpecificationMetadataRepository extends JpaRepository<Specifica
 
   @Query("select s from SpecificationMetadata s where s.specification.id = ?1")
   SpecificationMetadata findBySpecificationId(UUID id);
-
 }

@@ -33,5 +33,4 @@ class MetadataMapperTest {
     // Assert
     assertNull(result);
   }
-
 }

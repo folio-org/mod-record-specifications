@@ -61,5 +61,4 @@ public class MarcSpecificationBlockSplitter {
   private boolean isSubfieldsLine(String line) {
     return line.startsWith(SUBFIELDS_LINE_PREFIX);
   }
-
 }

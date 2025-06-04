@@ -135,5 +135,4 @@ public class ApiEndpoints {
       .collect(Collectors.joining("&"));
     return path + "?" + queryParamString;
   }
-
 }

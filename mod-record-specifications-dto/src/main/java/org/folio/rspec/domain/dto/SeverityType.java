@@ -13,5 +13,4 @@ public enum SeverityType {
   SeverityType(String type) {
     this.type = type;
   }
-
 }

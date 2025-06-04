@@ -25,7 +25,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring-boot.version>3.4.5</spring-boot.version>
+    <spring-boot.version>3.5.0</spring-boot.version>
     <folio-spring-support.version>10.0.0-SNAPSHOT</folio-spring-support.version>
     <folio-service-tools.version>5.1.0-SNAPSHOT</folio-service-tools.version>
     <lombok.version>1.18.38</lombok.version>
@@ -47,10 +47,11 @@
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
+    <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
-    <checkstyle.version>10.23.1</checkstyle.version>
+    <checkstyle.version>10.25.0</checkstyle.version>
+    <folio-java-checkstyle.version>1.1.0</folio-java-checkstyle.version>
     <folio-module-descriptor-validator.version>1.0.1</folio-module-descriptor-validator.version>
   </properties>
 
@@ -191,6 +192,12 @@
             <artifactId>checkstyle</artifactId>
             <version>${checkstyle.version}</version>
           </dependency>
+
+          <dependency>
+            <groupId>org.folio</groupId>
+            <artifactId>folio-java-checkstyle</artifactId>
+            <version>${folio-java-checkstyle.version}</version>
+          </dependency>
         </dependencies>
         <executions>
           <execution>
@@ -207,10 +214,12 @@
             <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
           </sourceDirectories>
           <failsOnError>true</failsOnError>
+          <outputEncoding>UTF-8</outputEncoding>
+          <inputEncoding>UTF-8</inputEncoding>
           <violationSeverity>warning</violationSeverity>
           <failOnViolation>true</failOnViolation>
           <logViolationsToConsole>true</logViolationsToConsole>
-          <configLocation>checkstyle/checkstyle.xml</configLocation>
+          <configLocation>folio-checkstyle/checkstyle.xml</configLocation>
           <cacheFile>${basedir}/target/cachefile</cacheFile>
         </configuration>
       </plugin>

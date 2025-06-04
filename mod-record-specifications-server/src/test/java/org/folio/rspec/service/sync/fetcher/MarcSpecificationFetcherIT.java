@@ -51,5 +51,4 @@ class MarcSpecificationFetcherIT {
     assertThrows(SpecificationFetchingFailedException.class,
       () -> marcSpecificationFetcher.fetch(Family.MARC, FamilyProfile.AUTHORITY));
   }
-
 }

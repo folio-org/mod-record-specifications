@@ -55,5 +55,4 @@ public class ConstraintViolationResolver {
       .key(node.getName())
       .value(String.valueOf(violation.getInvalidValue()));
   }
-
 }

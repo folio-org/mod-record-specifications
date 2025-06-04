@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RecordSpecificationsApp {
+public class RecordSpecificationsApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(RecordSpecificationsApp.class, args);
+    SpringApplication.run(RecordSpecificationsApplication.class, args);
   }
-
 }

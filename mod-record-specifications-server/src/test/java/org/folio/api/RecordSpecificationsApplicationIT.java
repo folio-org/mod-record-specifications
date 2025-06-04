@@ -35,10 +35,10 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @IntegrationTest
-class RecordSpecificationsAppIT {
+class RecordSpecificationsApplicationIT {
 
   private static final Network NETWORK = Network.newNetwork();
-  private static final Logger LOG = LoggerFactory.getLogger(RecordSpecificationsAppIT.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RecordSpecificationsApplicationIT.class);
 
   @Container
   private static final PostgreSQLContainer<?> POSTGRES =
@@ -153,5 +153,4 @@ class RecordSpecificationsAppIT {
       .statusCode(204)
       .log().all(true);
   }
-
 }

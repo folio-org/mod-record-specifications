@@ -101,5 +101,4 @@ class FullMarcSpecificationParserTest {
     var document = DataUtil.load(classPathResource.getFile(), StandardCharsets.UTF_8.name(), "/");
     return parser.parse(document);
   }
-
 }

@@ -43,5 +43,4 @@ public class KafkaFolioContextExecutor {
            ? Collections.emptyList()
            : Collections.singletonList(new String((byte[]) headerValue, StandardCharsets.UTF_8));
   }
-
 }

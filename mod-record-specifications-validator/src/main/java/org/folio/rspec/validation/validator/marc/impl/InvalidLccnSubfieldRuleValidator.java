@@ -14,7 +14,6 @@ import org.folio.rspec.validation.validator.marc.model.MarcRuleCode;
 import org.folio.rspec.validation.validator.marc.model.MarcSubfield;
 import org.folio.rspec.validation.validator.marc.model.Reference;
 
-
 public class InvalidLccnSubfieldRuleValidator
   implements SpecificationRuleValidator<List<MarcSubfield>, SpecificationFieldDto> {
 
