@@ -11,7 +11,7 @@
     "URL": "Поле ''{parameter}'' має бути дійсною URL-адресою.",
     "unexpected": "Неочікувана помилка: {errorMessage}.",
     "field.indicator.order.duplicate": "The 'order' must be unique.",
-    "indicator.code.code.duplicate": "The 'code' must be unique.",
+    "indicator.code.code.duplicate": "\"Код\" має бути унікальним.",
     "Pattern.IndicatorCodeChangeDto.code": "Поле ''{parameter}'' повинно містити один символ і може приймати тільки цифри 0-9, літери a-z або символ '#'.",
     "field.subfield.code.duplicate": "The 'code' must be unique.",
     "Pattern.SubfieldChangeDto.code": "Поле ''{parameter}'' повинно містити один символ і може приймати тільки цифри 0-9 або літери a-z.",
