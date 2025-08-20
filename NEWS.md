@@ -1,3 +1,9 @@
+## v2.0.2 2025-08-28
+### Bug fixes
+* Fix non-obsolete subfield choosing logic ([MRSPECS-95](https://folio-org.atlassian.net/browse/MRSPECS-95))
+
+---
+
 ## v2.0.1 2025-04-18
 ### Features
 * Refactor specification sync from URL to local copy ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))

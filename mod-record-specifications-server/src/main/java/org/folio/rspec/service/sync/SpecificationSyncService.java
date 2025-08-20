@@ -17,7 +17,6 @@ import static org.folio.rspec.utils.JsonUtils.getText;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.entity.Field;
@@ -54,7 +55,7 @@ public class SpecificationSyncService {
     var specificationMetadata = metadataService.getSpecificationMetadata(specification.getId());
     var fields = evaluatorFetcher(specification, specificationMetadata);
     metadataService.saveSpecificationMetadata(specificationMetadata);
-    specificationFieldService.syncFields(specification, cleanupFields(specification, fields));
+    specificationFieldService.syncFields(specification, fields);
   }
 
   private List<Field> evaluatorFetcher(Specification specification, SpecificationMetadata specificationMetadata) {
@@ -69,19 +70,22 @@ public class SpecificationSyncService {
   private List<Field> syncFields(Specification specification, ArrayNode specificationFields,
                                  Map<String, FieldMetadata> fieldsMetadata,
                                  SpecificationMetadata specificationMetadata) {
-    List<Field> fields = new ArrayList<>();
+    var fieldMap = new HashMap<String, Field>();
+
     for (var fieldElement : specificationFields) {
       var field = populateField(fieldElement, fieldsMetadata, specificationMetadata, specification);
-      fields.add(field);
+      fieldMap.merge(field.getTag(), field, preferNonDeprecated(Field::isDeprecated));
     }
 
-    for (FieldMetadata value : fieldsMetadata.values()) {
+    for (var value : fieldsMetadata.values()) {
       if (Boolean.TRUE.equals(value.defaultValue())) {
-        fields.add(toField(value));
+        var field = toField(value);
+        field.setSpecification(specification);
+        fieldMap.merge(field.getTag(), field, preferNonDeprecated(Field::isDeprecated));
       }
     }
 
-    return fields;
+    return new ArrayList<>(fieldMap.values());
   }
 
   private Field populateField(JsonNode fieldElement, Map<String, FieldMetadata> fieldsMetadata,
@@ -113,32 +117,6 @@ public class SpecificationSyncService {
     }
   }
 
-  /**
-   * Merge fields, indicator codes, subfields if there is a duplicate by skipping deprecated records.
-   */
-  private Collection<Field> cleanupFields(Specification specification, List<Field> fields) {
-    Map<String, Field> fieldByTags = new HashMap<>();
-    for (Field field : fields) {
-      fieldByTags.merge(field.getTag(), field, (field1, field2) -> field1.isDeprecated() ? field2 : field1);
-      field.setSpecification(specification);
-      Map<String, Subfield> subfields = new HashMap<>();
-      for (Subfield subfield : field.getSubfields()) {
-        subfields.merge(subfield.getCode(), subfield,
-          (subfield1, subfield2) -> subfield1.isDeprecated() ? subfield2 : subfield1);
-      }
-      field.setSubfields(new HashSet<>(subfields.values()));
-      for (Indicator indicator : field.getIndicators()) {
-        Map<String, IndicatorCode> indicatorCodes = new HashMap<>();
-        for (IndicatorCode indicatorCode : indicator.getCodes()) {
-          indicatorCodes.merge(indicatorCode.getCode(), indicatorCode,
-            (indicatorCode1, indicatorCode2) -> indicatorCode1.isDeprecated() ? indicatorCode2 : indicatorCode1);
-        }
-        indicator.setCodes(new ArrayList<>(indicatorCodes.values()));
-      }
-    }
-    return fieldByTags.values();
-  }
-
   private Field toField(FieldMetadata fieldMetadata) {
     var defaultField = new Field();
     defaultField.setId(UUID.fromString(fieldMetadata.id()));
@@ -150,9 +128,9 @@ public class SpecificationSyncService {
     defaultField.setRepeatable(fieldMetadata.repeatable());
     defaultField.setRequired(fieldMetadata.required());
 
-    Set<Subfield> subfields = new HashSet<>();
+    var subfields = new HashSet<Subfield>();
     if (fieldMetadata.subfields() != null) {
-      for (SubfieldMetadata subfieldMetadata : fieldMetadata.subfields().values()) {
+      for (var subfieldMetadata : fieldMetadata.subfields().values()) {
         if (Boolean.TRUE.equals(subfieldMetadata.defaultValue())) {
           subfields.add(toSubfield(subfieldMetadata));
         }
@@ -161,7 +139,7 @@ public class SpecificationSyncService {
     }
 
     if (fieldMetadata.indicators() != null) {
-      List<Indicator> indicators = new ArrayList<>();
+      var indicators = new ArrayList<Indicator>();
       populateDefaultIndicators(fieldMetadata, indicators);
       defaultField.setIndicators(indicators);
     }
@@ -172,35 +150,39 @@ public class SpecificationSyncService {
     if (jsonNode == null || jsonNode.isEmpty()) {
       return Collections.emptySet();
     }
-    Set<Subfield> subfields = new HashSet<>();
 
+    var subfieldMap = new HashMap<String, Subfield>();
     var subfieldsMetadata = fieldMetadata.subfields() == null
                             ? new HashMap<String, SubfieldMetadata>()
                             : fieldMetadata.subfields();
-    for (JsonNode subfieldElement : jsonNode) {
+    for (var subfieldElement : jsonNode) {
       var code = getText(subfieldElement, CODE_PROP);
       var subfieldMetadata = subfieldsMetadata.computeIfAbsent(code,
         definedCode -> new SubfieldMetadata(code, Scope.STANDARD.name()));
-      subfields.add(toSubfield(subfieldElement, subfieldMetadata));
+      var subfield = toSubfield(subfieldElement, subfieldMetadata);
+
+      subfieldMap.merge(subfield.getCode(), subfield, preferNonDeprecated(Subfield::isDeprecated));
     }
 
-    for (SubfieldMetadata subfieldMetadata : subfieldsMetadata.values()) {
+    for (var subfieldMetadata : subfieldsMetadata.values()) {
       if (Boolean.TRUE.equals(subfieldMetadata.defaultValue())) {
-        subfields.add(toSubfield(subfieldMetadata));
+        var subfield = toSubfield(subfieldMetadata);
+        subfieldMap.merge(subfield.getCode(), subfield, preferNonDeprecated(Subfield::isDeprecated));
       }
     }
-    return subfields;
+
+    return new HashSet<>(subfieldMap.values());
   }
 
   private List<Indicator> prepareIndicators(JsonNode jsonNode, FieldMetadata fieldMetadata) {
     if (jsonNode == null || jsonNode.isEmpty() || !jsonNode.isArray()) {
       return Collections.emptyList();
     }
-    List<Indicator> indicators = new ArrayList<>();
+    var indicators = new ArrayList<Indicator>();
     var indicatorsMetadata = fieldMetadata.indicators() == null
                              ? new HashMap<String, IndicatorMetadata>()
                              : fieldMetadata.indicators();
-    for (JsonNode indicatorElement : jsonNode) {
+    for (var indicatorElement : jsonNode) {
       var order = String.valueOf(getInt(indicatorElement, ORDER_PROP));
       var indicatorMetadata = indicatorsMetadata.computeIfAbsent(order, IndicatorMetadata::new);
       var indicator = new Indicator();
@@ -216,14 +198,14 @@ public class SpecificationSyncService {
   }
 
   private void populateDefaultIndicators(FieldMetadata fieldMetadata, List<Indicator> indicators) {
-    for (IndicatorMetadata indicatorMetadata : fieldMetadata.indicators().values()) {
+    for (var indicatorMetadata : fieldMetadata.indicators().values()) {
       if (Boolean.TRUE.equals(indicatorMetadata.defaultValue())) {
         var indicator = new Indicator();
         indicator.setId(UUID.fromString(indicatorMetadata.id()));
         indicator.setOrder(indicatorMetadata.order());
         indicator.setLabel(indicatorMetadata.label());
-        List<IndicatorCode> indicatorCodes = new ArrayList<>();
-        for (IndicatorCodeMetadata indicatorCodeMetadata : indicatorMetadata.codes().values()) {
+        var indicatorCodes = new ArrayList<IndicatorCode>();
+        for (var indicatorCodeMetadata : indicatorMetadata.codes().values()) {
           if (Boolean.TRUE.equals(indicatorCodeMetadata.defaultValue())) {
             var indicatorCode = new IndicatorCode();
             indicatorCode.setId(UUID.fromString(indicatorCodeMetadata.id()));
@@ -245,9 +227,9 @@ public class SpecificationSyncService {
     if (codesElement == null || codesElement.isEmpty() || !codesElement.isArray()) {
       return Collections.emptyList();
     }
-    List<IndicatorCode> codes = new ArrayList<>();
 
-    for (JsonNode codeElement : codesElement) {
+    var indicatorCodeMap = new HashMap<String, IndicatorCode>();
+    for (var codeElement : codesElement) {
       var indicatorCodeMetadata = indicatorMetadata.codes().computeIfAbsent(getText(codeElement, CODE_PROP),
         code -> new IndicatorCodeMetadata(code, Scope.STANDARD.name()));
       var indicatorCode = new IndicatorCode();
@@ -256,10 +238,11 @@ public class SpecificationSyncService {
       indicatorCode.setLabel(getText(codeElement, LABEL_PROP));
       indicatorCode.setDeprecated(getBoolean(codeElement, DEPRECATED_PROP));
       indicatorCode.setScope(Scope.valueOf(indicatorCodeMetadata.scope()));
-      codes.add(indicatorCode);
+
+      indicatorCodeMap.merge(indicatorCode.getCode(), indicatorCode, preferNonDeprecated(IndicatorCode::isDeprecated));
     }
 
-    return codes;
+    return new ArrayList<>(indicatorCodeMap.values());
   }
 
   private Subfield toSubfield(SubfieldMetadata subfieldMetadata) {
@@ -292,5 +275,9 @@ public class SpecificationSyncService {
 
   private boolean isRequired(JsonNode fieldElement, FieldMetadata fieldMetadata) {
     return fieldMetadata.required() != null ? fieldMetadata.required() : getBoolean(fieldElement, REQUIRED_PROP);
+  }
+
+  private static <T> BinaryOperator<T> preferNonDeprecated(Predicate<T> isDeprecatedPredicate) {
+    return (existing, incoming) -> existing != null && isDeprecatedPredicate.test(existing) ? incoming : existing;
   }
 }
