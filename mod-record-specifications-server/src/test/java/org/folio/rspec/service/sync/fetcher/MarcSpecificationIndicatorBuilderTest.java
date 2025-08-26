@@ -84,7 +84,7 @@ class MarcSpecificationIndicatorBuilderTest {
       );
 
     var lines5 = List.of(
-      "First - Indicator [OBSOLETE]",
+      "First - Indicator[OBSOLETE]",
       "# - Undefined",
       "First - Indicator With Codes1",
       "a - Code a",
