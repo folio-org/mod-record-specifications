@@ -102,7 +102,7 @@ class SpecificationSyncServiceTest {
       .toList();
     
     assertThat(fields856).hasSize(1);
-    var field856 = fields856.getFirst();
+    var field856 = fields856.get(0);
     assertThat(field856.isDeprecated()).isFalse();
     assertThat(field856.getLabel()).isEqualTo("Electronic Location and Access (Non-obsolete)");
 
@@ -112,7 +112,7 @@ class SpecificationSyncServiceTest {
       .toList();
     
     assertThat(subfieldsH).hasSize(1);
-    var subfieldH = subfieldsH.getFirst();
+    var subfieldH = subfieldsH.get(0);
     assertThat(subfieldH.isDeprecated()).isFalse();
     assertThat(subfieldH.getLabel()).isEqualTo("Non-functioning Uniform Resource Identifier");
 
@@ -127,7 +127,7 @@ class SpecificationSyncServiceTest {
       .toList();
     
     assertThat(indicatorCodes0).hasSize(1);
-    var indicatorCode0 = indicatorCodes0.getFirst();
+    var indicatorCode0 = indicatorCodes0.get(0);
     assertThat(indicatorCode0.isDeprecated()).isFalse();
     assertThat(indicatorCode0.getLabel()).isEqualTo("Email (Non-obsolete)");
   }
