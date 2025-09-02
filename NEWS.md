@@ -11,6 +11,7 @@
 
 ### Bug fixes
 * Fix non-obsolete subfield choosing logic ([MRSPECS-95](https://folio-org.atlassian.net/browse/MRSPECS-95))
+* Fix some "[OBSOLETE]" subfields are not "deprecated" or not exist in MARC specification ([MRSPECS-99](https://folio-org.atlassian.net/browse/MRSPECS-99))
 
 ### Tech Dept
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
