@@ -19,8 +19,14 @@ import org.springframework.stereotype.Component;
 public class MarcSpecificationSubfieldsBuilder {
 
   private static final Pattern SUBFIELD_PATTERN = Pattern.compile(
-    "\\s*\\$(?<%s>.) - (?<%s>.*?) ?\\((?<%s>\\w*)\\)(?<%s> ?\\[OBSOLETE])?"
-      .formatted(CODE_PROP, LABEL_PROP, REPEATABLE_PROP, DEPRECATED_PROP));
+    ("^\\$(?<%s>.) - (?<%s>.+?)"                  // Code and label
+      + "(?:\\s*\\((?<%s>R|NR)\\))?"              // Optional (R|NR)
+      + "(?:\\s*\\([^)]*\\))?"                    // Optional cataloging level (ignored) (e.g. (MU VM SE))
+      + "(?:\\s*\\[(?<%s>OBSOLETE)\\])?"          // Optional [OBSOLETE]
+      + "(?:\\s*\\[[^\\]]+\\])?"                  // Optional tags (ignored) (e.g. [LOCAL])
+      + "\\s*$")
+      .formatted(CODE_PROP, LABEL_PROP, REPEATABLE_PROP, DEPRECATED_PROP)
+  );
   private static final String NON_REPEATABLE_SIGN = "NR";
 
   private final ObjectMapper objectMapper;

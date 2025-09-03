@@ -33,7 +33,7 @@ class FullMarcSpecificationParserTest {
     var result = doParseForFile("spec/marc/bibliographic.html");
 
     assertThat(result).hasSize(293);
-    assertAllFieldsExist(result, 2809, 1130);
+    assertAllFieldsExist(result, 2817, 1130);
   }
 
   @SneakyThrows
