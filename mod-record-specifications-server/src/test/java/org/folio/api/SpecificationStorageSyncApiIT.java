@@ -1,14 +1,22 @@
 package org.folio.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.specificationSyncPath;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.entity.Field;
+import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
@@ -57,7 +65,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
     var recreatedFields = executeInContext(() -> fieldRepository.findAll());
     var recreatedSubfields = executeInContext(() -> subfieldRepository.findAll());
-    var recreatedIndicator = executeInContext(() -> indicatorRepository.findAll());
+    var recreatedIndicators = executeInContext(() -> indicatorRepository.findAll());
     var recreatedIndicatorCodes = executeInContext(() -> indicatorCodeRepository.findAll());
 
     assertThat(recreatedFields)
@@ -65,22 +73,69 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdFieldIds);
 
+    assertSystemFields(recreatedFields);
+
     assertThat(recreatedSubfields)
       .hasSize(2840)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 
-    assertThat(recreatedIndicator)
+    assertThat(recreatedIndicators)
       .hasSize(528)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorIds);
+
 
     assertThat(recreatedIndicatorCodes)
       .hasSize(1193)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorCodeIds);
 
+    assertSystemIndicatorCodes(recreatedIndicatorCodes);
+
     assertSpecificationUpdatedEvent();
+  }
+
+  private void assertSystemIndicatorCodes(List<IndicatorCode> recreatedIndicators) {
+    var systemIndicatorCodes = recreatedIndicators.stream()
+      .filter(indicator -> indicator.getScope() == Scope.SYSTEM)
+      .toList();
+
+    var numberStream = IntStream.range(0, 9).boxed().map(String::valueOf);
+    var letterStream = IntStream.range('a', 'z').boxed().map(Character::toString);
+    var expectedIndicatorCodes = Stream.concat(numberStream, letterStream).collect(Collectors.toSet());
+    expectedIndicatorCodes.add("9");
+    expectedIndicatorCodes.add("z");
+    expectedIndicatorCodes.add("#");
+
+    assertThat(systemIndicatorCodes).hasSize(74)
+      .extracting(IndicatorCode::getCode)
+      .satisfies(codes -> assertThat(new HashSet<String>(codes)).containsExactlyInAnyOrderElementsOf(expectedIndicatorCodes));
+
+    var systemIndicators = systemIndicatorCodes.stream()
+      .map(indicatorCode -> indicatorCode.getIndicator().getId())
+      .collect(Collectors.toSet());
+    assertThat(systemIndicators).hasSize(2);
+  }
+
+  private void assertSystemFields(List<Field> recreatedFields) {
+    var systemFields = recreatedFields.stream()
+      .filter(field -> field.getScope() == Scope.SYSTEM)
+      .toList();
+
+    assertThat(systemFields).hasSize(8)
+      .extracting(Field::getTag, Field::isRepeatable, Field::isRequired, Field::isDeprecated)
+      .containsExactlyInAnyOrder(
+        tuple("000", false, true, false),
+        tuple("001", false, true, false),
+        tuple("005", false, false, false),
+        tuple("006", true, false, false),
+        tuple("007", true, false, false),
+        tuple("008", false, true, false),
+        tuple("245", false, true, false),
+        tuple("999", true, false, false)
+      );
+
   }
 
   private UUID @NotNull [] toIdArray(List<? extends UuidPersistable> all) {
