@@ -14,7 +14,7 @@
 * Fix some "[OBSOLETE]" subfields are not "deprecated" or not exist in MARC specification ([MRSPECS-99](https://folio-org.atlassian.net/browse/MRSPECS-99))
 
 ### Tech Dept
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Add integration test to cover sync endpoint ([MRSPECS-105](https://folio-org.atlassian.net/browse/MRSPECS-105))
 
 ### Dependencies
 * Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`
