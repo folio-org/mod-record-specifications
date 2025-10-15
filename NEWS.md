@@ -15,6 +15,7 @@
 
 ### Tech Dept
 * Add integration test to cover sync endpoint ([MRSPECS-105](https://folio-org.atlassian.net/browse/MRSPECS-105))
+* Add integration test to verify field restoration after sync ([MRSPECS-106](https://folio-org.atlassian.net/browse/MRSPECS-106))
 
 ### Dependencies
 * Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`

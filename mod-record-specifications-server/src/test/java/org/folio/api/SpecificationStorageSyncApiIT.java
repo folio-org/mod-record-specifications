@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
+import static org.folio.support.ApiEndpoints.fieldPath;
 import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
@@ -19,10 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.folio.rspec.domain.dto.Scope;
+import org.folio.rspec.domain.dto.SpecificationFieldChangeDto;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.domain.repository.IndicatorCodeRepository;
@@ -41,12 +44,15 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
+  private static final String LABEL_FIELD = "label";
   private static final String CODE_FIELD = "code";
   private static final String SCOPE_FIELD = "scope";
-  private static final String DEPRECATED_FIELD = "deprecated";
   private static final String TAG_FIELD = "tag";
   private static final String URL_FIELD = "url";
   private static final String ID_FIELD = "id";
+  private static final String REPEATABLE_FIELD = "repeatable";
+  private static final String REQUIRED_FIELD = "required";
+  private static final String DEPRECATED_FIELD = "deprecated";
 
   private static final Set<String> VALID_CODES = new HashSet<>();
   private static final Set<String> VALID_CODES_WITH_HASH = new HashSet<>();
@@ -189,6 +195,86 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
     assertField340Subfield1(fields);
 
     assertSpecificationUpdatedEvent();
+  }
+
+  @Test
+  @TestRailCase("C494342")
+  void syncSpecification_shouldRestoreFieldsToDefaultAndRemoveLocalFields() throws Exception {
+    var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
+    
+    // Initial sync to establish baseline
+    doPost(specificationSyncPath(specificationId), null)
+      .andExpect(status().isAccepted());
+    
+    // Get the initial state of fields before modifications
+    var initialResponse = doGet(specificationFieldsPath(specificationId))
+      .andExpect(status().isOk())
+      .andReturn().getResponse().getContentAsString();
+    var initialFields = getFields(initialResponse);
+    
+    // Create a local field
+    var localFieldTag = "950";
+    var localFieldDto = localTestField(localFieldTag);
+    createLocalField(localFieldDto);
+
+    // Modify a system field (245) - only url can be modified
+    var initial245Field = findFieldOrFail(initialFields, "245");
+    var systemFieldUpdate = prepareChangeDto(initial245Field, dto
+      -> dto.setUrl("https://modified-system-field.com"));
+    var systemFieldId = getFieldId(initialFields, "245");
+    doPut(fieldPath(systemFieldId), systemFieldUpdate);
+    
+    // Modify a standard field (100) - url and required can be modified
+    var initial100Field = findFieldOrFail(initialFields, "100");
+    var standardFieldId = getFieldId(initialFields, "100");
+    var standardFieldUpdate = prepareChangeDto(initial100Field, dto -> {
+      dto.setUrl("https://modified-standard-field.com");
+      dto.setRequired(true);
+    });
+    doPut(fieldPath(standardFieldId), standardFieldUpdate);
+    
+    // Trigger sync to restore to defaults
+    doPost(specificationSyncPath(specificationId), null)
+      .andExpect(status().isAccepted());
+    
+    // Verify local fields are removed and modifications are restored
+    var responseAfterSync = doGet(specificationFieldsPath(specificationId))
+      .andExpect(status().isOk())
+      .andExpect(totalRecordsMatcher(293))
+      .andReturn().getResponse().getContentAsString();
+    var fieldsAfterSync = getFields(responseAfterSync);
+    
+    // Verify the local field is removed
+    assertThat(fieldsAfterSync)
+      .as("Local field %s should not exist after sync", localFieldTag)
+      .extracting(f -> (String) f.get(TAG_FIELD))
+      .doesNotContain(localFieldTag);
+
+    // Verify the system field is restored
+    var restoredSystemField = findFieldOrFail(fieldsAfterSync, "245");
+    assertThat(restoredSystemField)
+      .as("System field 245 URL should be restored to default")
+      .containsEntry(URL_FIELD, initial245Field.get(URL_FIELD));
+    
+    // Verify the standard field is restored
+    var restoredStandardField = findFieldOrFail(fieldsAfterSync, "100");
+    assertThat(restoredStandardField)
+      .as("Standard field 100 should be restored to default")
+      .containsEntry(URL_FIELD, initial100Field.get(URL_FIELD))
+      .containsEntry(REQUIRED_FIELD, initial100Field.get(REQUIRED_FIELD));
+  }
+
+  private SpecificationFieldChangeDto prepareChangeDto(Map<String, Object> initialField,
+                                                       Consumer<SpecificationFieldChangeDto> modificator) {
+    var fieldChangeDto = new SpecificationFieldChangeDto()
+      .tag((String) initialField.get(TAG_FIELD))
+      .label((String) initialField.get(LABEL_FIELD))
+      .repeatable((Boolean) initialField.get(REPEATABLE_FIELD))
+      .required((Boolean) initialField.get(REQUIRED_FIELD))
+      .deprecated((Boolean) initialField.get(SpecificationStorageSyncApiIT.DEPRECATED_FIELD))
+      .url((String) initialField.get(URL_FIELD));
+    modificator.accept(fieldChangeDto);
+    return fieldChangeDto;
   }
 
   private UUID[] toIdArray(List<? extends UuidPersistable> all) {
@@ -475,8 +561,8 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
                            boolean deprecated) {
     var field = findFieldOrFail(fields, tag);
 
-    assertThat(field).as("Field %s repeatable", tag).containsEntry("repeatable", repeatable);
-    assertThat(field).as("Field %s required", tag).containsEntry("required", required);
+    assertThat(field).as("Field %s repeatable", tag).containsEntry(REPEATABLE_FIELD, repeatable);
+    assertThat(field).as("Field %s required", tag).containsEntry(REQUIRED_FIELD, required);
     assertThat(field).as("Field %s deprecated", tag).containsEntry(DEPRECATED_FIELD, deprecated);
   }
 
@@ -489,9 +575,9 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   private void assertSubfield(Map<String, Object> subfield, String code, String label, boolean repeatable,
                               boolean required, boolean deprecated) {
-    assertThat(subfield).as("Subfield %s label", code).containsEntry("label", label);
-    assertThat(subfield).as("Subfield %s repeatable", code).containsEntry("repeatable", repeatable);
-    assertThat(subfield).as("Subfield %s required", code).containsEntry("required", required);
+    assertThat(subfield).as("Subfield %s label", code).containsEntry(LABEL_FIELD, label);
+    assertThat(subfield).as("Subfield %s repeatable", code).containsEntry(REPEATABLE_FIELD, repeatable);
+    assertThat(subfield).as("Subfield %s required", code).containsEntry(REQUIRED_FIELD, required);
     assertSubfieldDeprecated(subfield, code, deprecated);
   }
 
