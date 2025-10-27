@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="MRSPECS-102@@default-data:disable-undefined-rules" labels="default-data" author="pavlo_smahin">
+    <preConditions>
+      <tableExists tableName="specification_rule"/>
+    </preConditions>
+
+    <comment>Disable undefined-* code rules</comment>
+
+    <update tableName="specification_rule">
+      <column name="enabled" valueBoolean="false"/>
+      <where>rule_id IN (
+        '7c843a14-4c87-4c7d-9ad6-5c7654bff9b5',
+        'eaaa6357-7a95-460e-960d-73f5f6863ffe',
+        '108ca421-24ba-4dc2-8d0f-661c00667e9a'
+        )
+      </where>
+    </update>
+  </changeSet>
+
+</databaseChangeLog>
