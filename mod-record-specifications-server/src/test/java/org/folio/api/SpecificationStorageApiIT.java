@@ -1,5 +1,6 @@
 package org.folio.api;
 
+import static java.lang.Boolean.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.folio.rspec.domain.entity.Field.FIELD_TABLE_NAME;
 import static org.folio.support.ApiEndpoints.fieldIndicatorsPath;
@@ -20,10 +21,12 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
+import java.util.Arrays;
 import java.util.UUID;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
@@ -33,16 +36,25 @@ import org.folio.rspec.domain.dto.ToggleSpecificationRuleDto;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.spring.testing.extension.DatabaseCleanup;
 import org.folio.spring.testing.type.IntegrationTest;
+import org.folio.support.ApiEndpoints;
 import org.folio.support.QueryParams;
 import org.folio.support.SpecificationITBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @IntegrationTest
 @DatabaseCleanup(tables = FIELD_TABLE_NAME, tenants = TENANT_ID)
 class SpecificationStorageApiIT extends SpecificationITBase {
+
+  private static final UUID[] DISABLED_RULES = new UUID[] {
+    UUID.fromString("eaaa6357-7a95-460e-960d-73f5f6863ffe"),
+    UUID.fromString("7c843a14-4c87-4c7d-9ad6-5c7654bff9b5"),
+    UUID.fromString("0a769f6a-fe60-4ef1-bfa6-bcdd88908d04"),
+    UUID.fromString("108ca421-24ba-4dc2-8d0f-661c00667e9a")
+  };
 
   @BeforeAll
   static void beforeAll() {
@@ -227,7 +239,7 @@ class SpecificationStorageApiIT extends SpecificationITBase {
 
   @Test
   void getSpecificationRules_shouldReturn200AndCollectionOfRules() throws Exception {
-    doGet(specificationRulesPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
+    var specificationRules = getSpecificationRules(doGet(specificationRulesPath(BIBLIOGRAPHIC_SPECIFICATION_ID))
       .andExpect(jsonPath("totalRecords", is(15)))
       .andExpect(jsonPath("rules.size()", is(15)))
       .andExpect(jsonPath("rules[0].id", notNullValue()))
@@ -239,7 +251,12 @@ class SpecificationStorageApiIT extends SpecificationITBase {
       .andExpect(jsonPath("rules[0].metadata.createdDate", notNullValue()))
       .andExpect(jsonPath("rules[0].metadata.updatedDate", notNullValue()))
       .andExpect(jsonPath("rules[0].metadata.createdByUserId", notNullValue()))
-      .andExpect(jsonPath("rules[0].metadata.updatedByUserId", notNullValue()));
+      .andExpect(jsonPath("rules[0].metadata.updatedByUserId", notNullValue())));
+
+    // Assert expected rules disabled
+    assertSpecificationRulesEnabled(false, true, specificationRules, DISABLED_RULES);
+    // Assert all other rules enabled
+    assertSpecificationRulesEnabled(true, false, specificationRules, DISABLED_RULES);
   }
 
   @Test
@@ -253,21 +270,21 @@ class SpecificationStorageApiIT extends SpecificationITBase {
 
   @Test
   void toggleSpecificationRule_shouldReturn204AndToggleSpecificationRule() {
-    var specificationRules = getSpecificationRules(BIBLIOGRAPHIC_SPECIFICATION_ID);
+    var specificationRules = getSpecificationRules(
+      doGet(ApiEndpoints.specificationRulesPath(BIBLIOGRAPHIC_SPECIFICATION_ID)));
     var specificationRuleToToggle = specificationRules.getRules().getFirst();
     var stateBeforeToggle = specificationRuleToToggle.getEnabled();
 
-    var specificationRuleId = specificationRuleToToggle.getId();
+    var ruleId = specificationRuleToToggle.getId();
 
     var stateAfterToggle = Boolean.FALSE.equals(stateBeforeToggle);
     var toggleDto = new ToggleSpecificationRuleDto(stateAfterToggle);
-    doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
-    assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID, stateAfterToggle);
+    doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, ruleId), toggleDto);
+    assertSpecificationRuleEnabled(BIBLIOGRAPHIC_SPECIFICATION_ID, stateAfterToggle, ruleId);
 
     toggleDto = toggleDto.enabled(stateBeforeToggle);
-    doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, specificationRuleId), toggleDto);
-    assertSpecificationRuleEnabled(specificationRuleId, BIBLIOGRAPHIC_SPECIFICATION_ID,
-      Boolean.TRUE.equals(stateBeforeToggle));
+    doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, ruleId), toggleDto);
+    assertSpecificationRuleEnabled(BIBLIOGRAPHIC_SPECIFICATION_ID, TRUE.equals(stateBeforeToggle), ruleId);
 
     assertSpecificationUpdatedEvents(2);
   }
@@ -372,17 +389,24 @@ class SpecificationStorageApiIT extends SpecificationITBase {
       .andExpect(errorParameterMatch("tag"));
   }
 
-  private SpecificationRuleDtoCollection getSpecificationRules(UUID specificationId) {
+  private SpecificationRuleDtoCollection getSpecificationRules(ResultActions resultActions) {
     return contentAsObj(
-      doGet(specificationRulesPath(specificationId)).andReturn(),
+      resultActions.andReturn(),
       SpecificationRuleDtoCollection.class
     );
   }
 
-  private void assertSpecificationRuleEnabled(UUID ruleId, UUID specificationId, boolean expected) {
-    var specificationRulesAfterUpdate = getSpecificationRules(specificationId);
-    for (SpecificationRuleDto rule : specificationRulesAfterUpdate.getRules()) {
-      if (rule.getId().equals(ruleId)) {
+  private void assertSpecificationRuleEnabled(UUID specificationId, boolean expected, UUID ruleId) {
+    var specificationRulesAfterUpdate = getSpecificationRules(doGet(specificationRulesPath(specificationId)));
+    assertSpecificationRulesEnabled(expected, true, specificationRulesAfterUpdate, ruleId);
+  }
+
+  private void assertSpecificationRulesEnabled(boolean expected, boolean including,
+                                               SpecificationRuleDtoCollection collection,
+                                               UUID... ruleIds) {
+    for (SpecificationRuleDto rule : collection.getRules()) {
+      assertNotNull(rule.getId());
+      if (including ? Arrays.asList(ruleIds).contains(rule.getId()) : !Arrays.asList(ruleIds).contains(rule.getId())) {
         assertThat(rule.getEnabled()).isEqualTo(expected);
       }
     }
