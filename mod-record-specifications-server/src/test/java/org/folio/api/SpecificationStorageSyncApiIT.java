@@ -79,6 +79,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:methodLength")
   void syncSpecification_produceSameEntitiesEachTime() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
 
@@ -123,6 +124,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   @Test
   @TestRailCase("C494338")
+  @SuppressWarnings("checkstyle:methodLength")
   void syncSpecification_shouldContainCorrectFieldsAndProperties() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
 
@@ -199,6 +201,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
 
   @Test
   @TestRailCase("C494342")
+  @SuppressWarnings("checkstyle:methodLength")
   void syncSpecification_shouldRestoreFieldsToDefaultAndRemoveLocalFields() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
     

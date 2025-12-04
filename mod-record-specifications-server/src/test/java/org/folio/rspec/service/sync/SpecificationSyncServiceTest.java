@@ -76,6 +76,7 @@ class SpecificationSyncServiceTest {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:methodLength")
   void sync_shouldPreferNonObsoleteEntitiesOverObsoleteOnes() {
     final var specId = randomUUID();
     final var metadata = prepareMetadata();

@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.jayway.jsonpath.JsonPath;
 import java.util.Arrays;
 import java.util.UUID;
+import lombok.SneakyThrows;
 import org.folio.rspec.domain.dto.ErrorCode;
 import org.folio.rspec.domain.dto.Scope;
 import org.folio.rspec.domain.dto.SpecificationRuleDto;
@@ -82,27 +83,10 @@ class SpecificationStorageApiIT extends SpecificationITBase {
       .addQueryParam("profile", "bibliographic")
       .addQueryParam("include", "all");
 
-    var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto()).andReturn();
-    var createdFieldId = JsonPath.read(result.getResponse().getContentAsString(), "$.id").toString();
-    doPost(fieldSubfieldsPath(createdFieldId), """
-      {
-      "code": "a",
-      "label": "Subfield a"
-      }
-      """);
-    var indicatorResult = doPost(fieldIndicatorsPath(createdFieldId), """
-      {
-      "order": "1",
-      "label": "Indicator 1"
-      }
-      """).andReturn();
-    var createdIndicatorId = JsonPath.read(indicatorResult.getResponse().getContentAsString(), "$.id").toString();
-    doPost(indicatorCodesPath(createdIndicatorId), """
-      {
-      "code": "a",
-      "label": "Subfield a"
-      }
-      """);
+    var createdFieldId = prepareField();
+    prepareSubfield(createdFieldId);
+    var createdIndicatorId = prepareIndicator(createdFieldId);
+    prepareIndicatorCode(createdIndicatorId);
 
     doGet(specificationsPath(queryParams))
       .andExpect(jsonPath("totalRecords", is(1)))
@@ -183,27 +167,10 @@ class SpecificationStorageApiIT extends SpecificationITBase {
     var queryParams = new QueryParams()
       .addQueryParam("include", "all");
 
-    var result = doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto()).andReturn();
-    var createdFieldId = JsonPath.read(result.getResponse().getContentAsString(), "$.id").toString();
-    doPost(fieldSubfieldsPath(createdFieldId), """
-      {
-      "code": "a",
-      "label": "Subfield a"
-      }
-      """);
-    var indicatorResult = doPost(fieldIndicatorsPath(createdFieldId), """
-      {
-      "order": "1",
-      "label": "Indicator 1"
-      }
-      """).andReturn();
-    var createdIndicatorId = JsonPath.read(indicatorResult.getResponse().getContentAsString(), "$.id").toString();
-    doPost(indicatorCodesPath(createdIndicatorId), """
-      {
-      "code": "a",
-      "label": "Subfield a"
-      }
-      """);
+    var createdFieldId = prepareField();
+    prepareSubfield(createdFieldId);
+    var createdIndicatorId = prepareIndicator(createdFieldId);
+    prepareIndicatorCode(createdIndicatorId);
 
     doGet(specificationPath(BIBLIOGRAPHIC_SPECIFICATION_ID, queryParams))
       .andExpect(jsonPath("id", notNullValue()))
@@ -387,6 +354,46 @@ class SpecificationStorageApiIT extends SpecificationITBase {
         is("A 'tag' field must contain three characters and can only accept numbers 0-9.")))
       .andExpect(errorTypeMatch(is(ErrorCode.INVALID_REQUEST_PARAMETER.getType())))
       .andExpect(errorParameterMatch("tag"));
+  }
+
+  @SneakyThrows
+  private String prepareIndicatorCode(String createdIndicatorId) {
+    var indicatorCodeResult = doPost(indicatorCodesPath(createdIndicatorId), """
+      {
+      "code": "a",
+      "label": "Code a"
+      }
+      """).andReturn();
+    return JsonPath.read(indicatorCodeResult.getResponse().getContentAsString(), "$.id").toString();
+  }
+
+  @SneakyThrows
+  private String prepareIndicator(String createdFieldId) {
+    var indicatorResult = doPost(fieldIndicatorsPath(createdFieldId), """
+      {
+      "order": "1",
+      "label": "Indicator 1"
+      }
+      """).andReturn();
+    return JsonPath.read(indicatorResult.getResponse().getContentAsString(), "$.id").toString();
+  }
+
+  @SneakyThrows
+  private String prepareSubfield(String createdFieldId) {
+    var subfieldResult = doPost(fieldSubfieldsPath(createdFieldId), """
+      {
+      "code": "a",
+      "label": "Subfield a"
+      }
+      """).andReturn();
+    return JsonPath.read(subfieldResult.getResponse().getContentAsString(), "$.id").toString();
+  }
+
+  @SneakyThrows
+  private String prepareField() {
+    var fieldResult =
+      doPost(specificationFieldsPath(BIBLIOGRAPHIC_SPECIFICATION_ID), local().buildChangeDto()).andReturn();
+    return JsonPath.read(fieldResult.getResponse().getContentAsString(), "$.id").toString();
   }
 
   private SpecificationRuleDtoCollection getSpecificationRules(ResultActions resultActions) {

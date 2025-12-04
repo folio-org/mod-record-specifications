@@ -26,7 +26,8 @@ class MarcSpecificationSubfieldsBuilderTest {
     assertEquals(expected, actual);
   }
 
-  public static Stream<Arguments> provideParametersForBuildTest() {
+  @SuppressWarnings("checkstyle:methodLength")
+  private static Stream<Arguments> provideParametersForBuildTest() {
     var lines1 = List.of("$1 - Name1 (NR)");
     var expected1 = MAPPER.createArrayNode().add(newNode("1", "Name1", false, false));
 

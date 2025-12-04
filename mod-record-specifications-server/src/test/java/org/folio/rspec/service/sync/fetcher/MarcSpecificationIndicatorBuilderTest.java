@@ -26,6 +26,7 @@ class MarcSpecificationIndicatorBuilderTest {
     assertEquals(expected, result);
   }
 
+  @SuppressWarnings("checkstyle:methodLength")
   private static Stream<Arguments> provideParametersForBuildTest() {
     var lines1 = List.of(
       "First - Simple Indicator1",
