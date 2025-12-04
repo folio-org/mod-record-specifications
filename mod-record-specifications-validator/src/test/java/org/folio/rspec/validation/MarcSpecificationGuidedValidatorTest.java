@@ -179,51 +179,61 @@ class MarcSpecificationGuidedValidatorTest {
   private static Stream<Arguments> provide1xxArguments() {
     return Stream.of(
       // Multiple 1xx fields with same undefined tag
-      Arguments.of("marc-same1xx-record", new String[] {},
-        new Tuple[] {
-          tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      ),
+      Arguments.of("marc-same1xx-record", new String[] { }, sameUndefinedTagValidationErrors()),
       // Multiple 1xx fields with same defined tag
-      Arguments.of("marc-same1xx-record", new String[] {"100"},
-        new Tuple[] {
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      ),
+      Arguments.of("marc-same1xx-record", new String[] {"100"}, sameDefinedTagValidationErrors()),
       // Multiple 1xx fields with different tags (one undefined tag)
-      Arguments.of("marc-different1xx-record", new String[] {"100"},
-        new Tuple[] {
-          tuple("130[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      ),
+      Arguments.of("marc-different1xx-record", new String[] {"100"}, differentTagsValidationErrors()),
       // Multiple 1xx fields with different defined tags
-      Arguments.of("marc-different1xx-record", new String[] {"100", "130"},
-        new Tuple[] {
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
-          tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
-          tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      ),
+      Arguments.of("marc-different1xx-record", new String[] {"100", "130"}, differentDefinedTagsValidationErrors()),
       // No 1xx fields
-      Arguments.of("marc-no1xx-record", new String[] {},
-        new Tuple[] {
-          tuple("1XX[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
-        }
-      )
+      Arguments.of("marc-no1xx-record", new String[] { }, missing1xxValidationError())
     );
+  }
+
+  private static Tuple[] missing1xxValidationError() {
+    return new Tuple[] {
+      tuple("1XX[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+    };
+  }
+
+  private static Tuple[] differentDefinedTagsValidationErrors() {
+    return new Tuple[] {
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+      tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+    };
+  }
+
+  private static Tuple[] differentTagsValidationErrors() {
+    return new Tuple[] {
+      tuple("130[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("130[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+      tuple("130[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+    };
+  }
+
+  private static Tuple[] sameDefinedTagValidationErrors() {
+    return new Tuple[] {
+      tuple("100[1]", MarcRuleCode.NON_REPEATABLE_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+      tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+    };
+  }
+
+  private static Tuple[] sameUndefinedTagValidationErrors() {
+    return new Tuple[] {
+      tuple("100[0]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+      tuple("100[1]", MarcRuleCode.UNDEFINED_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[1]", MarcRuleCode.NON_REPEATABLE_1XX_FIELD.getCode()),
+      tuple("100[0]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode()),
+      tuple("100[1]", MarcRuleCode.NON_REPEATABLE_REQUIRED_1XX_FIELD.getCode())
+    };
   }
 }

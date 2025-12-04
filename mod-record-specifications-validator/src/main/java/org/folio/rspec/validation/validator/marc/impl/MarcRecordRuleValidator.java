@@ -64,19 +64,32 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
       .toList();
     for (MarcField marcField : marcFields) {
       findField(specification, marcField.tag())
-        .ifPresent(fieldDefinition -> {
-          for (var validator : fieldValidators) {
-            if (ruleIsEnabled(validator.ruleCode(), specification)) {
-              validationErrors.addAll(validator.validate(marcField, fieldDefinition));
-            }
-          }
-          if (marcField instanceof MarcDataField field) {
-            validateIndicators(specification, fieldDefinition, field, validationErrors);
-            validateSubfields(specification, fieldDefinition, field, validationErrors);
-          }
-        });
+        .ifPresent(fieldDefinition -> validateField(marcField, fieldDefinition, specification, validationErrors));
     }
     return validationErrors;
+  }
+
+  @Override
+  public SpecificationRuleCode supportedRule() {
+    return null;
+  }
+
+  @Override
+  public DefinitionType definitionType() {
+    return null;
+  }
+
+  private void validateField(MarcField marcField, SpecificationFieldDto fieldDefinition, SpecificationDto specification,
+                             List<ValidationError> validationErrors) {
+    for (var validator : fieldValidators) {
+      if (ruleIsEnabled(validator.ruleCode(), specification)) {
+        validationErrors.addAll(validator.validate(marcField, fieldDefinition));
+      }
+    }
+    if (marcField instanceof MarcDataField field) {
+      validateIndicators(specification, fieldDefinition, field, validationErrors);
+      validateSubfields(specification, fieldDefinition, field, validationErrors);
+    }
   }
 
   private void validateIndicators(
@@ -109,15 +122,5 @@ public class MarcRecordRuleValidator implements SpecificationRuleValidator<MarcR
         validationErrors.addAll(validator.validate(field.subfields(), fieldDefinition));
       }
     }
-  }
-
-  @Override
-  public SpecificationRuleCode supportedRule() {
-    return null;
-  }
-
-  @Override
-  public DefinitionType definitionType() {
-    return null;
   }
 }

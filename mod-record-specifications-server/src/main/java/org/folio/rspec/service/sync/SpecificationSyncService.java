@@ -91,30 +91,34 @@ public class SpecificationSyncService {
   private Field populateField(JsonNode fieldElement, Map<String, FieldMetadata> fieldsMetadata,
                               SpecificationMetadata specificationMetadata, Specification specification) {
     var tag = getText(fieldElement, TAG_PROP);
-    var fieldMetadata =
-      fieldsMetadata.computeIfAbsent(tag, definedTag -> new FieldMetadata(definedTag, Scope.STANDARD.name()));
-    var baseFieldUrlFormat = specificationMetadata.getUrlFormat();
+    var fieldMetadata = fieldsMetadata.computeIfAbsent(tag,
+      definedTag -> new FieldMetadata(definedTag, Scope.STANDARD.name()));
 
     if (fieldElement == null) {
       return toField(fieldMetadata);  // original method
     } else {
-      var field = new Field();
-      field.setId(UUID.fromString(fieldMetadata.id()));
-      field.setTag(fieldMetadata.tag());
-      field.setScope(Scope.valueOf(fieldMetadata.scope()));
-      field.setLabel(getText(fieldElement, LABEL_PROP));
-      var isDeprecated = getBoolean(fieldElement, DEPRECATED_PROP);
-      field.setDeprecated(isDeprecated);
-      if (!isDeprecated) {
-        field.setUrl(baseFieldUrlFormat.formatted(field.getTag()));
-      }
-      field.setRepeatable(getBoolean(fieldElement, REPEATABLE_PROP));
-      field.setRequired(isRequired(fieldElement, fieldMetadata));
-      field.setSubfields(prepareSubfields(fieldElement.get(SUBFIELDS_PROP), fieldMetadata));
-      field.setIndicators(prepareIndicators(fieldElement.get(INDICATORS_PROP), fieldMetadata));
-      field.setSpecification(specification);
-      return field;
+      return toField(fieldElement, fieldMetadata, specification, specificationMetadata.getUrlFormat());
     }
+  }
+
+  private Field toField(JsonNode fieldElement, FieldMetadata fieldMetadata, Specification specification,
+                        String baseFieldUrlFormat) {
+    var field = new Field();
+    field.setId(UUID.fromString(fieldMetadata.id()));
+    field.setTag(fieldMetadata.tag());
+    field.setScope(Scope.valueOf(fieldMetadata.scope()));
+    field.setLabel(getText(fieldElement, LABEL_PROP));
+    var isDeprecated = getBoolean(fieldElement, DEPRECATED_PROP);
+    field.setDeprecated(isDeprecated);
+    if (!isDeprecated) {
+      field.setUrl(baseFieldUrlFormat.formatted(field.getTag()));
+    }
+    field.setRepeatable(getBoolean(fieldElement, REPEATABLE_PROP));
+    field.setRequired(isRequired(fieldElement, fieldMetadata));
+    field.setSubfields(prepareSubfields(fieldElement.get(SUBFIELDS_PROP), fieldMetadata));
+    field.setIndicators(prepareIndicators(fieldElement.get(INDICATORS_PROP), fieldMetadata));
+    field.setSpecification(specification);
+    return field;
   }
 
   private Field toField(FieldMetadata fieldMetadata) {
@@ -128,8 +132,22 @@ public class SpecificationSyncService {
     defaultField.setRepeatable(fieldMetadata.repeatable());
     defaultField.setRequired(fieldMetadata.required());
 
-    var subfields = new HashSet<Subfield>();
+    prepareDefaultSubfields(fieldMetadata, defaultField);
+    prepareDefaultIndicators(fieldMetadata, defaultField);
+    return defaultField;
+  }
+
+  private void prepareDefaultIndicators(FieldMetadata fieldMetadata, Field defaultField) {
+    if (fieldMetadata.indicators() != null) {
+      var indicators = new ArrayList<Indicator>();
+      populateDefaultIndicators(fieldMetadata, indicators);
+      defaultField.setIndicators(indicators);
+    }
+  }
+
+  private void prepareDefaultSubfields(FieldMetadata fieldMetadata, Field defaultField) {
     if (fieldMetadata.subfields() != null) {
+      var subfields = new HashSet<Subfield>();
       for (var subfieldMetadata : fieldMetadata.subfields().values()) {
         if (Boolean.TRUE.equals(subfieldMetadata.defaultValue())) {
           subfields.add(toSubfield(subfieldMetadata));
@@ -137,13 +155,6 @@ public class SpecificationSyncService {
       }
       defaultField.setSubfields(subfields);
     }
-
-    if (fieldMetadata.indicators() != null) {
-      var indicators = new ArrayList<Indicator>();
-      populateDefaultIndicators(fieldMetadata, indicators);
-      defaultField.setIndicators(indicators);
-    }
-    return defaultField;
   }
 
   private Set<Subfield> prepareSubfields(JsonNode jsonNode, FieldMetadata fieldMetadata) {
