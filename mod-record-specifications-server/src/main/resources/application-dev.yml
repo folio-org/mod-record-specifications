@@ -48,6 +48,10 @@ spring:
         enable.idempotence: true
         max.in.flight.requests.per.connection: 5
         retries: 5
+  docker:
+    compose:
+      enabled: true
+      file: ./docker/infra-docker-compose.yml
 
 folio:
   environment: ${ENV:folio}

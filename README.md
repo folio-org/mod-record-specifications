@@ -61,33 +61,58 @@ Change these variables as per your requirements.
 
 ### Running The Module
 
-#### Locally
+#### Using Docker Compose (Recommended)
 
-Run the module locally on the default listening port (8081) with the prescribed command:
+The recommended way to run the module locally is using Docker Compose. This provides a complete development environment with all dependencies.
 
 ```shell
+# Build the module JAR
+mvn clean package -DskipTests
+
+# Start all services (infrastructure + module)
+docker compose -f docker/app-docker-compose.yml up -d
+
+# View logs
+docker compose -f docker/app-docker-compose.yml logs -f mod-record-specifications
+```
+
+For detailed Docker Compose documentation, see [docker/README.md](docker/README.md).
+
+#### Local Development with IntelliJ IDEA
+
+For local development, you can run the application directly from IntelliJ IDEA with the `dev` profile. Spring Boot will automatically start the required infrastructure services (PostgreSQL, Kafka) using Docker Compose.
+
+1. Open the project in IntelliJ IDEA
+2. Run the main application class with the `dev` profile active
+3. Spring Boot will automatically start infrastructure containers from `docker/infra-docker-compose.yml`
+
+#### Manually Running the Module
+
+Run the module locally on the default listening port (8081) with infrastructure services:
+
+```shell
+# Start infrastructure services
+docker compose -f docker/infra-docker-compose.yml up -d
+
+# Run the module
 DB_HOST=localhost DB_PORT=5432 DB_DATABASE=okapi_modules DB_USERNAME=folio_admin DB_PASSWORD=folio_admin \
+KAFKA_HOST=localhost KAFKA_PORT=29092 \
 java -Dserver.port=8081 -jar mod-record-specifications-server/target/mod-record-specifications-fat.jar
 ```
 
-#### Using Docker
+#### Using Docker (Legacy)
 
-To run the module in a Docker container, first build the Docker image:
+To run the module in a Docker container:
 
 ```shell
+# Build the module JAR
+mvn clean package -DskipTests
+
+# Build the Docker image
 docker build -t dev.folio/mod-record-specifications .
-```
 
-Prepare infrastructure needed for the module: PostgreSQL database.
-Alternatively, you can use Docker Compose to manage the application's infrastructure.
-```shell
-docker compose up
-```
-
-Then run the container:
-
-```shell
-docker run -t -i -p 8081:8081 dev.folio/mod-record-specifications
+# Run with Docker Compose
+docker compose -f docker/app-docker-compose.yml up -d
 ```
 
 ### Module Descriptor
