@@ -1,3 +1,9 @@
+## v2.0.3 2026-01-13
+### Features
+* Default specification data updates to disable undefined rules ([MRSPECS-102](https://folio-org.atlassian.net/browse/MRSPECS-102))
+
+---
+
 ## v2.0.2 2025-08-28
 ### Bug fixes
 * Fix non-obsolete subfield choosing logic ([MRSPECS-95](https://folio-org.atlassian.net/browse/MRSPECS-95))
