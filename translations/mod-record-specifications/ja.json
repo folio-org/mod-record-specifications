@@ -18,7 +18,7 @@
     "Min.FieldIndicatorChangeDto.order": "インジケータ「 {parameter} 」フィールドには 1-2 の数字のみ入力できます。",
     "Max.FieldIndicatorChangeDto.order": "インジケータ「 {parameter} 」フィールドには 1-2 の数字のみ入力できます。",
     "scope.update.not-allowed": "'' {parameter} '' の変更は、 {scope}スコープでは許可されません。",
-    "scope.delete.not-allowed": "{scope}スコープでは削除は許可されません",
+    "scope.delete.not-allowed": "A {scope} scope {parameter} cannot be deleted.",
     "validation.missingField": "フィールド {tag} は必須です",
     "validation.nonRepeatableField": "フィールドは繰り返すことができません",
     "validation.undefinedField": "フィールドが未定義です",
