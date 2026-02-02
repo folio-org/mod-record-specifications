@@ -4,15 +4,15 @@ import static org.apache.commons.lang3.ArrayUtils.INDEX_NOT_FOUND;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.INDICATORS_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.SUBFIELDS_PROP;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.exception.SpecificationFetchingFailedException;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 @Log4j2
 @Component

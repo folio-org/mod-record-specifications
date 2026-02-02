@@ -19,7 +19,7 @@ public class JakartaConstraintViolationExceptionHandler implements ServiceExcept
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var exception = (ConstraintViolationException) e;
     var errorCollection = buildErrorCollection(exception);
-    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorCollection);
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(errorCollection);
   }
 
   @Override

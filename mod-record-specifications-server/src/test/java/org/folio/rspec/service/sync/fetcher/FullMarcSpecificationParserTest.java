@@ -2,8 +2,6 @@ package org.folio.rspec.service.sync.fetcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.SneakyThrows;
@@ -11,10 +9,12 @@ import org.folio.spring.testing.type.UnitTest;
 import org.jsoup.helper.DataUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
 
 @UnitTest
 @Import(JacksonAutoConfiguration.class)
@@ -73,25 +73,25 @@ class FullMarcSpecificationParserTest {
   }
 
   private void assertIndicatorCodeFields(JsonNode code) {
-    assertThat(code.fieldNames()).toIterable()
+    assertThat(code.propertyNames())
       .describedAs("Failed for indicator code: %s", code)
       .containsExactlyInAnyOrder("code", "label", "deprecated");
   }
 
   private void assertIndicatorFields(JsonNode indicator) {
-    assertThat(indicator.fieldNames()).toIterable()
+    assertThat(indicator.propertyNames())
       .describedAs("Failed for indicator: %s", indicator)
       .containsExactlyInAnyOrder("label", "order", "codes");
   }
 
   private void assertSubfieldFields(JsonNode subfield) {
-    assertThat(subfield.fieldNames()).toIterable()
+    assertThat(subfield.propertyNames())
       .describedAs("Failed for subfield: %s", subfield)
       .containsExactlyInAnyOrder("code", "label", "repeatable", "required", "deprecated");
   }
 
   private void assertFieldFields(JsonNode jsonNode) {
-    assertThat(jsonNode.fieldNames()).toIterable()
+    assertThat(jsonNode.propertyNames())
       .describedAs("Failed for: %s", jsonNode)
       .contains("tag", "label", "repeatable", "required", "deprecated");
   }

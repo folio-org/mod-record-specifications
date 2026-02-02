@@ -1,7 +1,7 @@
 package org.folio.rspec.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.experimental.UtilityClass;
+import tools.jackson.databind.JsonNode;
 
 @UtilityClass
 public class JsonUtils {
@@ -10,7 +10,7 @@ public class JsonUtils {
     if (jsonNode == null || fieldName == null) {
       return null;
     }
-    return jsonNode.get(fieldName).asText(null);
+    return jsonNode.get(fieldName).asString(null);
   }
 
   public static boolean getBoolean(JsonNode jsonNode, String fieldName) {

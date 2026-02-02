@@ -35,7 +35,7 @@ class ApiExceptionHandlerTest {
   void globalExceptionHandler_canHandle() {
     Exception exception = new IllegalArgumentException("Test exception");
     ErrorCollection errorCollection = new ErrorCollection();
-    ResponseEntity<ErrorCollection> expectedResponse = ResponseEntity.unprocessableEntity().body(errorCollection);
+    ResponseEntity<ErrorCollection> expectedResponse = ResponseEntity.unprocessableContent().body(errorCollection);
 
     when(serviceExceptionHandler.canHandle(exception)).thenReturn(true);
     when(serviceExceptionHandler.handleException(exception)).thenReturn(expectedResponse);

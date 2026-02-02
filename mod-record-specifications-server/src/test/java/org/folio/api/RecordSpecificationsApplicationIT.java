@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -25,13 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
+import tools.jackson.databind.ObjectMapper;
 
 @Testcontainers
 @IntegrationTest
@@ -41,8 +41,8 @@ class RecordSpecificationsApplicationIT {
   private static final Logger LOG = LoggerFactory.getLogger(RecordSpecificationsApplicationIT.class);
 
   @Container
-  private static final PostgreSQLContainer<?> POSTGRES =
-    new PostgreSQLContainer<>("postgres:16-alpine")
+  private static final PostgreSQLContainer POSTGRES =
+    new PostgreSQLContainer("postgres:16-alpine")
       .withNetwork(NETWORK)
       .withNetworkAliases("mypostgres")
       .withExposedPorts(5432)

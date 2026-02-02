@@ -1,6 +1,5 @@
 package org.folio.rspec.service.sync.fetcher;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
@@ -9,6 +8,7 @@ import org.folio.rspec.exception.SpecificationFetchingFailedException;
 import org.folio.rspec.utils.FileUtils;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.node.ArrayNode;
 
 @Log4j2
 @Component

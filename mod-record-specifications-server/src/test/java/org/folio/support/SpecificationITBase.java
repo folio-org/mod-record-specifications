@@ -25,7 +25,7 @@ import org.folio.spring.testing.extension.EnableKafka;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -33,7 +33,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
 @EnableKafka
 @Import(SpecificationITBase.IntegrationTestConfiguration.class)
@@ -94,9 +94,9 @@ public class SpecificationITBase extends IntegrationTestBase {
     }
 
     protected static ProducerFactory<String, Object> producerFactory(KafkaProperties kafkaProperties) {
-      Map<String, Object> configProps = new HashMap<>(kafkaProperties.buildProducerProperties(null));
+      Map<String, Object> configProps = new HashMap<>(kafkaProperties.buildProducerProperties());
       configProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-      configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+      configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
       return new DefaultKafkaProducerFactory<>(configProps);
     }
   }

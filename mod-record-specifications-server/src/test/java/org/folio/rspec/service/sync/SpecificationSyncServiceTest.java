@@ -8,9 +8,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +29,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 @UnitTest
 @ExtendWith(MockitoExtension.class)
@@ -101,7 +101,7 @@ class SpecificationSyncServiceTest {
     var fields856 = syncedFields.stream()
       .filter(field -> "856".equals(field.getTag()))
       .toList();
-    
+
     assertThat(fields856).hasSize(1);
     var field856 = fields856.getFirst();
     assertThat(field856.isDeprecated()).isFalse();
@@ -111,7 +111,7 @@ class SpecificationSyncServiceTest {
     var subfieldsH = field856.getSubfields().stream()
       .filter(subfield -> "h".equals(subfield.getCode()))
       .toList();
-    
+
     assertThat(subfieldsH).hasSize(1);
     var subfieldH = subfieldsH.getFirst();
     assertThat(subfieldH.isDeprecated()).isFalse();
@@ -126,7 +126,7 @@ class SpecificationSyncServiceTest {
     var indicatorCodes0 = firstIndicator.getCodes().stream()
       .filter(code -> "0".equals(code.getCode()))
       .toList();
-    
+
     assertThat(indicatorCodes0).hasSize(1);
     var indicatorCode0 = indicatorCodes0.getFirst();
     assertThat(indicatorCode0.isDeprecated()).isFalse();
