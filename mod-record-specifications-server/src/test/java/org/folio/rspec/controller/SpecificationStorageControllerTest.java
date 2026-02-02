@@ -49,7 +49,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.support.GenericConversionService;
@@ -140,7 +140,7 @@ class SpecificationStorageControllerTest {
       .contentType(APPLICATION_JSON);
 
     mockMvc.perform(requestBuilder)
-      .andExpect(status().isUnprocessableEntity())
+      .andExpect(status().isUnprocessableContent())
       .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Unexpected value [randomValue]. Possible values: [%s]."
         .formatted(possibleValues)))));
   }

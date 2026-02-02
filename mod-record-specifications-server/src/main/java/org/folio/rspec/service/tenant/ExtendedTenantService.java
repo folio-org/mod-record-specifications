@@ -51,7 +51,7 @@ public class ExtendedTenantService extends TenantService {
 
   @Override
   public synchronized void createOrUpdateTenant(TenantAttributes tenantAttributes) {
-    var tenantCreation = Boolean.FALSE.equals(tenantExists());
+    var tenantCreation = !tenantExists();
     super.createOrUpdateTenant(tenantAttributes);
 
     if (tenantCreation && shouldSyncSpecifications(tenantAttributes.getParameters())) {

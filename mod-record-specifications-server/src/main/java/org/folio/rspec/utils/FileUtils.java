@@ -7,7 +7,7 @@ import java.io.InputStream;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @Log4j2
 @UtilityClass
@@ -15,7 +15,7 @@ public class FileUtils {
 
   private static final ClassLoader CLASSLOADER = FileUtils.class.getClassLoader();
 
-  public static @NotNull InputStream getInputStream(String filename) {
+  public static @NonNull InputStream getInputStream(String filename) {
     if (filename == null) {
       throw new IllegalArgumentException("Filename must not be null");
     }

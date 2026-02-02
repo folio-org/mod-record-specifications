@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -45,8 +44,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +53,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import tools.jackson.databind.ObjectMapper;
 
 @EnablePostgres
 @SpringBootTest(classes = RecordSpecificationsApplication.class)
@@ -67,12 +67,6 @@ public class IntegrationTestBase {
 
   @Autowired
   protected FolioModuleMetadata moduleMetadata;
-
-  @BeforeAll
-  static void setUpBeans(@Autowired MockMvc mockMvc) {
-    IntegrationTestBase.mockMvc = mockMvc;
-    setProperty("env", "folio");
-  }
 
   protected static void setUpTenant() {
     setUpTenant(false);
@@ -320,6 +314,12 @@ public class IntegrationTestBase {
     })) {
       return callable.call();
     }
+  }
+
+  @BeforeAll
+  static void setUpBeans(@Autowired MockMvc mockMvc) {
+    IntegrationTestBase.mockMvc = mockMvc;
+    setProperty("env", "folio");
   }
 
   @AfterAll

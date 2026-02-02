@@ -8,12 +8,13 @@ import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.DE
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.LABEL_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.ORDER_PROP;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 @Component
 @RequiredArgsConstructor
@@ -83,7 +84,7 @@ public class MarcSpecificationIndicatorBuilder {
   }
 
   private String getNumRangeCodeLabel(String line) {
-    return removeStart(removeStart(line, NUMBER_RANGE_SIGN).trim(), DASH).trim();
+    return removeStart(Strings.CS.removeStart(line, NUMBER_RANGE_SIGN).trim(), DASH).trim();
   }
 
   private boolean isNextIndicatorLine(String line) {

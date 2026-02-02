@@ -334,11 +334,9 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
     assertThat(deprecatedFields).hasSize(39);
 
     // Verify deprecated fields don't have url
-    deprecatedFields.forEach(field -> {
-      assertThat(field.containsKey(URL_FIELD) && field.get(URL_FIELD) != null)
-        .as("Deprecated field %s should not have url", field.get(TAG_FIELD))
-        .isFalse();
-    });
+    deprecatedFields.forEach(field -> assertThat(field.containsKey(URL_FIELD) && field.get(URL_FIELD) != null)
+      .as("Deprecated field %s should not have url", field.get(TAG_FIELD))
+      .isFalse());
   }
 
   private void assertControlFieldIndicatorsAndSubfields(List<Map<String, Object>> fields) throws Exception {

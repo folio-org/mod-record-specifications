@@ -6,12 +6,12 @@ import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.RE
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.REQUIRED_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.TAG_PROP;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 @Component
 @RequiredArgsConstructor

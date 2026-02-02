@@ -10,8 +10,8 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Persistable;
-import org.springframework.lang.Nullable;
 
 @Getter
 @Setter

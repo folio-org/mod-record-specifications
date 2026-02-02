@@ -34,7 +34,7 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
 
     if (requiredType != null && requiredType.isEnum()) {
       errorCollection.addErrorsItem(buildEnumError(exception, requiredType));
-      return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorCollection);
+      return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(errorCollection);
     } else {
       errorCollection.addErrorsItem(buildUnexpectedError(exception));
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorCollection);

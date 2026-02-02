@@ -27,10 +27,6 @@ spring:
         order_updates: true
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
-  cloud:
-    openfeign:
-      okhttp:
-        enabled: true
   jackson:
     default-property-inclusion: NON_NULL
   kafka:
@@ -66,8 +62,6 @@ folio:
   logging:
     request:
       enabled: true
-    feign:
-      enabled: true
 
 server.port: 8081
 
@@ -82,5 +76,5 @@ management:
       access: unrestricted
 logging:
   level:
-    org.folio.spring.filter.LoggingRequestFilter: DEBUG
+    org.folio.spring.filter.IncomingRequestLoggingFilter: DEBUG
     org.folio.spring.i18n.model.TranslationMap: FATAL

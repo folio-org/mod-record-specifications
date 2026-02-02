@@ -6,13 +6,13 @@ import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.LA
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.REPEATABLE_PROP;
 import static org.folio.rspec.service.sync.fetcher.MarcSpecificationConstants.REQUIRED_PROP;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
 
 @Component
 @RequiredArgsConstructor
@@ -20,11 +20,11 @@ public class MarcSpecificationSubfieldsBuilder {
 
   private static final Pattern SUBFIELD_PATTERN = Pattern.compile(
     ("^\\$(?<%s>.) - (?<%s>.+?)"                  // Code and label
-      + "(?:\\s*\\((?<%s>R|NR)\\))?"              // Optional (R|NR)
-      + "(?:\\s*\\([^)]*\\))?"                    // Optional cataloging level (ignored) (e.g. (MU VM SE))
-      + "(?:\\s*\\[(?<%s>OBSOLETE)\\])?"          // Optional [OBSOLETE]
-      + "(?:\\s*\\[[^\\]]+\\])?"                  // Optional tags (ignored) (e.g. [LOCAL])
-      + "\\s*$")
+     + "(?:\\s*\\((?<%s>R|NR)\\))?"              // Optional (R|NR)
+     + "(?:\\s*\\([^)]*\\))?"                    // Optional cataloging level (ignored) (e.g. (MU VM SE))
+     + "(?:\\s*\\[(?<%s>OBSOLETE)\\])?"          // Optional [OBSOLETE]
+     + "(?:\\s*\\[[^\\]]+\\])?"                  // Optional tags (ignored) (e.g. [LOCAL])
+     + "\\s*$")
       .formatted(CODE_PROP, LABEL_PROP, REPEATABLE_PROP, DEPRECATED_PROP)
   );
   private static final String NON_REPEATABLE_SIGN = "NR";

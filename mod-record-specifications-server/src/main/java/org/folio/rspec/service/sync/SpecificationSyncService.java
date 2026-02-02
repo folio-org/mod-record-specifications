@@ -14,8 +14,6 @@ import static org.folio.rspec.utils.JsonUtils.getBoolean;
 import static org.folio.rspec.utils.JsonUtils.getInt;
 import static org.folio.rspec.utils.JsonUtils.getText;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +40,8 @@ import org.folio.rspec.service.SpecificationFieldService;
 import org.folio.rspec.service.SpecificationMetadataService;
 import org.folio.rspec.service.sync.fetcher.MarcSpecificationFetcher;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
 
 @Service
 @RequiredArgsConstructor
