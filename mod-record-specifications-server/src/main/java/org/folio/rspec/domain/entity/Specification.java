@@ -3,6 +3,7 @@ package org.folio.rspec.domain.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
@@ -21,6 +22,7 @@ import org.folio.rspec.domain.entity.support.Metadata;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -29,6 +31,7 @@ import org.hibernate.type.SqlTypes;
   @UniqueConstraint(name = "uc_specification_family_profile",
                     columnNames = {Specification.FAMILY_COLUMN, Specification.PROFILE_COLUMN})
 })
+@EntityListeners(AuditingEntityListener.class)
 public class Specification extends UuidPersistable {
 
   public static final String TITLE_COLUMN = "title";

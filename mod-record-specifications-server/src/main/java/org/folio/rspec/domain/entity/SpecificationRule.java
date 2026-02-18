@@ -1,20 +1,25 @@
 package org.folio.rspec.domain.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.folio.rspec.domain.entity.support.Metadata;
 import org.hibernate.Hibernate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "specification_rule")
+@EntityListeners(AuditingEntityListener.class)
 public class SpecificationRule {
 
   @EmbeddedId
@@ -30,6 +35,9 @@ public class SpecificationRule {
 
   @Column(name = "enabled", nullable = false)
   private boolean enabled = true;
+
+  @Embedded
+  private Metadata metadata;
 
   @Override
   public final int hashCode() {

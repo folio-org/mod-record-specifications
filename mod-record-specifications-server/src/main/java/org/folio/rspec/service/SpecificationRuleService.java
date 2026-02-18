@@ -32,9 +32,9 @@ public class SpecificationRuleService {
 
   public void toggleSpecificationRule(SpecificationRuleId specificationRuleId, boolean enabled) {
     log.info("toggleSpecificationRule::specificationRuleId={}, enabled={}", specificationRuleId, enabled);
-    int updated = specificationRuleRepository.updateEnabledBySpecificationRuleId(enabled, specificationRuleId);
-    if (updated == 0) {
-      throw ResourceNotFoundException.forSpecificationRule(specificationRuleId);
-    }
+    var specificationRule = specificationRuleRepository.findById(specificationRuleId)
+      .orElseThrow(() -> ResourceNotFoundException.forSpecificationRule(specificationRuleId));
+    specificationRule.setEnabled(enabled);
+    specificationRuleRepository.save(specificationRule);
   }
 }
