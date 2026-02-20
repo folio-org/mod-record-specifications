@@ -25,7 +25,7 @@ Provides administrators with a reset mechanism to restore specifications to thei
 - Operation is idempotent: syncing an already-default specification has no effect
 - Specifications are automatically synced during tenant initialization when `syncSpecifications=true` tenant attribute is set (default)
 
-## Error behavior
+## API response statuses
 - **202 Accepted**: Operation queued successfully (sync happens asynchronously)
 - **400 Bad Request**: Invalid specification ID format
 - **404 Not Found**: Specification ID does not exist

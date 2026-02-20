@@ -56,7 +56,7 @@ Different institutions use local MARC field tags for institution-specific catalo
 - **Cascading delete**: Deleting a field removes all associated subfields and indicators
 - **Sync impact**: Local fields are removed when specification is synced to defaults
 
-## Error behavior
+## API response statuses
 - **200 OK**: Field definitions retrieved successfully
 - **201 Created**: Local field successfully created
 - **202 Accepted**: Field successfully updated

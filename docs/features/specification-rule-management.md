@@ -68,7 +68,7 @@ The following validation rules are available for MARC specifications:
 | `invalidSubfieldValue` | Invalid Subfield Value | Subfield value is not valid based on subfield definition |
 | `invalidLccnSubfieldValue` | Invalid LCCN Subfield Value | Subfield value is not valid based on LCCN structure |
 
-## Error behavior
+## API response statuses
 - **200 OK**: Rules retrieved successfully (GET endpoint)
 - **202 Accepted**: Rule state updated successfully (PATCH endpoint)
 - **400 Bad Request**: Invalid request body or parameters

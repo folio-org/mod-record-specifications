@@ -66,7 +66,7 @@ The validator enforces the following rules when enabled in the specification (se
 - `undefinedSubfield`, `deprecatedSubfield`, `nonRepeatableSubfield`
 - `missingSubfield`, `invalidSubfieldValue`, `invalidLccnSubfieldValue`
 
-## Error behavior
+## API response statuses
 - **Invalid input**: Throws `IllegalArgumentException` if record type is unsupported or converter fails
 - **Validation success**: Returns empty list when record is valid
 - **Validation failures**: Returns list of `ValidationError` objects describing all violations

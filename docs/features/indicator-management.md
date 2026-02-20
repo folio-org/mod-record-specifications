@@ -74,7 +74,7 @@ MARC data fields use indicators (positions 1 and 2) with specific code values de
 - **Cascading delete**: If parent field is deleted, all indicators and their codes are removed
 - **Cascading operations**: If parent indicator is deleted (via field deletion), all indicator codes are removed
 
-## Error behavior
+## API response statuses
 - **200 OK**: Indicator or indicator code definitions retrieved successfully
 - **201 Created**: Local indicator or indicator code successfully created
 - **202 Accepted**: Indicator or indicator code successfully updated

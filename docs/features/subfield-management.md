@@ -55,7 +55,7 @@ Institutions may use local subfield codes within standard or local MARC fields f
 - **Sync impact**: Local subfields (appended to standard fields or created for local fields) are removed when specification is synced to defaults
 - **Cascading delete**: If parent field is deleted, all subfields (including local) are removed
 
-## Error behavior
+## API response statuses
 - **200 OK**: Subfield definitions retrieved successfully
 - **201 Created**: Local subfield successfully created
 - **202 Accepted**: Subfield successfully updated

@@ -34,7 +34,7 @@ In a distributed FOLIO environment, multiple services and instances may depend o
   - Specification synchronization (full reset)
   - Specification update processing (via Kafka consumer)
 
-## Error behavior
+## API response statuses
 - If event publishing fails, the database transaction is not rolled back (eventual consistency model)
 - Kafka producer retries are configured (max 5 retries)
 - Failed events may result in downstream systems having stale data until next change event

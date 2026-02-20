@@ -36,7 +36,7 @@ Enables clients (primarily quickMARC) to discover available MARC record specific
   - **Standard fields**: LOC-documented fields (tenants can modify some validation rules, append local indicator/subfield codes)
   - **Local fields**: 9XX, X9X, XX9 ranges (except 490 and 999) and custom tenant-defined fields (fully customizable)
 
-## Error behavior
+## API response statuses
 - **400 Bad Request**: Invalid query parameters (e.g., unsupported family or profile values)
 - **404 Not Found**: Specification ID does not exist (single retrieval endpoint only)
 - **500 Internal Server Error**: Database or system errors

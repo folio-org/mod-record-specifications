@@ -36,7 +36,7 @@ Enables integration with external specification management systems or centralize
 - **Idempotency**: Subfield updates are idempotent (reprocessing same event produces same result)
 - **Tenant context**: Processing executes within the tenant context extracted from message headers
 
-## Error behavior
+## API response statuses
 - Invalid event structure: Logged and skipped (message is consumed but not processed)
 - Unknown definition type: Throws `IllegalArgumentException`, message remains uncommitted
 - Specification or field not found: Update is skipped for that specification/field
