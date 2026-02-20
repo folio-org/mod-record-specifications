@@ -251,7 +251,10 @@ class SpecificationStorageApiIT extends SpecificationITBase {
 
     toggleDto = toggleDto.enabled(stateBeforeToggle);
     doPatch(specificationRulePath(BIBLIOGRAPHIC_SPECIFICATION_ID, ruleId), toggleDto);
-    assertSpecificationRuleEnabled(BIBLIOGRAPHIC_SPECIFICATION_ID, TRUE.equals(stateBeforeToggle), ruleId);
+    var actual = assertSpecificationRuleEnabled(BIBLIOGRAPHIC_SPECIFICATION_ID, TRUE.equals(stateBeforeToggle), ruleId);
+    assertThat(actual.getMetadata()).isNotNull();
+    assertThat(actual.getMetadata().getUpdatedByUserId()).isEqualTo(UUID.fromString(USER_ID));
+    assertThat(actual.getMetadata().getUpdatedDate()).isNotEqualTo(actual.getMetadata().getCreatedDate());
 
     assertSpecificationUpdatedEvents(2);
   }
@@ -403,19 +406,21 @@ class SpecificationStorageApiIT extends SpecificationITBase {
     );
   }
 
-  private void assertSpecificationRuleEnabled(UUID specificationId, boolean expected, UUID ruleId) {
+  private SpecificationRuleDto assertSpecificationRuleEnabled(UUID specificationId, boolean expected, UUID ruleId) {
     var specificationRulesAfterUpdate = getSpecificationRules(doGet(specificationRulesPath(specificationId)));
-    assertSpecificationRulesEnabled(expected, true, specificationRulesAfterUpdate, ruleId);
+    return assertSpecificationRulesEnabled(expected, true, specificationRulesAfterUpdate, ruleId);
   }
 
-  private void assertSpecificationRulesEnabled(boolean expected, boolean including,
+  private SpecificationRuleDto assertSpecificationRulesEnabled(boolean expected, boolean including,
                                                SpecificationRuleDtoCollection collection,
                                                UUID... ruleIds) {
     for (SpecificationRuleDto rule : collection.getRules()) {
       assertNotNull(rule.getId());
       if (including ? Arrays.asList(ruleIds).contains(rule.getId()) : !Arrays.asList(ruleIds).contains(rule.getId())) {
         assertThat(rule.getEnabled()).isEqualTo(expected);
+        return rule;
       }
     }
+    return null;
   }
 }

@@ -3,16 +3,19 @@ package org.folio.rspec.domain.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.folio.rspec.domain.entity.support.Metadata;
 import org.folio.rspec.domain.entity.support.UuidPersistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "rule")
+@EntityListeners(AuditingEntityListener.class)
 public class Rule extends UuidPersistable {
 
   public static final String NAME_COLUMN = "name";

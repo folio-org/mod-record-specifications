@@ -17,7 +17,7 @@ public interface SpecificationRuleMapper {
   @Mapping(target = "name", source = "rule.name")
   @Mapping(target = "specificationId", source = "specification.id")
   @Mapping(target = "description", source = "rule.description")
-  @Mapping(target = "metadata", source = "rule.metadata")
+  @Mapping(target = "metadata", source = "metadata")
   SpecificationRuleDto toDto(SpecificationRule specificationRule);
 
   @Mapping(target = "specificationId", ignore = true)
