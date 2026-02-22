@@ -25,7 +25,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring-boot.version>4.0.2</spring-boot.version>
+    <spring-boot.version>4.0.3</spring-boot.version>
     <folio-spring-support.version>10.0.0-RC1</folio-spring-support.version>
     <folio-service-tools.version>6.0.0-SNAPSHOT</folio-service-tools.version>
     <lombok.version>1.18.42</lombok.version>
@@ -39,17 +39,17 @@
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
-    <openapi-generator.version>7.19.0</openapi-generator.version>
+    <openapi-generator.version>7.20.0</openapi-generator.version>
     <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
-    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
     <checkstyle.version>13.2.0</checkstyle.version>
     <folio-java-checkstyle.version>1.2.0</folio-java-checkstyle.version>
     <folio-module-descriptor-validator.version>1.0.1</folio-module-descriptor-validator.version>
