@@ -105,7 +105,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .containsExactlyInAnyOrder(createdFieldIds);
 
     assertThat(recreatedSubfields)
-      .hasSize(2840)
+      .hasSize(2845)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 
@@ -204,17 +204,17 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
   @SuppressWarnings("checkstyle:methodLength")
   void syncSpecification_shouldRestoreFieldsToDefaultAndRemoveLocalFields() throws Exception {
     var specificationId = BIBLIOGRAPHIC_SPECIFICATION_ID;
-    
+
     // Initial sync to establish baseline
     doPost(specificationSyncPath(specificationId), null)
       .andExpect(status().isAccepted());
-    
+
     // Get the initial state of fields before modifications
     var initialResponse = doGet(specificationFieldsPath(specificationId))
       .andExpect(status().isOk())
       .andReturn().getResponse().getContentAsString();
     var initialFields = getFields(initialResponse);
-    
+
     // Create a local field
     var localFieldTag = "950";
     var localFieldDto = localTestField(localFieldTag);
@@ -226,7 +226,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       -> dto.setUrl("https://modified-system-field.com"));
     var systemFieldId = getFieldId(initialFields, "245");
     doPut(fieldPath(systemFieldId), systemFieldUpdate);
-    
+
     // Modify a standard field (100) - url and required can be modified
     var initial100Field = findFieldOrFail(initialFields, "100");
     var standardFieldId = getFieldId(initialFields, "100");
@@ -235,18 +235,18 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       dto.setRequired(true);
     });
     doPut(fieldPath(standardFieldId), standardFieldUpdate);
-    
+
     // Trigger sync to restore to defaults
     doPost(specificationSyncPath(specificationId), null)
       .andExpect(status().isAccepted());
-    
+
     // Verify local fields are removed and modifications are restored
     var responseAfterSync = doGet(specificationFieldsPath(specificationId))
       .andExpect(status().isOk())
       .andExpect(totalRecordsMatcher(293))
       .andReturn().getResponse().getContentAsString();
     var fieldsAfterSync = getFields(responseAfterSync);
-    
+
     // Verify the local field is removed
     assertThat(fieldsAfterSync)
       .as("Local field %s should not exist after sync", localFieldTag)
@@ -258,7 +258,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
     assertThat(restoredSystemField)
       .as("System field 245 URL should be restored to default")
       .containsEntry(URL_FIELD, initial245Field.get(URL_FIELD));
-    
+
     // Verify the standard field is restored
     var restoredStandardField = findFieldOrFail(fieldsAfterSync, "100");
     assertThat(restoredStandardField)
