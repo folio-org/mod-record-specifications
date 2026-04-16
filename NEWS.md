@@ -1,10 +1,33 @@
-## v3.0.0 YYYY-mm-DD
+## v3.1.0 YYYY-mm-DD
 ### Breaking changes
-* Migrate to Spring Boot 4.0.x ([MRSPECS-107](https://folio-org.atlassian.net/browse/MRSPECS-107))
+* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
 
 ### New APIs versions
 * Provides `API_NAME vX.Y`
 * Requires `API_NAME vX.Y`
+
+### Features
+* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+
+### Bug fixes
+* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+
+### Tech Dept
+* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+
+### Dependencies
+* Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`
+* Add `LIB_NAME VERSION`
+* Remove `LIB_NAME`
+
+---
+
+## v3.0.0 2026-04-16
+### Breaking changes
+* Migrate to Spring Boot 4.0.x ([MRSPECS-107](https://folio-org.atlassian.net/browse/MRSPECS-107))
+
+### New APIs versions
+* No API version changes
 
 ### Features
 * Refactor specification sync from URL to local copy ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))
@@ -23,9 +46,14 @@
 * Improve Docker Compose setup for local development ([MRSPECS-103](https://folio-org.atlassian.net/browse/MRSPECS-103))
 
 ### Dependencies
-* Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`
-* Add `LIB_NAME VERSION`
-* Remove `LIB_NAME`
+* Bump `spring-boot` from `3.4.3` to `4.0.5`
+* Bump `folio-spring-support` from `9.0.0` to `10.0.0`
+* Bump `folio-service-tools` from `5.0.0` to `6.0.0`
+* Bump `lombok` from `1.18.36` to `1.18.44`
+* Bump `jackson-databind-nullable` from `0.2.6` to `0.2.10`
+* Bump `jsoup` from `1.18.3` to `1.22.1`
+* Bump `commons-text` from `1.13.0` to `1.15.0`
+* Bump `guava` from `33.4.0-jre` to `33.6.0-jre`
 
 ---
 
