@@ -10,6 +10,7 @@
 * Refactor specification sync from URL to local copy ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))
 * Default specification data updates to disable undefined rules ([MRSPECS-102](https://folio-org.atlassian.net/browse/MRSPECS-102))
 * Add auditing for specification rules ([MRSPECS-200](https://folio-org.atlassian.net/browse/MRSPECS-200))
+* Update LoC specification sources ()[MRSPECS-194](https://folio-org.atlassian.net/browse/MRSPECS-194))
 
 ### Bug fixes
 * Fix non-obsolete subfield choosing logic ([MRSPECS-95](https://folio-org.atlassian.net/browse/MRSPECS-95))
