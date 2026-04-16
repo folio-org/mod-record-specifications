@@ -27,7 +27,7 @@
 
     <spring-boot.version>4.0.5</spring-boot.version>
     <folio-spring-support.version>10.0.0</folio-spring-support.version>
-    <folio-service-tools.version>6.0.0-SNAPSHOT</folio-service-tools.version>
+    <folio-service-tools.version>6.0.0</folio-service-tools.version>
     <lombok.version>1.18.44</lombok.version>
     <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
     <mapstruct.version>1.6.3</mapstruct.version>
@@ -35,7 +35,7 @@
     <jsoup.version>1.22.1</jsoup.version>
     <marc4j.version>2.9.6</marc4j.version>
     <commons-text.version>1.15.0</commons-text.version>
-    <guava.version>33.5.0-jre</guava.version>
+    <guava.version>33.6.0-jre</guava.version>
 
     <!-- Plugin properties-->
     <openapi.input.file>api/mod-record-specifications.yaml</openapi.input.file>
