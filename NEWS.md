@@ -13,7 +13,7 @@
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
 
 ### Tech Dept
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Add integration test to cover sync endpoint for authority ([MRSPECS-105](https://folio-org.atlassian.net/browse/MRSPECS-105))
 
 ### Dependencies
 * Bump `LIB_NAME` from `OLD_VERSION` to `NEW_VERSION`

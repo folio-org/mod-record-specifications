@@ -9,6 +9,7 @@ import static org.folio.support.ApiEndpoints.fieldSubfieldsPath;
 import static org.folio.support.ApiEndpoints.indicatorCodesPath;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationSyncPath;
+import static org.folio.support.TestConstants.AUTHORITY_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.BIBLIOGRAPHIC_SPECIFICATION_ID;
 import static org.folio.support.TestConstants.TENANT_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -265,6 +266,107 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .as("Standard field 100 should be restored to default")
       .containsEntry(URL_FIELD, initial100Field.get(URL_FIELD))
       .containsEntry(REQUIRED_FIELD, initial100Field.get(REQUIRED_FIELD));
+  }
+
+  @Test
+  @TestRailCase("C494349")
+  @SuppressWarnings("checkstyle:methodLength")
+  void syncAuthoritySpecification_shouldRestoreFieldsToDefaultAndRemoveLocalFields() throws Exception {
+    var specificationId = AUTHORITY_SPECIFICATION_ID;
+
+    // Initial sync to establish baseline
+    doPost(specificationSyncPath(specificationId), null)
+      .andExpect(status().isAccepted());
+
+    var initialResponse = doGet(specificationFieldsPath(specificationId))
+      .andExpect(status().isOk())
+      .andReturn().getResponse().getContentAsString();
+    var initialFields = getFields(initialResponse);
+
+    // Create a local field for the authority spec
+    var localFieldTag = "950";
+    doPost(specificationFieldsPath(specificationId), localTestField(localFieldTag));
+
+    // Modify a system field (000 - Leader, has URL in seed data)
+    var initial000Field = findFieldOrFail(initialFields, "000");
+    var systemFieldId = getFieldId(initialFields, "000");
+    doPut(fieldPath(systemFieldId),
+      prepareChangeDto(initial000Field, dto -> dto.setUrl("https://modified-authority-system-field.com")));
+
+    // Modify a standard field (100 - Personal Name)
+    var initial100Field = findFieldOrFail(initialFields, "100");
+    var standardFieldId = getFieldId(initialFields, "100");
+    doPut(fieldPath(standardFieldId),
+      prepareChangeDto(initial100Field, dto -> {
+        dto.setUrl("https://modified-authority-standard-field.com");
+        dto.setRequired(true);
+      }));
+
+    // Step 1: Verify pre-conditions - local field, modified system field and modified standard field all exist
+    var preResponseBody = doGet(specificationFieldsPath(specificationId))
+      .andExpect(status().isOk())
+      .andReturn().getResponse().getContentAsString();
+    var preFields = getFields(preResponseBody);
+
+    assertThat(preFields)
+      .as("Pre-sync: local field should exist")
+      .extracting(f -> (String) f.get(TAG_FIELD))
+      .contains(localFieldTag);
+
+    assertThat(findFieldOrFail(preFields, "000"))
+      .as("Pre-sync: system field 000 should have modified URL")
+      .containsEntry(URL_FIELD, "https://modified-authority-system-field.com");
+
+    assertThat(findFieldOrFail(preFields, "100"))
+      .as("Pre-sync: standard field 100 should have modified URL and required flag")
+      .containsEntry(URL_FIELD, "https://modified-authority-standard-field.com")
+      .containsEntry(REQUIRED_FIELD, true);
+
+    // Step 2: Trigger sync to restore to defaults
+    doPost(specificationSyncPath(specificationId), null)
+      .andExpect(status().isAccepted());
+
+    // Steps 3-4: Verify fields after sync
+    var responseAfterSync = doGet(specificationFieldsPath(specificationId))
+      .andExpect(status().isOk())
+      .andExpect(totalRecordsMatcher(149))
+      .andReturn().getResponse().getContentAsString();
+    var fieldsAfterSync = getFields(responseAfterSync);
+
+    // Step 3: Verify exactly 2 deprecated fields: 090 and 668
+    var deprecatedFields = fieldsAfterSync.stream()
+      .filter(f -> Boolean.TRUE.equals(f.get(DEPRECATED_FIELD)))
+      .toList();
+
+    assertThat(deprecatedFields)
+      .as("Authority spec should have exactly 2 deprecated fields after sync")
+      .hasSize(2);
+    assertThat(deprecatedFields)
+      .extracting(f -> (String) f.get(TAG_FIELD))
+      .containsExactlyInAnyOrder("090", "668");
+
+    deprecatedFields.forEach(field ->
+      assertThat(field.containsKey(URL_FIELD) && field.get(URL_FIELD) != null)
+        .as("Deprecated field %s should not have url", field.get(TAG_FIELD))
+        .isFalse());
+
+    // Step 4: Verify local field removed and modified fields restored to default
+    assertThat(fieldsAfterSync)
+      .as("Local field %s should not exist after sync", localFieldTag)
+      .extracting(f -> (String) f.get(TAG_FIELD))
+      .doesNotContain(localFieldTag);
+
+    assertThat(findFieldOrFail(fieldsAfterSync, "000"))
+      .as("System field 000 URL should be restored to default after sync")
+      .containsEntry(URL_FIELD, initial000Field.get(URL_FIELD));
+
+    assertThat(findFieldOrFail(fieldsAfterSync, "100"))
+      .as("Standard field 100 should be restored to default after sync")
+      .containsEntry(URL_FIELD, initial100Field.get(URL_FIELD))
+      .containsEntry(REQUIRED_FIELD, initial100Field.get(REQUIRED_FIELD));
+
+    // Step 5: Verify 856 field subfields
+    assertField856Subfields(fieldsAfterSync);
   }
 
   private SpecificationFieldChangeDto prepareChangeDto(Map<String, Object> initialField,
