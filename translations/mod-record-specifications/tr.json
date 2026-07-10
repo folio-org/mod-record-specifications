@@ -31,5 +31,6 @@
     "validation.missingSubfield": "Alt alan ''{code}'' ibaresinin bulunması gerekmektedir.",
     "validation.undefinedSubfield": "Alt alan ''{code}'' tanımsızdır.",
     "validation.nonRepeatableSubfield": "Alt alan ''{code}'' tekrarlanamaz.",
-    "validation.invalidLccnSubfieldValue": "010 $a geçersiz bir formatta."
+    "validation.invalidLccnSubfieldValue": "010 $a geçersiz bir formatta.",
+    "invalid.request.query-param.uuid": "Invalid value [{invalidValue}]. Must be a valid UUID."
 }
