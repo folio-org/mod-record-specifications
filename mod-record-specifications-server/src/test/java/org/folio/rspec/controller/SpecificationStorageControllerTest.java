@@ -1,5 +1,6 @@
 package org.folio.rspec.controller;
 
+import static org.folio.support.ApiEndpoints.SPECIFICATION_PATH;
 import static org.folio.support.ApiEndpoints.specificationFieldsPath;
 import static org.folio.support.ApiEndpoints.specificationPath;
 import static org.folio.support.ApiEndpoints.specificationRulePath;
@@ -162,6 +163,20 @@ class SpecificationStorageControllerTest {
       .andExpect(jsonPath("$.profile", is(specificationDto.getProfile().getValue())));
 
     verify(specificationService).getSpecificationById(specificationId, IncludeParam.NONE);
+  }
+
+  @Test
+  void getSpecification_negative_invalidUuid() throws Exception {
+    var specificationId = "invalid-uuid";
+
+    var requestBuilder = get(SPECIFICATION_PATH.formatted(specificationId))
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.errors.size()", is(1)))
+      .andExpect(jsonPath("$.errors.[*].message", hasItem(is("Invalid value [%s]. Must be a valid UUID."
+        .formatted(specificationId)))));
   }
 
   @Test
