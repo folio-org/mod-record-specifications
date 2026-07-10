@@ -10,7 +10,7 @@
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
 
 ### Bug fixes
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Change the "500" status code to "400" when the request has invalid UUID ([MRSPECS-52](https://folio-org.atlassian.net/browse/MRSPECS-52))
 
 ### Tech Dept
 * Add integration test to cover sync endpoint for authority ([MRSPECS-105](https://folio-org.atlassian.net/browse/MRSPECS-105))

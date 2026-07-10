@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.UUID;
 import org.folio.rspec.domain.dto.Error;
 import org.folio.rspec.service.i18n.ExtendedTranslationService;
 import org.folio.spring.testing.type.UnitTest;
@@ -61,6 +62,29 @@ class MethodArgumentTypeMismatchExceptionHandlerTest {
       .extracting(Error::getMessage, Error::getType, Error::getCode, error -> error.getParameters().getFirst().getKey(),
         error -> error.getParameters().getFirst().getValue())
       .containsExactly(expectedMessage, "invalid-query-enum-value", "102", "arg1", "invalidValue");
+  }
+
+  @Test
+  void testHandleException_invalidUuidValue() {
+    var expectedMessage = "error message";
+    var handlerClass = UUID.class;
+    var invalidValue = "not-a-uuid";
+
+    when(exception.getName()).thenReturn("arg1");
+    when(exception.getRequiredType()).thenAnswer(invocation -> handlerClass);
+    when(exception.getValue()).thenReturn(invalidValue);
+    when(translationService.format(anyString(), eq("invalidValue"), eq(invalidValue)))
+      .thenReturn(expectedMessage);
+
+    var response = handler.handleException(exception);
+
+    assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getErrors()).isNotNull().hasSize(1);
+    assertThat(response.getBody().getErrors().getFirst())
+      .extracting(Error::getMessage, Error::getType, Error::getCode, error -> error.getParameters().getFirst().getKey(),
+        error -> error.getParameters().getFirst().getValue())
+      .containsExactly(expectedMessage, "invalid-uuid-value", "111", "arg1", invalidValue);
   }
 
   @Test

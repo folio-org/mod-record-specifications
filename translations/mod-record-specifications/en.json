@@ -10,6 +10,7 @@
   "control-field.resource.not-allowed": "Cannot define {parameter}s for 00X control fields.",
 
   "invalid.request.query-param.enum": "Unexpected value [{invalidValue}]. Possible values: [{possibleValues}].",
+  "invalid.request.query-param.uuid": "Invalid value [{invalidValue}]. Must be a valid UUID.",
   "Pattern.SpecificationFieldChangeDto.tag": "A ''{parameter}'' field must contain three characters and can only accept numbers 0-9.",
   "Pattern.IndicatorCodeChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9, letters a-z or a '#'.",
   "Pattern.SubfieldChangeDto.code": "A ''{parameter}'' field must contain one character and can only accept numbers 0-9 or letters a-z.",

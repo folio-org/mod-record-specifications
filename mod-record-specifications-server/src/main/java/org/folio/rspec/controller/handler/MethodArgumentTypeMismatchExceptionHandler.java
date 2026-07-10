@@ -1,8 +1,10 @@
 package org.folio.rspec.controller.handler;
 
 import static org.folio.rspec.domain.dto.ErrorCode.INVALID_QUERY_ENUM_VALUE;
+import static org.folio.rspec.domain.dto.ErrorCode.INVALID_QUERY_UUID_VALUE;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.folio.rspec.domain.dto.Error;
@@ -30,15 +32,14 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
   public ResponseEntity<ErrorCollection> handleException(Exception e) {
     var exception = (MethodArgumentTypeMismatchException) e;
     var requiredType = exception.getRequiredType();
-    var errorCollection = new ErrorCollection();
 
     if (requiredType != null && requiredType.isEnum()) {
-      errorCollection.addErrorsItem(buildEnumError(exception, requiredType));
-      return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(errorCollection);
-    } else {
-      errorCollection.addErrorsItem(buildUnexpectedError(exception));
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorCollection);
+      return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, buildEnumError(exception, requiredType));
     }
+    if (requiredType != null && requiredType.isAssignableFrom(UUID.class)) {
+      return buildResponse(HttpStatus.BAD_REQUEST, buildUuidError(exception));
+    }
+    return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, buildUnexpectedError(exception));
   }
 
   @Override
@@ -46,8 +47,12 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
     return e instanceof MethodArgumentTypeMismatchException;
   }
 
+  private ResponseEntity<ErrorCollection> buildResponse(HttpStatus status, Error error) {
+    return ResponseEntity.status(status).body(new ErrorCollection().addErrorsItem(error));
+  }
+
   private Error buildEnumError(MethodArgumentTypeMismatchException e, Class<?> requiredType) {
-    var message = buildErrorMessage(e, requiredType.getEnumConstants());
+    var message = buildEnumErrorMessage(e, requiredType.getEnumConstants());
     return new Error()
       .message(message)
       .code(INVALID_QUERY_ENUM_VALUE.getCode())
@@ -55,7 +60,22 @@ public class MethodArgumentTypeMismatchExceptionHandler implements ServiceExcept
       .addParametersItem(new Parameter().key(e.getName()).value(String.valueOf(e.getValue())));
   }
 
-  private String buildErrorMessage(MethodArgumentTypeMismatchException e, Object[] enumConstants) {
+  private Error buildUuidError(MethodArgumentTypeMismatchException e) {
+    var inputValue = String.valueOf(e.getValue());
+    var message = buildUuidErrorMessage(inputValue);
+    return new Error()
+      .message(message)
+      .code(INVALID_QUERY_UUID_VALUE.getCode())
+      .type(INVALID_QUERY_UUID_VALUE.getType())
+      .addParametersItem(new Parameter().key(e.getName()).value(inputValue));
+  }
+
+  private String buildUuidErrorMessage(String inputValue) {
+    return translationService.format(INVALID_QUERY_UUID_VALUE.getMessageKey(),
+      INVALID_VALUE_MSG_ARG, inputValue);
+  }
+
+  private String buildEnumErrorMessage(MethodArgumentTypeMismatchException e, Object[] enumConstants) {
     return translationService.format(INVALID_QUERY_ENUM_VALUE.getMessageKey(),
       INVALID_VALUE_MSG_ARG, getInvalidValue(e.getRootCause()),
       POSSIBLE_VALUES_MSG_ARG, translationService.formatList(Arrays.asList(enumConstants)));
