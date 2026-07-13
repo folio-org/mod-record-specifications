@@ -31,5 +31,6 @@
     "validation.missingSubfield": "Підполе ''{code}'' є обов'язковим.",
     "validation.undefinedSubfield": "Підполе ''{code}'' не визначено.",
     "validation.nonRepeatableSubfield": "Підполе ''{code}'' не повторюється.",
-    "validation.invalidLccnSubfieldValue": "010 $a має неправильний формат."
+    "validation.invalidLccnSubfieldValue": "010 $a має неправильний формат.",
+    "invalid.request.query-param.uuid": "Invalid value [{invalidValue}]. Must be a valid UUID."
 }

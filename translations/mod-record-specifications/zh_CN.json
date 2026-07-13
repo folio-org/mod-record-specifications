@@ -31,5 +31,6 @@
     "validation.missingSubfield": "子字段“ {code} ”必备。",
     "validation.undefinedSubfield": "子字段“ {code} ”未定义。",
     "validation.nonRepeatableSubfield": "子字段“ {code} ”不可重复。",
-    "validation.invalidLccnSubfieldValue": "010 $a 的格式无效。"
+    "validation.invalidLccnSubfieldValue": "010 $a 的格式无效。",
+    "invalid.request.query-param.uuid": "Invalid value [{invalidValue}]. Must be a valid UUID."
 }
