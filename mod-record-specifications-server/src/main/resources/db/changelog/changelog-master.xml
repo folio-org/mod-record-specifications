@@ -8,4 +8,7 @@
   <include file="changes/changelog-v2.1.xml" relativeToChangelogFile="true"/>
   <include file="changes/changelog-v3.0.xml" relativeToChangelogFile="true"/>
 
+  <!-- Ongoing, version-independent MARC spec corrections; see docs/marc-spec-corrections.md -->
+  <include file="changes/changelog-marc-spec-updates.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

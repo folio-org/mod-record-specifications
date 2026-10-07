@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <!--
+    Ongoing MARC spec corrections (field/indicator/subfield additions and relabels driven by
+    changes to the LOC MARC standard). One file per ticket, added here as they come up rather
+    than under a release-version folder, so the same file can be cherry-picked/backported to
+    older maintenance branches without having to fabricate a version folder that doesn't exist
+    there. See docs/marc-spec-corrections.md for the convention new files here must follow.
+  -->
+
+  <include file="marc-spec-updates/MRSPECS-201-update-marc-subfields.xml" relativeToChangelogFile="true"/>
+  <include file="marc-spec-updates/MRSPECS-212-update-marc-indicators-and-subfields.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

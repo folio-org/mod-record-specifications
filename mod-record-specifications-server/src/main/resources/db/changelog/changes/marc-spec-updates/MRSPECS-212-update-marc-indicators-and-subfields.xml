@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <!--
+    See docs/marc-spec-corrections.md for the convention these MARC spec-correction
+    changesets follow (natural-key joins, fixed UUIDs, idempotent SQL, metadata id pinning).
+
+    Fix indicator/indicator-code labels and add missing subfields per the latest MARC
+    standards documentation:
+     - MARC Authority field 400/410/411/430/451 (second/first indicator "Preferred variant
+       heading"): https://www.loc.gov/marc/authority/
+     - MARC Bibliographic field 341 (second indicator, subfields $7/$h) and field 041 ($a):
+       https://www.loc.gov/marc/bibliographic/
+  -->
+
+  <changeSet id="MRSPECS-212@@update-data:marc-indicators:relabel" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="indicator"/>
+        <tableExists tableName="field"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>Fix indicator labels for authority 400/410/411/430/451 and bibliographic 341</comment>
+
+    <sql>
+      WITH field_map AS (
+          SELECT f.id, f.tag, s.profile
+          FROM field f
+          JOIN specification s ON f.specification_id = s.id
+          WHERE s.family = 'MARC'
+      )
+      UPDATE indicator i
+      SET label = v.label
+      FROM field_map fm
+      JOIN (VALUES
+          ('AUTHORITY', '400', 2, 'Preferred variant heading'),
+          ('AUTHORITY', '410', 2, 'Preferred variant heading'),
+          ('AUTHORITY', '411', 2, 'Preferred variant heading'),
+          ('AUTHORITY', '430', 1, 'Preferred variant heading'),
+          ('AUTHORITY', '451', 2, 'Preferred variant heading'),
+          ('BIBLIOGRAPHIC', '341', 2, 'Presence of accessibility features/hazards')
+      ) AS v(profile, tag, indicator_order, label)
+        ON fm.tag = v.tag AND fm.profile = v.profile::family_profile_enum
+      WHERE i.field_id = fm.id AND i.indicator_order = v.indicator_order;
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-indicator-codes:relabel" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="indicator_code"/>
+        <tableExists tableName="indicator"/>
+        <tableExists tableName="field"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>Fix indicator code labels for authority 400/410/411/430/451 and bibliographic 341</comment>
+
+    <sql>
+      WITH field_map AS (
+          SELECT f.id, f.tag, s.profile
+          FROM field f
+          JOIN specification s ON f.specification_id = s.id
+          WHERE s.family = 'MARC'
+      ),
+      indicator_map AS (
+          SELECT i.id, fm.tag, fm.profile, i.indicator_order
+          FROM indicator i
+          JOIN field_map fm ON fm.id = i.field_id
+      )
+      UPDATE indicator_code ic
+      SET label = v.label
+      FROM indicator_map im
+      JOIN (VALUES
+          ('AUTHORITY', '400', 2, '#', 'No information provided'),
+          ('AUTHORITY', '410', 2, '#', 'No information provided'),
+          ('AUTHORITY', '411', 2, '#', 'No information provided'),
+          ('AUTHORITY', '430', 1, '#', 'No information provided'),
+          ('AUTHORITY', '451', 2, '#', 'No information provided'),
+          ('BIBLIOGRAPHIC', '341', 1, '0', 'Accessibility information related to primary content'),
+          ('BIBLIOGRAPHIC', '341', 1, '1', 'Accessibility information related to secondary content'),
+          ('BIBLIOGRAPHIC', '341', 2, '#', 'No information provided')
+      ) AS v(profile, tag, indicator_order, code, label)
+        ON im.tag = v.tag AND im.profile = v.profile::family_profile_enum AND im.indicator_order = v.indicator_order
+      WHERE ic.indicator_id = im.id AND ic.code = v.code;
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-indicator-codes:insert-new" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="indicator_code"/>
+        <tableExists tableName="indicator"/>
+        <tableExists tableName="field"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>Add new indicator codes for authority 400/410/411/430/451 and bibliographic 341</comment>
+
+    <sql>
+      WITH field_map AS (
+          SELECT f.id, f.tag, s.profile
+          FROM field f
+          JOIN specification s ON f.specification_id = s.id
+          WHERE s.family = 'MARC'
+      ),
+      indicator_map AS (
+          SELECT i.id, fm.tag, fm.profile, i.indicator_order
+          FROM indicator i
+          JOIN field_map fm ON fm.id = i.field_id
+      ),
+      new_codes (id, profile, tag, indicator_order, code, label) AS (
+          VALUES
+              ('038726ef-30b6-4d23-b49e-9cd0cf9844d1'::uuid, 'AUTHORITY', '400', 2, '1', 'Preferred variant heading'),
+              ('49ade901-8ec7-46d2-83ed-2e19a58be5ca'::uuid, 'AUTHORITY', '410', 2, '1', 'Preferred variant heading'),
+              ('5d423ad9-b8ec-4eee-a155-5cf2ab9cca05'::uuid, 'AUTHORITY', '411', 2, '1', 'Preferred variant heading'),
+              ('7b1d291d-5a88-4a2a-b975-f392502cedc8'::uuid, 'AUTHORITY', '430', 1, '1', 'Preferred variant heading'),
+              ('9ce41add-047c-4929-8f26-aea9e0b1a8e9'::uuid, 'AUTHORITY', '451', 2, '1', 'Preferred variant heading'),
+              ('3ac9e629-4288-421c-b046-4ce24426672c'::uuid, 'BIBLIOGRAPHIC', '341', 2, '1', 'Accessibility features present'),
+              ('0fe7d491-6550-44a3-bd27-52d8687b9f75'::uuid, 'BIBLIOGRAPHIC', '341', 2, '2', 'No accessibility features present'),
+              ('c0375243-2d55-4c76-9625-6a9df7831de8'::uuid, 'BIBLIOGRAPHIC', '341', 2, '3', 'Sensory hazards present')
+      )
+      INSERT INTO indicator_code (id, created_by_user_id, updated_by_user_id, created_date, updated_date,
+                                   code, label, deprecated, scope, indicator_id)
+      SELECT nc.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000',
+             now(), now(), nc.code, nc.label, false, 'STANDARD'::scope_enum, im.id
+      FROM new_codes nc
+      JOIN indicator_map im ON im.tag = nc.tag AND im.profile = nc.profile::family_profile_enum
+                             AND im.indicator_order = nc.indicator_order
+      ON CONFLICT (code, indicator_id) DO NOTHING;
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-indicator-codes:pin-metadata-ids" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="specification_metadata"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>
+      Pin the same ids used above into specification_metadata.fields, so a future
+      SpecificationSyncService full resync keeps reusing them instead of generating new ones
+      (see docs/marc-spec-corrections.md). Skipped per-code if an id is already pinned there.
+    </comment>
+
+    <sql>
+      DO $$
+      DECLARE
+        rec RECORD;
+      BEGIN
+        FOR rec IN
+          SELECT * FROM (VALUES
+              ('038726ef-30b6-4d23-b49e-9cd0cf9844d1'::uuid, 'AUTHORITY', '400', 2, '1'),
+              ('49ade901-8ec7-46d2-83ed-2e19a58be5ca'::uuid, 'AUTHORITY', '410', 2, '1'),
+              ('5d423ad9-b8ec-4eee-a155-5cf2ab9cca05'::uuid, 'AUTHORITY', '411', 2, '1'),
+              ('7b1d291d-5a88-4a2a-b975-f392502cedc8'::uuid, 'AUTHORITY', '430', 1, '1'),
+              ('9ce41add-047c-4929-8f26-aea9e0b1a8e9'::uuid, 'AUTHORITY', '451', 2, '1'),
+              ('3ac9e629-4288-421c-b046-4ce24426672c'::uuid, 'BIBLIOGRAPHIC', '341', 2, '1'),
+              ('0fe7d491-6550-44a3-bd27-52d8687b9f75'::uuid, 'BIBLIOGRAPHIC', '341', 2, '2'),
+              ('c0375243-2d55-4c76-9625-6a9df7831de8'::uuid, 'BIBLIOGRAPHIC', '341', 2, '3')
+          ) AS v(id, profile, tag, indicator_order, code)
+        LOOP
+          UPDATE specification_metadata sm
+          SET fields = jsonb_set(
+            sm.fields,
+            ARRAY[rec.tag],
+            COALESCE(sm.fields->rec.tag, '{}'::jsonb) ||
+              jsonb_build_object('indicators',
+                COALESCE(sm.fields->rec.tag->'indicators', '{}'::jsonb) ||
+                  jsonb_build_object(rec.indicator_order::text,
+                    COALESCE(sm.fields->rec.tag->'indicators'->rec.indicator_order::text,
+                             jsonb_build_object('order', rec.indicator_order)) ||
+                      jsonb_build_object('codes',
+                        COALESCE(sm.fields->rec.tag->'indicators'->rec.indicator_order::text->'codes', '{}'::jsonb) ||
+                          jsonb_build_object(rec.code, jsonb_build_object(
+                            'id', rec.id::text, 'code', rec.code, 'scope', 'STANDARD', 'defaultValue', false))
+                      )
+                  )
+              ),
+            true
+          )
+          FROM specification s
+          WHERE sm.specification_id = s.id
+            AND s.family = 'MARC'
+            AND s.profile = rec.profile::family_profile_enum
+            AND NOT (COALESCE(sm.fields->rec.tag->'indicators'->rec.indicator_order::text->'codes', '{}'::jsonb) ? rec.code);
+        END LOOP;
+      END $$;
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-subfields:relabel-041-a" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="subfield"/>
+        <tableExists tableName="field"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>Fix the label of bibliographic field 041 subfield $a</comment>
+
+    <sql>
+      WITH field_map AS (
+          SELECT f.id, f.tag, s.profile
+          FROM field f
+          JOIN specification s ON f.specification_id = s.id
+          WHERE s.family = 'MARC'
+      )
+      UPDATE subfield sf
+      SET label = 'Language code of text or sound track'
+      FROM field_map fm
+      WHERE sf.field_id = fm.id
+        AND fm.profile = 'BIBLIOGRAPHIC'
+        AND fm.tag = '041'
+        AND sf.code = 'a';
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-subfields:insert-new" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="subfield"/>
+        <tableExists tableName="field"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>Add subfields $7 and $h to bibliographic field 341</comment>
+
+    <sql>
+      WITH field_map AS (
+          SELECT f.id, f.tag, s.profile
+          FROM field f
+          JOIN specification s ON f.specification_id = s.id
+          WHERE s.family = 'MARC'
+      ),
+      new_subfields (id, tag, profile, code, label, repeatable, required, deprecated, scope) AS (
+          VALUES
+              ('c93599b3-d267-418c-b8cc-5b1117242c9a'::uuid, '341', 'BIBLIOGRAPHIC', '7', 'Data provenance', true, false, false, 'STANDARD'),
+              ('c514940b-ffe6-475d-be9d-6daaedc06edb'::uuid, '341', 'BIBLIOGRAPHIC', 'h', 'Sensory hazards', true, false, false, 'STANDARD')
+      )
+      INSERT INTO subfield (id, created_by_user_id, updated_by_user_id, created_date, updated_date,
+                             code, label, repeatable, required, deprecated, scope, field_id)
+      SELECT ns.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000',
+             now(), now(), ns.code, ns.label, ns.repeatable, ns.required, ns.deprecated, ns.scope::scope_enum, fm.id
+      FROM new_subfields ns
+      JOIN field_map fm ON fm.tag = ns.tag AND fm.profile = ns.profile::family_profile_enum
+      ON CONFLICT (field_id, code) DO NOTHING;
+    </sql>
+  </changeSet>
+
+  <changeSet id="MRSPECS-212@@update-data:marc-subfields:pin-metadata-ids" labels="marc-spec-update"
+             author="pavlo_smahin">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="specification_metadata"/>
+        <tableExists tableName="specification"/>
+      </and>
+    </preConditions>
+
+    <comment>
+      Pin the same ids used above into specification_metadata.fields, so a future
+      SpecificationSyncService full resync keeps reusing them instead of generating new ones
+      (see docs/marc-spec-corrections.md). Skipped per-code if an id is already pinned there.
+    </comment>
+
+    <sql>
+      DO $$
+      DECLARE
+        rec RECORD;
+      BEGIN
+        FOR rec IN
+          SELECT * FROM (VALUES
+              ('c93599b3-d267-418c-b8cc-5b1117242c9a'::uuid, 'BIBLIOGRAPHIC', '341', '7'),
+              ('c514940b-ffe6-475d-be9d-6daaedc06edb'::uuid, 'BIBLIOGRAPHIC', '341', 'h')
+          ) AS v(id, profile, tag, code)
+        LOOP
+          UPDATE specification_metadata sm
+          SET fields = jsonb_set(
+            sm.fields,
+            ARRAY[rec.tag],
+            COALESCE(sm.fields->rec.tag, '{}'::jsonb) ||
+              jsonb_build_object('subfields',
+                COALESCE(sm.fields->rec.tag->'subfields', '{}'::jsonb) ||
+                  jsonb_build_object(rec.code, jsonb_build_object(
+                    'id', rec.id::text, 'code', rec.code, 'scope', 'STANDARD', 'defaultValue', false))
+              ),
+            true
+          )
+          FROM specification s
+          WHERE sm.specification_id = s.id
+            AND s.family = 'MARC'
+            AND s.profile = rec.profile::family_profile_enum
+            AND NOT (COALESCE(sm.fields->rec.tag->'subfields', '{}'::jsonb) ? rec.code);
+        END LOOP;
+      END $$;
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>
