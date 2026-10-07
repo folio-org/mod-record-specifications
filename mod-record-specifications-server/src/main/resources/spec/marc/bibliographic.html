@@ -1881,14 +1881,17 @@
          | - No attempt to code
       21 - Type of continuing resource
          # - None of the following
+         a - Activity report
          d - Updating database
          g - Magazine
          h - Blog
+         i - Serial zine
          j - Journal
          l - Updating loose-leaf
          m - Monographic series
          n - Newspaper
          p - Periodical
+         q - Serial podcast
          r - Repository
          s - Newsletter
          t - Directory
@@ -2662,7 +2665,7 @@
          # - MARC language code
          7 - Source specified in subfield $2
    Subfield Codes
-      $a - Language code of text/sound track or separate title (R)
+      $a - Language code of text or sound track (R)
       $b - Language code of summary or abstract (R)
       $c - Languages of separate titles (VM) [OBSOLETE]
       $c - languages of available translation (SE) [OBSOLETE]
@@ -2698,7 +2701,7 @@
          cyac - Library of Congress Children's and Young Adults' Cataloging Program
          dc - Dublin Core
          dhca - Dance Heritage Coalition Access Project
-         gamma - Georgia Archives & Manuscripts Automated Access Project
+         gamma - Georgia Archives &amp; Manuscripts Automated Access Project
          gils - Government Information Location Service
          isds/c - ISSN Canada
          lc - Library of Congress
@@ -4175,21 +4178,26 @@
    Indicators
       First - Application
          # - No information provided
-         0 - Adaptive features to access primary content
-         1 - Adaptive features to access secondary content
-      Second - Undefined
-         # - Undefined
+         0 - Accessibility information related to primary content
+         1 - Accessibility information related to secondary content
+      Second - Presence of accessibility features/hazards
+         # - No information provided
+         1 - Accessibility features present
+         2 - No accessibility features present
+         3 - Sensory hazards present
    Subfield Codes
       $a - Content access mode (NR)
       $b - Textual assistive features (R)
       $c - Visual assistive features (R)
       $d - Auditory assistive features (R)
       $e - Tactile assistive features (R)
+      $h - Sensory hazards (R)
       $0 - Authority record control number or standard number (R)
       $1 - Real World Object URI (R)
       $2 - Source (NR)
       $3 - Materials specified (NR)
       $6 - Linkage (NR)
+      $7 - Data provenance (R)
       $8 - Field link and sequence number (R)
 
 342 - GEOSPATIAL REFERENCE DATA (R)
