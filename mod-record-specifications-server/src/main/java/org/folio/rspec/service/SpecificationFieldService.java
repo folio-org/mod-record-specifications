@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.FieldIndicatorChangeDto;
@@ -22,8 +24,11 @@ import org.folio.rspec.domain.dto.SubfieldDto;
 import org.folio.rspec.domain.dto.SubfieldDtoCollection;
 import org.folio.rspec.domain.entity.Field;
 import org.folio.rspec.domain.entity.Indicator;
+import org.folio.rspec.domain.entity.IndicatorCode;
 import org.folio.rspec.domain.entity.Specification;
+import org.folio.rspec.domain.entity.SpecificationMetadata;
 import org.folio.rspec.domain.entity.Subfield;
+import org.folio.rspec.domain.entity.metadata.FieldMetadata;
 import org.folio.rspec.domain.repository.FieldRepository;
 import org.folio.rspec.exception.ResourceNotFoundException;
 import org.folio.rspec.exception.ScopeModificationNotAllowedException;
@@ -159,10 +164,158 @@ public class SpecificationFieldService {
 
   @Transactional
   public void syncFields(Specification specification, Collection<Field> fields) {
-    log.info("syncFields::specificationId={}, fields number={}", specification.getId(), fields.size());
+    syncFields(specification, fields, false, null);
+  }
+
+  @Transactional
+  public void syncFields(Specification specification, Collection<Field> fields, boolean preserveLocal,
+                         SpecificationMetadata specificationMetadata) {
+    log.info("syncFields::specificationId={}, fields number={}, preserveLocal={}",
+      specification.getId(), fields.size(), preserveLocal);
     log.trace("syncFields::specificationId={}, fields={}", specification.getId(), fields);
-    fieldRepository.deleteBySpecificationId(specification.getId());
-    fieldRepository.saveAll(fields);
+    if (preserveLocal) {
+      reconcileFields(specification, fields, specificationMetadata);
+    } else {
+      fieldRepository.deleteBySpecificationId(specification.getId());
+      fieldRepository.saveAll(fields);
+    }
+  }
+
+  /**
+   * Reconciles persisted fields with the freshly computed spec-driven {@code incomingFields} instead of wiping
+   * everything: a tag/order/code that the spec now defines always overrides whatever is currently stored there
+   * (even if it was LOCAL), while a LOCAL definition the spec doesn't know about is left untouched. Indicators
+   * have no scope column of their own, so "does the spec know about this order" is read off
+   * {@code specificationMetadata} instead (see docs/marc-spec-corrections.md).
+   */
+  private void reconcileFields(Specification specification, Collection<Field> incomingFields,
+                               SpecificationMetadata specificationMetadata) {
+    var existingByTag = fieldRepository.findBySpecificationId(specification.getId()).stream()
+      .collect(Collectors.toMap(Field::getTag, Function.identity()));
+    var incomingByTag = incomingFields.stream()
+      .collect(Collectors.toMap(Field::getTag, Function.identity()));
+
+    deleteStaleFields(existingByTag, incomingByTag);
+
+    var fieldsMetadata = specificationMetadata == null ? null : specificationMetadata.getFields();
+    for (var incoming : incomingByTag.values()) {
+      var existing = existingByTag.get(incoming.getTag());
+      if (existing != null) {
+        var fieldMetadata = fieldsMetadata == null ? null : fieldsMetadata.get(incoming.getTag());
+        preserveEditableFieldOverrides(existing, incoming);
+        reconcileSubfields(existing, incoming);
+        carryOverLocalIndicators(existing, incoming, fieldMetadata);
+        fieldRepository.deleteById(existing.getId());
+      }
+      fieldRepository.save(incoming);
+    }
+  }
+
+  private void deleteStaleFields(Map<String, Field> existingByTag, Map<String, Field> incomingByTag) {
+    var staleFieldIds = existingByTag.values().stream()
+      .filter(existing -> !incomingByTag.containsKey(existing.getTag()))
+      .filter(existing -> existing.getScope() != Scope.LOCAL)
+      .map(Field::getId)
+      .toList();
+    if (!staleFieldIds.isEmpty()) {
+      fieldRepository.deleteAllById(staleFieldIds);
+    }
+  }
+
+  /**
+   * A STANDARD/SYSTEM field's {@code url} and (STANDARD-only) {@code required} can be edited
+   * through the API (see {@code FieldStandardScopeValidator}/{@code FieldSystemScopeValidator}).
+   * Those are operator policy choices, not spec facts, so they're kept across a resync as long as
+   * they don't contradict an invariant the spec itself enforces - namely that a deprecated field
+   * never has a url. A LOCAL field has nothing scope-restricted to preserve here; it's either kept
+   * wholesale (not in the incoming spec) or fully superseded by the spec (same key) elsewhere.
+   */
+  private void preserveEditableFieldOverrides(Field existing, Field incoming) {
+    if (existing.getScope() == Scope.LOCAL) {
+      return;
+    }
+    if (!incoming.isDeprecated() && !Objects.equals(existing.getUrl(), incoming.getUrl())) {
+      incoming.setUrl(existing.getUrl());
+    }
+    if (existing.getScope() == Scope.STANDARD && existing.isRequired() != incoming.isRequired()) {
+      incoming.setRequired(existing.isRequired());
+    }
+  }
+
+  private void reconcileSubfields(Field existing, Field incoming) {
+    var incomingByCode = incoming.getSubfields().stream()
+      .collect(Collectors.toMap(Subfield::getCode, Function.identity()));
+    for (var existingSubfield : existing.getSubfields()) {
+      var incomingSubfield = incomingByCode.get(existingSubfield.getCode());
+      if (incomingSubfield == null) {
+        if (existingSubfield.getScope() == Scope.LOCAL) {
+          incoming.getSubfields().add(copySubfield(existingSubfield, incoming));
+        }
+      } else if (existingSubfield.getScope() == Scope.STANDARD
+          && existingSubfield.isRequired() != incomingSubfield.isRequired()) {
+        // SubfieldStandardScopeValidator only leaves "required" editable; SYSTEM leaves nothing.
+        incomingSubfield.setRequired(existingSubfield.isRequired());
+      }
+    }
+  }
+
+  private void carryOverLocalIndicators(Field existing, Field incoming, FieldMetadata fieldMetadata) {
+    var incomingByOrder = incoming.getIndicators().stream()
+      .collect(Collectors.toMap(Indicator::getOrder, Function.identity()));
+    for (var existingIndicator : existing.getIndicators()) {
+      var incomingIndicator = incomingByOrder.get(existingIndicator.getOrder());
+      if (incomingIndicator == null) {
+        if (!isIndicatorKnownToSpec(fieldMetadata, existingIndicator.getOrder())) {
+          incoming.getIndicators().add(copyIndicator(existingIndicator, incoming));
+        }
+      } else {
+        carryOverLocalIndicatorCodes(existingIndicator, incomingIndicator);
+      }
+    }
+  }
+
+  private boolean isIndicatorKnownToSpec(FieldMetadata fieldMetadata, Integer order) {
+    return fieldMetadata != null && fieldMetadata.indicators() != null
+      && fieldMetadata.indicators().containsKey(String.valueOf(order));
+  }
+
+  private void carryOverLocalIndicatorCodes(Indicator existing, Indicator incoming) {
+    var incomingCodes = incoming.getCodes().stream().map(IndicatorCode::getCode).collect(Collectors.toSet());
+    existing.getCodes().stream()
+      .filter(code -> code.getScope() == Scope.LOCAL)
+      .filter(code -> !incomingCodes.contains(code.getCode()))
+      .forEach(code -> incoming.getCodes().add(copyIndicatorCode(code, incoming)));
+  }
+
+  private Subfield copySubfield(Subfield source, Field newField) {
+    var copy = new Subfield();
+    copy.setCode(source.getCode());
+    copy.setLabel(source.getLabel());
+    copy.setRepeatable(source.isRepeatable());
+    copy.setRequired(source.isRequired());
+    copy.setDeprecated(source.isDeprecated());
+    copy.setScope(source.getScope());
+    copy.setField(newField);
+    return copy;
+  }
+
+  private Indicator copyIndicator(Indicator source, Field newField) {
+    var copy = new Indicator();
+    copy.setOrder(source.getOrder());
+    copy.setLabel(source.getLabel());
+    copy.setField(newField);
+    copy.setCodes(source.getCodes().stream().map(code -> copyIndicatorCode(code, copy)).toList());
+    return copy;
+  }
+
+  private IndicatorCode copyIndicatorCode(IndicatorCode source, Indicator newIndicator) {
+    var copy = new IndicatorCode();
+    copy.setCode(source.getCode());
+    copy.setLabel(source.getLabel());
+    copy.setDeprecated(source.isDeprecated());
+    copy.setScope(source.getScope());
+    copy.setIndicator(newIndicator);
+    return copy;
   }
 
   @Autowired

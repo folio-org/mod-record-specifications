@@ -24,16 +24,19 @@ public class ExtendedTenantService extends TenantService {
   private final FolioExecutionContext folioExecutionContext;
   private final KafkaAdminService kafkaAdminService;
   private final SpecificationService specificationService;
+  private final MarcSpecUpdateService marcSpecUpdateService;
 
   public ExtendedTenantService(JdbcTemplate jdbcTemplate,
                                FolioSpringLiquibase folioSpringLiquibase,
                                FolioExecutionContext folioExecutionContext,
                                KafkaAdminService kafkaAdminService,
-                               SpecificationService specificationService) {
+                               SpecificationService specificationService,
+                               MarcSpecUpdateService marcSpecUpdateService) {
     super(jdbcTemplate, folioExecutionContext, folioSpringLiquibase);
     this.folioExecutionContext = folioExecutionContext;
     this.kafkaAdminService = kafkaAdminService;
     this.specificationService = specificationService;
+    this.marcSpecUpdateService = marcSpecUpdateService;
   }
 
   @Override
@@ -54,15 +57,26 @@ public class ExtendedTenantService extends TenantService {
     var tenantCreation = !tenantExists();
     super.createOrUpdateTenant(tenantAttributes);
 
-    if (tenantCreation && shouldSyncSpecifications(tenantAttributes.getParameters())) {
-      var specifications = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
-        .getSpecifications();
-
-      for (var spec : specifications) {
-        log.info("About to start syncing record specification: [id: {}, family: {}, profile: {}, url: {}] ",
-          spec.getId(), spec.getFamily(), spec.getProfile(), spec.getUrl());
-        specificationService.sync(spec.getId());
+    if (tenantCreation) {
+      if (shouldSyncSpecifications(tenantAttributes.getParameters())) {
+        log.info("Tenant created, syncing record specifications.");
+        syncAllSpecifications();
+        marcSpecUpdateService.markAllKnownUpdatesApplied();
       }
+    } else {
+      log.info("Tenant updated, applying pending record specification updates.");
+      marcSpecUpdateService.applyPendingUpdates();
+    }
+  }
+
+  private void syncAllSpecifications() {
+    var specifications = specificationService.findSpecifications(null, null, IncludeParam.NONE, 100, 0)
+      .getSpecifications();
+
+    for (var spec : specifications) {
+      log.info("About to start syncing record specification: [id: {}, family: {}, profile: {}, url: {}] ",
+        spec.getId(), spec.getFamily(), spec.getProfile(), spec.getUrl());
+      specificationService.sync(spec.getId());
     }
   }
 

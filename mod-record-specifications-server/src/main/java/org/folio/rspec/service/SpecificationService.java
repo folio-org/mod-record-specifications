@@ -115,9 +115,13 @@ public class SpecificationService {
   }
 
   public void sync(UUID specificationId) {
-    log.info("sync::specificationId={}", specificationId);
+    sync(specificationId, false);
+  }
+
+  public void sync(UUID specificationId, boolean preserveLocal) {
+    log.info("sync::specificationId={}, preserveLocal={}", specificationId, preserveLocal);
     var specification = doForSpecificationOrFail(specificationId, Function.identity());
-    specificationSyncService.sync(specification);
+    specificationSyncService.sync(specification, preserveLocal);
     fullChangeProducer.sendEvent(specificationId);
   }
 
