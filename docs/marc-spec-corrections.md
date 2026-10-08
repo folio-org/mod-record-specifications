@@ -1,66 +1,98 @@
-# MARC spec corrections via Liquibase
+# MARC spec corrections
 
 MARC occasionally revises its field/indicator/subfield definitions (see
 https://www.loc.gov/marc/bibliographic/ and https://www.loc.gov/marc/authority/). This module
 ships its own copy of those pages (`spec/marc/bibliographic.html`, `spec/marc/authority.html`)
 and keeps a normalized, per-tenant copy of their content in the `field`, `indicator`,
-`indicator_code` and `subfield` tables. When MARC changes, both copies need to move together.
+`indicator_code` and `subfield` tables. When MARC changes, both copies need to move together, and
+a tenant that was already provisioned before the fix shipped needs to be brought up to date too.
 
-## Why not just re-run the sync?
+## How a correction reaches an existing tenant
 
-`SpecificationSyncService.sync()` re-parses the bundled HTML and does a full
-`deleteBySpecificationId` + `saveAll` on a specification's fields (see
-`SpecificationFieldService.syncFields`). That's correct for a brand-new tenant, but on an
-already-provisioned one it has no way to tell a cataloger's `LOCAL`-scope field/subfield from
-one that simply fell out of the HTML, so a blanket resync risks silently deleting local
-customizations. That's why spec corrections for existing tenants are shipped as targeted,
-idempotent Liquibase data changesets instead of by invoking sync() tenant-wide — the same
-approach already used for MRSPECS-201 and MRSPECS-212 (see
-`db/changelog/changes/marc-spec-updates/`).
+1. Fix the bundled HTML (`spec/marc/bibliographic.html` / `authority.html`) to match the current
+   LOC page. This alone is already enough for a brand-new tenant, and for any tenant an operator
+   explicitly resyncs afterward.
+2. Add one entry to `MarcSpecUpdateService.KNOWN_UPDATES` — the ticket's code, plus the
+   family/profile the fix actually touched (`FamilyProfile.BIBLIOGRAPHIC`,
+   `FamilyProfile.AUTHORITY`, or `null` for every profile in that family, when the fix spans both).
+   That's the entire mechanism; there's nothing else to write per ticket.
 
-Still update the bundled HTML files alongside the changeset. They're what `sync()` reads, so
-a brand-new tenant (or any tenant explicitly resynced later) ends up consistent with the fix
-without needing the changeset at all; the changeset exists to carry the same fix to tenants
-that won't go through sync().
+On the next `POST /_/tenant` for that tenant (a module upgrade), `ExtendedTenantService` calls
+`MarcSpecUpdateService.applyPendingUpdates()`, which:
+- Reads `applied_spec_update` to see which known codes this tenant has already applied.
+- For whatever's still pending, resyncs (`preserveLocal=true`) only the specification(s) in that
+  update's scope — not every specification, so a bibliographic-only fix never touches the
+  authority spec at all.
+- Records one row per specification actually in scope, keyed by `(code, family, profile)` with
+  `applied_date` and `specification_snapshot` alongside. A `null`-profile update ends up with one
+  concrete row per profile it covered - e.g. `(MRSPECS-212, MARC, BIBLIOGRAPHIC)` and
+  `(MRSPECS-212, MARC, AUTHORITY)` - never a row with a literal `null` profile, and never
+  overwriting a previous row: because the scope is part of the key, if a code's scope in
+  `KNOWN_UPDATES` is ever corrected later (e.g. narrowed from "every profile" to just one), the
+  next upgrade adds the new (code, family, profile) row alongside the old one rather than
+  replacing it, so every scope a code was ever actually applied with for this tenant stays on
+  record. A later upgrade only acts on whatever's newly added to `KNOWN_UPDATES` since (checked by
+  `code` alone - `pendingUpdates` doesn't care which profiles were recorded for it, only that the
+  code has at least one row).
+- `specification_snapshot` is a full backup of that specification (fields, indicators, subfields,
+  indicator codes - the same shape `GET .../specifications/{id}?include=all` returns) taken right
+  before the resync that applied the update, so the pre-fix state is always on record even though
+  the live tables get overwritten. The lookup that picks which specifications are in an update's
+  scope (`findSpecifications(family, profile, IncludeParam.ALL, ...)`) already fetches this full
+  shape, so capturing it as the snapshot costs nothing extra.
 
-## Convention for a new spec-correction changeset
+A brand-new tenant skips straight to `markAllKnownUpdatesApplied()` instead: its initial sync
+already ran against the current (fixed) HTML, so every known code is recorded as applied without
+resyncing again.
 
-1. One file per ticket, under `db/changelog/changes/marc-spec-updates/MRSPECS-<ticket>-<short-desc>.xml`,
-   added as another `<include>` in `changelog-marc-spec-updates.xml`. This folder is
-   deliberately **not** one of the `v<major>.<minor>/` release-version folders: spec corrections
-   are an ongoing activity, independent of module releases, and frequently need to be
-   backported/cherry-picked onto older maintenance branches. Those branches won't have a
-   matching `vX.Y` folder for whatever the current development version is, but they'll always
-   have `changelog-marc-spec-updates.xml` (or can take it via the same cherry-pick) with its
-   list of includes growing over time. `changelog-master.xml` includes
-   `changes/changelog-marc-spec-updates.xml` once, after all the release-version includes.
-2. Resolve rows by natural key, not by hardcoded id. Every statement starts from a `field_map`
-   CTE joining `field` to `specification` on `(family, profile, tag)` (add an `indicator_map` on
-   top of it keyed by `indicator_order` when touching indicators/codes). This makes the exact
-   same SQL correct for every tenant schema — Liquibase already runs it once per tenant, so
-   there's no `${tenantId}` placeholder or `SET search_path` to manage by hand.
-3. Inserts use a fixed, literal UUID per new row (generate with `uuid_generate_v4()`/`uuidgen`
-   once, paste it in) — never `gen_random_uuid()`. A fixed id lets the same literal be reused in
-   the metadata-pinning changeset (step 5) and gives the row a stable identity across replays.
-4. Make every statement idempotent:
-   - Inserts: `ON CONFLICT (<the real unique constraint columns>) DO NOTHING`.
-   - Updates: setting the same value twice is naturally a no-op; no extra guard needed.
-5. Whenever a changeset **inserts** a new `subfield`, `indicator`, or `indicator_code` row, add
-   a companion changeset patching `specification_metadata.fields` to pin the same id at the
-   matching key path (`{tag, subfields, code}` or `{tag, indicators, <order>, codes, code}`).
-   Without this, a future `sync()` run won't find that id in the metadata cache and will
-   generate a new random one for the same code — silently changing its id. Use a `DO $$ ... FOR
-   rec IN (VALUES ...) LOOP UPDATE ... END LOOP; END $$;` block (one `jsonb_set` per row, each
-   guarded by `AND NOT (... ? code)`) rather than a single set-based `UPDATE ... FROM (VALUES
-   ...)`: Postgres only applies one arbitrary match when a set-based `UPDATE ... FROM` has
-   several join rows landing on the same target row (e.g. two new subfields on the same field),
-   so a loop is required for correctness whenever a ticket adds more than one code to the same
-   tag/order. Pure label/deprecated updates on already-existing rows need no metadata change —
-   their id is unchanged and the cache doesn't store label text.
-6. Add a `preConditions`/`tableExists` guard and a `<comment>` per changeset, matching the style
-   already used in `v2.1/update-default-data.xml` and `v3.0/move-rule-metadata.xml`.
+## Why `preserveLocal`, not a full resync
 
-Before committing, it's worth applying the new SQL directly (e.g. via `docker exec ... psql`)
-against a scratch schema that already has the *old* data, diffing the result against a schema
-that already has the *new* data, and re-running the same SQL a second time to confirm it's a
-true no-op the second time.
+`SpecificationSyncService.sync()` re-parses the bundled HTML and reconciles it against a
+specification's fields (see `SpecificationFieldService.syncFields`). Without `preserveLocal=true`
+it does a full `deleteBySpecificationId` + `saveAll`, which has no way to tell a cataloger's
+`LOCAL`-scope field/subfield from one that simply fell out of the HTML, so a blanket resync on an
+already-provisioned tenant risks silently deleting local customizations. `preserveLocal=true`
+switches to a reconcile mode instead: any tag/order/code the spec defines overrides whatever is
+currently stored there (even a `LOCAL` row — the spec wins once it defines that slot), but a
+`LOCAL` definition the spec still doesn't know about is left untouched. For `indicator`, which has
+no `scope` column, "does the spec know about this order" is read off `specification_metadata`
+instead.
+
+A STANDARD/SYSTEM row isn't purely spec-owned either: the scope validators
+(`FieldStandardScopeValidator`/`FieldSystemScopeValidator`/`SubfieldStandardScopeValidator`/
+`SubfieldSystemScopeValidator`) let an operator edit a handful of fields even on a non-LOCAL
+row — a STANDARD field's `url` and `required`, a SYSTEM field's `url` only, a STANDARD subfield's
+`required`. Those are policy choices, not LOC facts, so `preserveLocal` sync keeps them across a
+resync too, as long as keeping them doesn't contradict an invariant the sync itself enforces —
+right now that's just "a deprecated field has no url": if the spec now marks the field deprecated,
+the custom url is dropped like it would be for any other field, never carried over. Everything
+else that's user-editable (`required` on both scopes) has no such invariant, so it's always kept
+once it differs from what the spec would otherwise compute. Indicators and indicator codes have no
+operator-editable fields at non-LOCAL scope at all (`updateCode`/`updateIndicator` reject anything
+but `LOCAL` outright), so there's nothing equivalent to preserve there.
+
+## Why application tracking, not a Liquibase data changeset
+
+An earlier version of this mechanism shipped each correction as its own idempotent Liquibase
+changeset directly patching `field`/`indicator`/`indicator_code`/`subfield` and
+`specification_metadata`. That worked but didn't scale well: every ticket meant hand-writing SQL
+that re-derived rows by natural key, pinning fixed UUIDs for any new row, and separately patching
+`specification_metadata.fields` to keep `sync()` from reassigning that id later - easy to get
+subtly wrong (two real bugs turned up only once something actually ran `sync()` against a freshly
+provisioned tenant, not just against raw SQL in isolation). Since the bundled HTML is already the
+source of truth `sync()` reads, and `preserveLocal` sync is now safe to run against an
+already-provisioned tenant, a correction no longer needs its own SQL at all: fix the HTML, add one
+line to `KNOWN_UPDATES`, and the existing sync machinery does the rest. `applied_spec_update`
+(created once, in `db/changelog/changes/v3.1/create-applied-spec-update-table.xml`) is the only
+schema change a correction ever needs again, and it's already there.
+
+## Testing a new entry
+
+- Unit-test `MarcSpecUpdateService` (see `MarcSpecUpdateServiceTest`) if the scoping logic itself
+  changes.
+- For the correction itself, provisioning a **genuinely fresh** tenant and confirming the expected
+  field/subfield/indicator state is the real check — a long-lived local schema you've been poking
+  at manually will hide bugs that only show up on a tenant's first-ever sync, since by then most
+  tags already have a complete `specification_metadata` entry from earlier syncs.
+  `SpecificationStoragePreserveLocalSyncApiIT` and `ExtendedTenantServiceTest` show the pattern for
+  exercising this through `IntegrationTestBase`.

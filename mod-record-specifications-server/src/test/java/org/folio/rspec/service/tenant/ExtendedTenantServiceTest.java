@@ -19,6 +19,7 @@ import org.folio.spring.FolioModuleMetadata;
 import org.folio.spring.liquibase.FolioSpringLiquibase;
 import org.folio.spring.testing.type.UnitTest;
 import org.folio.spring.tools.kafka.KafkaAdminService;
+import org.folio.tenant.domain.dto.Parameter;
 import org.folio.tenant.domain.dto.TenantAttributes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,8 @@ class ExtendedTenantServiceTest {
   private JdbcTemplate jdbcTemplate;
   @Mock
   private FolioSpringLiquibase folioSpringLiquibase;
+  @Mock
+  private MarcSpecUpdateService marcSpecUpdateService;
 
   @Spy
   @InjectMocks
@@ -69,11 +72,31 @@ class ExtendedTenantServiceTest {
     verify(specificationService).findSpecifications(null, null, IncludeParam.NONE, 100, 0);
     verify(specificationService).sync(spec1.getId());
     verify(specificationService).sync(spec2.getId());
+    verify(marcSpecUpdateService).markAllKnownUpdatesApplied();
   }
 
   @Test
   @SneakyThrows
-  void createOrUpdateTenant_positive_shouldNotSyncSpecifications() {
+  void createOrUpdateTenant_positive_tenantCreation_withSyncDisabled_doesNotMarkUpdatesApplied() {
+    var folioMetadata = mock(FolioModuleMetadata.class);
+    when(jdbcTemplate.query(anyString(), ArgumentMatchers.<ResultSetExtractor<Boolean>>any(), any()))
+      .thenReturn(false);
+    when(folioExecutionContext.getFolioModuleMetadata()).thenReturn(folioMetadata);
+    when(folioExecutionContext.getTenantId()).thenReturn("test_tenant");
+    when(folioMetadata.getDBSchemaName(anyString())).thenReturn("schema");
+    var tenantAttributes = new TenantAttributes()
+      .addParametersItem(new Parameter("syncSpecifications").value("false"));
+
+    service.createOrUpdateTenant(tenantAttributes);
+
+    verify(folioSpringLiquibase).performLiquibaseUpdate();
+    verifyNoInteractions(specificationService);
+    verifyNoInteractions(marcSpecUpdateService);
+  }
+
+  @Test
+  @SneakyThrows
+  void createOrUpdateTenant_positive_tenantUpdate_appliesPendingSpecUpdates() {
     var folioMetadata = mock(FolioModuleMetadata.class);
     when(jdbcTemplate.query(anyString(), ArgumentMatchers.<ResultSetExtractor<Boolean>>any(), any())).thenReturn(true);
     when(folioExecutionContext.getFolioModuleMetadata()).thenReturn(folioMetadata);
@@ -83,6 +106,7 @@ class ExtendedTenantServiceTest {
     service.createOrUpdateTenant(new TenantAttributes());
 
     verify(folioSpringLiquibase).performLiquibaseUpdate();
+    verify(marcSpecUpdateService).applyPendingUpdates();
     verifyNoInteractions(specificationService);
   }
 }

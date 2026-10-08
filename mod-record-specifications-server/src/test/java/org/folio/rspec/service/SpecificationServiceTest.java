@@ -173,7 +173,19 @@ class SpecificationServiceTest {
 
     service.sync(specificationId);
 
-    verify(syncService).sync(specification);
+    verify(syncService).sync(specification, false);
+    verify(fullChangeProducer).sendEvent(specificationId);
+  }
+
+  @Test
+  void testSync_preserveLocal() {
+    var specificationId = UUID.randomUUID();
+    var specification = new Specification();
+    when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
+
+    service.sync(specificationId, true);
+
+    verify(syncService).sync(specification, true);
     verify(fullChangeProducer).sendEvent(specificationId);
   }
 }
