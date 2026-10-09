@@ -1,0 +1,10 @@
+in: query
+name: preserveLocal
+description: >-
+  When true, local field/indicator/subfield/indicator-code definitions are preserved during
+  sync instead of being removed, unless the spec now defines the same tag/order/code itself,
+  in which case the spec definition overrides the local one. When false (default), sync
+  removes all existing definitions and recreates them from the spec, as before.
+schema:
+  type: boolean
+  default: false

@@ -28,6 +28,7 @@ import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
+import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 
+@UnitTest
 @ExtendWith({MockitoExtension.class, RandomParametersExtension.class})
 class SpecificationServiceTest {
 
@@ -173,7 +175,19 @@ class SpecificationServiceTest {
 
     service.sync(specificationId);
 
-    verify(syncService).sync(specification);
+    verify(syncService).sync(specification, false);
+    verify(fullChangeProducer).sendEvent(specificationId);
+  }
+
+  @Test
+  void testSync_preserveLocal() {
+    var specificationId = UUID.randomUUID();
+    var specification = new Specification();
+    when(repository.findById(specificationId)).thenReturn(Optional.of(specification));
+
+    service.sync(specificationId, true);
+
+    verify(syncService).sync(specification, true);
     verify(fullChangeProducer).sendEvent(specificationId);
   }
 }

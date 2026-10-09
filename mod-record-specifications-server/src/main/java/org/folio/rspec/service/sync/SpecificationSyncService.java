@@ -52,10 +52,14 @@ public class SpecificationSyncService {
   private final SpecificationFieldService specificationFieldService;
 
   public void sync(Specification specification) {
+    sync(specification, false);
+  }
+
+  public void sync(Specification specification, boolean preserveLocal) {
     var specificationMetadata = metadataService.getSpecificationMetadata(specification.getId());
     var fields = evaluatorFetcher(specification, specificationMetadata);
     metadataService.saveSpecificationMetadata(specificationMetadata);
-    specificationFieldService.syncFields(specification, fields);
+    specificationFieldService.syncFields(specification, fields, preserveLocal, specificationMetadata);
   }
 
   private List<Field> evaluatorFetcher(Specification specification, SpecificationMetadata specificationMetadata) {
