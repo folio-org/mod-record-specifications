@@ -2,20 +2,23 @@ package org.folio.rspec.service.tenant;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
 import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.entity.AppliedSpecUpdate;
+import org.folio.rspec.domain.entity.AppliedSpecUpdateId;
 import org.folio.rspec.domain.repository.AppliedSpecUpdateRepository;
 import org.folio.rspec.service.SpecificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +33,13 @@ import org.springframework.transaction.annotation.Transactional;
  * {@code preserveLocal} resync (see {@code SpecificationFieldService}) safely reconciles existing
  * tenant data against it without discarding local customizations. So every known update shares the
  * same action; what differs per update is which specification(s) it applies to (its
- * family/profile) and whether it still needs to run for a given tenant, tracked one row per
- * concrete (code, family, profile) in {@code applied_spec_update}.
+ * family/profile). Whether it still needs to run is tracked per concrete (code, family, profile)
+ * in {@code applied_spec_update}: an update is pending for a specification until that exact
+ * combination has a row, so a code whose scope is later widened is picked up for the newly
+ * covered profile instead of being treated as done.
  */
 @Service
 @Log4j2
-@RequiredArgsConstructor
 public class MarcSpecUpdateService {
 
   /**
@@ -53,79 +57,108 @@ public class MarcSpecUpdateService {
 
   private final AppliedSpecUpdateRepository appliedSpecUpdateRepository;
   private final SpecificationService specificationService;
+  private final List<SpecUpdate> knownUpdates;
+
+  @Autowired
+  public MarcSpecUpdateService(AppliedSpecUpdateRepository appliedSpecUpdateRepository,
+                               SpecificationService specificationService) {
+    this(appliedSpecUpdateRepository, specificationService, KNOWN_UPDATES);
+  }
+
+  /**
+   * Package-private so tests can exercise the family/profile scoping against a small update list
+   * instead of the real {@link #KNOWN_UPDATES}.
+   */
+  MarcSpecUpdateService(AppliedSpecUpdateRepository appliedSpecUpdateRepository,
+                        SpecificationService specificationService, List<SpecUpdate> knownUpdates) {
+    this.appliedSpecUpdateRepository = appliedSpecUpdateRepository;
+    this.specificationService = specificationService;
+    this.knownUpdates = knownUpdates;
+  }
 
   /**
    * For a tenant that just received its initial, full sync (so it's already current with every
-   * known update): record all of them as applied without resyncing again.
+   * known update): record every not-yet-recorded (code, family, profile) as applied without
+   * resyncing again.
    */
   @Transactional
   public void markAllKnownUpdatesApplied() {
-    markApplied(KNOWN_UPDATES, resolveSpecificationsInScope(KNOWN_UPDATES));
+    var pending = pendingApplications(knownUpdates);
+    recordApplied(pending, snapshotsOf(pending));
   }
 
   /**
-   * For a tenant that already existed before this upgrade: resync the specification(s) scoped to
-   * any known update it hasn't applied yet (deduplicated, so a specification shared by several
-   * pending updates is only resynced once), then record all of those updates as applied.
+   * For a tenant that already existed before this upgrade: resync every specification that has at
+   * least one known update not yet recorded for it (once per specification, however many updates
+   * are pending for it), then record each of those (code, family, profile) combinations.
    */
   @Transactional
   public void applyPendingUpdates() {
-    applyPendingUpdates(KNOWN_UPDATES);
-  }
-
-  /**
-   * Package-private so tests can exercise the family/profile scoping against a small candidate
-   * list instead of the real {@link #KNOWN_UPDATES}. {@link #applyPendingUpdates()} is the only
-   * production entry point.
-   */
-  void applyPendingUpdates(List<SpecUpdate> candidates) {
-    var pending = pendingUpdates(candidates);
+    var pending = pendingApplications(knownUpdates);
     if (pending.isEmpty()) {
       return;
     }
 
-    log.info("Applying pending MARC spec updates: {}", pending.stream().map(SpecUpdate::code).toList());
-    var specificationsByCode = resolveSpecificationsInScope(pending);
-    specificationsByCode.values().stream()
-      .flatMap(List::stream)
-      .collect(Collectors.toMap(SpecificationDto::getId, Function.identity(), (first, duplicate) -> first))
-      .values()
-      .forEach(specification -> specificationService.sync(specification.getId(), true));
+    log.info("Applying pending MARC spec updates: {}",
+      pending.stream().map(p -> p.code() + "/" + p.specification().getProfile()).toList());
+    var snapshots = snapshotsOf(pending);
+    snapshots.keySet().forEach(specificationId -> specificationService.sync(specificationId, true));
 
-    markApplied(pending, specificationsByCode);
+    recordApplied(pending, snapshots);
   }
 
   /**
-   * Fetches with {@code IncludeParam.ALL} (full nested fields/indicators/subfields/codes), not
-   * just {@code NONE}: the same lookup used to pick the resync targets also doubles as the
-   * pre-resync snapshot for {@link #markApplied}, read before {@code sync()} changes anything.
+   * An update is pending for a specification until its exact (code, family, profile) row exists.
+   * Looks specifications up without nested content ({@code IncludeParam.NONE}) since this runs on
+   * every upgrade; the full snapshot is only loaded for what is actually pending.
    */
-  private Map<String, List<SpecificationDto>> resolveSpecificationsInScope(List<SpecUpdate> updates) {
-    return updates.stream().collect(Collectors.toMap(SpecUpdate::code, update ->
-      specificationService.findSpecifications(update.family(), update.profile(), IncludeParam.ALL, 100, 0)
-        .getSpecifications()));
-  }
-
-  private List<SpecUpdate> pendingUpdates(List<SpecUpdate> candidates) {
+  private List<PendingApplication> pendingApplications(List<SpecUpdate> candidates) {
     var candidateCodes = candidates.stream().map(SpecUpdate::code).toList();
-    Set<String> applied = appliedSpecUpdateRepository.findByIdCodeIn(candidateCodes).stream()
-      .map(AppliedSpecUpdate::getCode)
+    Set<AppliedSpecUpdateId> applied = appliedSpecUpdateRepository.findByIdCodeIn(candidateCodes).stream()
+      .map(row -> new AppliedSpecUpdateId(row.getCode(), row.getFamily(), row.getProfile()))
       .collect(Collectors.toSet());
-    return candidates.stream().filter(update -> !applied.contains(update.code())).toList();
+    return candidates.stream()
+      .flatMap(update -> specificationsInScope(update).stream()
+        .filter(spec -> !applied.contains(new AppliedSpecUpdateId(update.code(), spec.getFamily(), spec.getProfile())))
+        .map(spec -> new PendingApplication(update.code(), spec)))
+      .toList();
+  }
+
+  private List<SpecificationDto> specificationsInScope(SpecUpdate update) {
+    return specificationService.findSpecifications(update.family(), update.profile(), IncludeParam.NONE, 100, 0)
+      .getSpecifications();
   }
 
   /**
-   * Records one row per specification actually in an update's scope (not one row per update), so
-   * a {@code null}-profile update ends up with a concrete row per profile it covered and the
-   * composite (code, family, profile) key is never asked to hold a null profile. Each row's
-   * {@code specificationSnapshot} is that specification's full, pre-resync content.
+   * Full nested content (fields/indicators/subfields/codes) of each distinct pending
+   * specification, read once, before any {@code sync()} changes it.
    */
-  private void markApplied(List<SpecUpdate> updates, Map<String, List<SpecificationDto>> specificationsByCode) {
+  private Map<UUID, SpecificationDto> snapshotsOf(List<PendingApplication> pending) {
+    return pending.stream()
+      .map(application -> application.specification().getId())
+      .distinct()
+      .collect(Collectors.toMap(Function.identity(),
+        id -> specificationService.getSpecificationById(id, IncludeParam.ALL),
+        (first, duplicate) -> first, LinkedHashMap::new));
+  }
+
+  /**
+   * Records one row per pending (code, family, profile), each carrying that specification's
+   * pre-resync snapshot. Rows are always concrete (never a null profile), and existing rows are
+   * never touched because only combinations without a row are ever pending.
+   */
+  private void recordApplied(List<PendingApplication> pending, Map<UUID, SpecificationDto> snapshots) {
     var appliedDate = Timestamp.from(Instant.now());
-    var entries = updates.stream()
-      .flatMap(update -> specificationsByCode.get(update.code()).stream()
-        .map(spec -> new AppliedSpecUpdate(update.code(), spec.getFamily(), spec.getProfile(), spec, appliedDate)))
+    var entries = pending.stream()
+      .map(application -> new AppliedSpecUpdate(application.code(), application.specification().getFamily(),
+        application.specification().getProfile(), snapshots.get(application.specification().getId()), appliedDate))
       .toList();
     appliedSpecUpdateRepository.saveAll(entries);
+  }
+
+  /**
+   * One update that hasn't been recorded yet for one concrete specification.
+   */
+  private record PendingApplication(String code, SpecificationDto specification) {
   }
 }
