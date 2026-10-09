@@ -163,11 +163,6 @@ public class SpecificationFieldService {
   }
 
   @Transactional
-  public void syncFields(Specification specification, Collection<Field> fields) {
-    syncFields(specification, fields, false, null);
-  }
-
-  @Transactional
   public void syncFields(Specification specification, Collection<Field> fields, boolean preserveLocal,
                          SpecificationMetadata specificationMetadata) {
     log.info("syncFields::specificationId={}, fields number={}, preserveLocal={}",
