@@ -28,6 +28,7 @@ import org.folio.rspec.service.sync.SpecificationSyncService;
 import org.folio.spring.data.OffsetRequest;
 import org.folio.spring.testing.extension.Random;
 import org.folio.spring.testing.extension.impl.RandomParametersExtension;
+import org.folio.spring.testing.type.UnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 
+@UnitTest
 @ExtendWith({MockitoExtension.class, RandomParametersExtension.class})
 class SpecificationServiceTest {
 

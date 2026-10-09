@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
@@ -134,12 +133,10 @@ public class MarcSpecUpdateService {
    * specification, read once, before any {@code sync()} changes it.
    */
   private Map<UUID, SpecificationDto> snapshotsOf(List<PendingApplication> pending) {
-    return pending.stream()
-      .map(application -> application.specification().getId())
-      .distinct()
-      .collect(Collectors.toMap(Function.identity(),
-        id -> specificationService.getSpecificationById(id, IncludeParam.ALL),
-        (first, duplicate) -> first, LinkedHashMap::new));
+    var snapshots = new LinkedHashMap<UUID, SpecificationDto>();
+    pending.forEach(application -> snapshots.computeIfAbsent(application.specification().getId(),
+      id -> specificationService.getSpecificationById(id, IncludeParam.ALL)));
+    return snapshots;
   }
 
   /**
