@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.folio.rspec.domain.dto.Family;
+import org.folio.rspec.domain.dto.FamilyProfile;
 import org.folio.rspec.domain.dto.IncludeParam;
 import org.folio.rspec.domain.dto.SpecificationDto;
 import org.folio.rspec.domain.entity.AppliedSpecUpdate;
@@ -46,7 +47,8 @@ public class MarcSpecUpdateService {
    */
   public static final List<SpecUpdate> KNOWN_UPDATES = List.of(
     new SpecUpdate("MRSPECS-201", Family.MARC, null),
-    new SpecUpdate("MRSPECS-212", Family.MARC, null)
+    new SpecUpdate("MRSPECS-212", Family.MARC, FamilyProfile.BIBLIOGRAPHIC),
+    new SpecUpdate("MRSPECS-213", Family.MARC, FamilyProfile.AUTHORITY)
   );
 
   private final AppliedSpecUpdateRepository appliedSpecUpdateRepository;
