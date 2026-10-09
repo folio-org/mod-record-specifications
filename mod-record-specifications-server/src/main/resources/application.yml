@@ -62,7 +62,6 @@ folio:
   logging:
     request:
       enabled: true
-      level: FULL
 
 server.port: 8081
 
