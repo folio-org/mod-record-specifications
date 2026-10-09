@@ -12,7 +12,7 @@
     update. See docs/marc-spec-corrections.md.
   -->
 
-  <changeSet id="MRSPECS-213@@create-table:applied_spec_update" author="pavlo_smahin">
+  <changeSet id="MRSPECS-214@@create-table:applied_spec_update" author="pavlo_smahin">
     <preConditions onFail="MARK_RAN">
       <not>
         <tableExists tableName="applied_spec_update"/>
