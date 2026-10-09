@@ -2,7 +2,10 @@ package org.folio.rspec.service.tenant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,10 +24,10 @@ import org.folio.rspec.domain.entity.AppliedSpecUpdate;
 import org.folio.rspec.domain.repository.AppliedSpecUpdateRepository;
 import org.folio.rspec.service.SpecificationService;
 import org.folio.spring.testing.type.UnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,121 +35,163 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MarcSpecUpdateServiceTest {
 
+  private static final SpecUpdate ALL_PROFILES = new SpecUpdate("TEST-ALL", Family.MARC, null);
+  private static final SpecUpdate BIB_ONLY = new SpecUpdate("TEST-BIB", Family.MARC, FamilyProfile.BIBLIOGRAPHIC);
+  private static final SpecUpdate AUTH_ONLY = new SpecUpdate("TEST-AUTH", Family.MARC, FamilyProfile.AUTHORITY);
+
   @Mock
   private AppliedSpecUpdateRepository appliedSpecUpdateRepository;
   @Mock
   private SpecificationService specificationService;
 
-  @InjectMocks
   private MarcSpecUpdateService service;
 
-  @Test
-  void markAllKnownUpdatesApplied_savesOneRowPerKnownUpdatePerResolvedProfile() {
-    var bibSpec = specificationDto(FamilyProfile.BIBLIOGRAPHIC);
-    var authSpec = specificationDto(FamilyProfile.AUTHORITY);
-    when(specificationService.findSpecifications(Family.MARC, null, IncludeParam.ALL, 100, 0))
-      .thenReturn(new SpecificationDtoCollection().specifications(List.of(bibSpec, authSpec)));
+  private SpecificationDto bibSpec;
+  private SpecificationDto authSpec;
 
-    service.markAllKnownUpdatesApplied();
-
-    ArgumentCaptor<List<AppliedSpecUpdate>> captor = ArgumentCaptor.captor();
-    verify(appliedSpecUpdateRepository).saveAll(captor.capture());
-    var expectedTuples = MarcSpecUpdateService.KNOWN_UPDATES.stream()
-      .flatMap(update -> List.of(
-        tuple(update.code(), Family.MARC, FamilyProfile.BIBLIOGRAPHIC),
-        tuple(update.code(), Family.MARC, FamilyProfile.AUTHORITY)
-      ).stream())
-      .toList();
-    assertThat(captor.getValue())
-      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getFamily, AppliedSpecUpdate::getProfile)
-      .containsExactlyInAnyOrderElementsOf(expectedTuples);
+  @BeforeEach
+  void stubSpecifications() {
+    service = new MarcSpecUpdateService(appliedSpecUpdateRepository, specificationService);
+    bibSpec = specificationDto(FamilyProfile.BIBLIOGRAPHIC);
+    authSpec = specificationDto(FamilyProfile.AUTHORITY);
+    lenient().when(specificationService.findSpecifications(eq(Family.MARC), any(), eq(IncludeParam.NONE),
+        eq(100), eq(0)))
+      .thenAnswer(invocation -> {
+        FamilyProfile profile = invocation.getArgument(1);
+        var specs = profile == null ? List.of(bibSpec, authSpec)
+          : List.of(profile == FamilyProfile.BIBLIOGRAPHIC ? bibSpec : authSpec);
+        return new SpecificationDtoCollection().specifications(specs);
+      });
+    lenient().when(specificationService.getSpecificationById(any(UUID.class), eq(IncludeParam.ALL)))
+      .thenAnswer(invocation -> fullSnapshot(invocation.getArgument(0)));
   }
 
   @Test
-  void applyPendingUpdates_doesNothing_whenEveryCandidateAlreadyApplied() {
-    var candidates = List.of(new SpecUpdate("TEST-1", Family.MARC, null));
-    when(appliedSpecUpdateRepository.findByIdCodeIn(List.of("TEST-1")))
-      .thenReturn(List.of(new AppliedSpecUpdate("TEST-1", Family.MARC, null, specificationDto(null),
-        Timestamp.from(Instant.now()))));
+  void markAllKnownUpdatesApplied_savesOneRowPerKnownUpdatePerProfileInItsScope() {
+    service.markAllKnownUpdatesApplied();
 
-    service.applyPendingUpdates(candidates);
+    var expectedTuples = MarcSpecUpdateService.KNOWN_UPDATES.stream()
+      .flatMap(update -> List.of(FamilyProfile.BIBLIOGRAPHIC, FamilyProfile.AUTHORITY).stream()
+        .filter(profile -> update.profile() == null || update.profile() == profile)
+        .map(profile -> tuple(update.code(), Family.MARC, profile)))
+      .toList();
+    assertThat(savedRows())
+      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getFamily, AppliedSpecUpdate::getProfile)
+      .containsExactlyInAnyOrderElementsOf(expectedTuples);
+    verify(specificationService, never()).sync(any(UUID.class), eq(true));
+  }
 
-    verify(specificationService, never()).findSpecifications(Family.MARC, null, IncludeParam.ALL, 100, 0);
+  @Test
+  void applyPendingUpdates_syncsEachSpecificationOnce_forTheRealKnownUpdates() {
+    service.applyPendingUpdates();
+
+    verify(specificationService, times(1)).sync(bibSpec.getId(), true);
+    verify(specificationService, times(1)).sync(authSpec.getId(), true);
+    verify(specificationService, times(2)).sync(any(UUID.class), eq(true));
+  }
+
+  @Test
+  void applyPendingUpdates_doesNothing_whenEveryCombinationInScopeIsAlreadyRecorded() {
+    appliedRows(row("TEST-ALL", FamilyProfile.BIBLIOGRAPHIC), row("TEST-ALL", FamilyProfile.AUTHORITY));
+
+    serviceFor(ALL_PROFILES).applyPendingUpdates();
+
+    verify(specificationService, never()).sync(any(UUID.class), eq(true));
+    verify(specificationService, never()).getSpecificationById(any(UUID.class), eq(IncludeParam.ALL));
     verify(appliedSpecUpdateRepository, never()).saveAll(anyList());
   }
 
   @Test
+  void applyPendingUpdates_resyncsOnlyTheMissingProfile_whenCodeIsRecordedForJustOneOfItsProfiles() {
+    appliedRows(row("TEST-ALL", FamilyProfile.BIBLIOGRAPHIC));
+
+    serviceFor(ALL_PROFILES).applyPendingUpdates();
+
+    verify(specificationService).sync(authSpec.getId(), true);
+    verify(specificationService, never()).sync(bibSpec.getId(), true);
+    assertThat(savedRows())
+      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getProfile)
+      .containsExactly(tuple("TEST-ALL", FamilyProfile.AUTHORITY));
+  }
+
+  @Test
+  void applyPendingUpdates_picksUpNewlyCoveredProfile_whenCodeScopeWasWidened() {
+    appliedRows(row("TEST-BIB", FamilyProfile.BIBLIOGRAPHIC));
+
+    serviceFor(new SpecUpdate("TEST-BIB", Family.MARC, null)).applyPendingUpdates();
+
+    verify(specificationService).sync(authSpec.getId(), true);
+    verify(specificationService, never()).sync(bibSpec.getId(), true);
+    assertThat(savedRows())
+      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getProfile)
+      .containsExactly(tuple("TEST-BIB", FamilyProfile.AUTHORITY));
+  }
+
+  @Test
   void applyPendingUpdates_resyncsOnlyTheScopedProfile_whenUpdateIsProfileScoped() {
-    var candidates = List.of(new SpecUpdate("TEST-BIB-ONLY", Family.MARC, FamilyProfile.BIBLIOGRAPHIC));
-    when(appliedSpecUpdateRepository.findByIdCodeIn(List.of("TEST-BIB-ONLY"))).thenReturn(List.of());
-
-    var bibSpec = specificationDto(FamilyProfile.BIBLIOGRAPHIC);
-    when(specificationService.findSpecifications(Family.MARC, FamilyProfile.BIBLIOGRAPHIC, IncludeParam.ALL, 100, 0))
-      .thenReturn(new SpecificationDtoCollection().specifications(List.of(bibSpec)));
-
-    service.applyPendingUpdates(candidates);
+    serviceFor(BIB_ONLY).applyPendingUpdates();
 
     verify(specificationService).sync(bibSpec.getId(), true);
-    verify(specificationService, never())
-      .findSpecifications(Family.MARC, FamilyProfile.AUTHORITY, IncludeParam.ALL, 100, 0);
-    verify(specificationService, never()).findSpecifications(Family.MARC, null, IncludeParam.ALL, 100, 0);
-
-    ArgumentCaptor<List<AppliedSpecUpdate>> captor = ArgumentCaptor.captor();
-    verify(appliedSpecUpdateRepository).saveAll(captor.capture());
-    assertThat(captor.getValue())
+    verify(specificationService, never()).sync(authSpec.getId(), true);
+    verify(specificationService, never()).findSpecifications(Family.MARC, null, IncludeParam.NONE, 100, 0);
+    assertThat(savedRows())
       .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getFamily, AppliedSpecUpdate::getProfile)
-      .containsExactly(tuple("TEST-BIB-ONLY", Family.MARC, FamilyProfile.BIBLIOGRAPHIC));
-    assertThat(captor.getValue().getFirst().getSpecificationSnapshot()).isSameAs(bibSpec);
+      .containsExactly(tuple("TEST-BIB", Family.MARC, FamilyProfile.BIBLIOGRAPHIC));
+  }
+
+  @Test
+  void applyPendingUpdates_storesThePreSyncFullSpecificationAsSnapshot() {
+    serviceFor(BIB_ONLY).applyPendingUpdates();
+
+    var snapshot = savedRows().getFirst().getSpecificationSnapshot();
+    assertThat(snapshot.getId()).isEqualTo(bibSpec.getId());
+    assertThat(snapshot.getTitle()).isEqualTo("full");
   }
 
   @Test
   void applyPendingUpdates_dedupesSpecificationsSharedByTwoPendingUpdates() {
-    var sharedBibSpec = specificationDto(FamilyProfile.BIBLIOGRAPHIC);
-    var sharedAuthSpec = specificationDto(FamilyProfile.AUTHORITY);
-    when(appliedSpecUpdateRepository.findByIdCodeIn(List.of("TEST-ALL-PROFILES", "TEST-AUTH-ONLY")))
-      .thenReturn(List.of());
-    when(specificationService.findSpecifications(Family.MARC, null, IncludeParam.ALL, 100, 0))
-      .thenReturn(new SpecificationDtoCollection().specifications(List.of(sharedBibSpec, sharedAuthSpec)));
-    when(specificationService.findSpecifications(Family.MARC, FamilyProfile.AUTHORITY, IncludeParam.ALL, 100, 0))
-      .thenReturn(new SpecificationDtoCollection().specifications(List.of(sharedAuthSpec)));
-    var candidates = List.of(
-      new SpecUpdate("TEST-ALL-PROFILES", Family.MARC, null),
-      new SpecUpdate("TEST-AUTH-ONLY", Family.MARC, FamilyProfile.AUTHORITY)
-    );
-    service.applyPendingUpdates(candidates);
-    // authority spec is in scope for both pending updates, but only resynced once
-    verify(specificationService).sync(sharedBibSpec.getId(), true);
-    verify(specificationService, times(1)).sync(sharedAuthSpec.getId(), true);
-    ArgumentCaptor<List<AppliedSpecUpdate>> captor = ArgumentCaptor.captor();
-    verify(appliedSpecUpdateRepository).saveAll(captor.capture());
-    assertThat(captor.getValue())
-      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getFamily, AppliedSpecUpdate::getProfile)
-      .containsExactlyInAnyOrder(tuple("TEST-ALL-PROFILES", Family.MARC, FamilyProfile.BIBLIOGRAPHIC),
-        tuple("TEST-ALL-PROFILES", Family.MARC, FamilyProfile.AUTHORITY),
-        tuple("TEST-AUTH-ONLY", Family.MARC, FamilyProfile.AUTHORITY));
+    serviceFor(ALL_PROFILES, AUTH_ONLY).applyPendingUpdates();
+
+    verify(specificationService, times(1)).sync(bibSpec.getId(), true);
+    verify(specificationService, times(1)).sync(authSpec.getId(), true);
+    assertThat(savedRows())
+      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getProfile)
+      .containsExactlyInAnyOrder(tuple("TEST-ALL", FamilyProfile.BIBLIOGRAPHIC),
+        tuple("TEST-ALL", FamilyProfile.AUTHORITY), tuple("TEST-AUTH", FamilyProfile.AUTHORITY));
   }
 
   @Test
-  void applyPendingUpdates_onlyResyncsAndRecordsThePendingCandidate() {
-    var candidates = List.of(
-      new SpecUpdate("TEST-ALREADY-APPLIED", Family.MARC, null),
-      new SpecUpdate("TEST-PENDING", Family.MARC, null)
-    );
-    when(appliedSpecUpdateRepository.findByIdCodeIn(List.of("TEST-ALREADY-APPLIED", "TEST-PENDING")))
-      .thenReturn(
-        List.of(new AppliedSpecUpdate("TEST-ALREADY-APPLIED", Family.MARC, FamilyProfile.BIBLIOGRAPHIC,
-          specificationDto(FamilyProfile.BIBLIOGRAPHIC), Timestamp.from(Instant.now()))));
-    var bibSpec = specificationDto(FamilyProfile.BIBLIOGRAPHIC);
-    when(specificationService.findSpecifications(Family.MARC, null, IncludeParam.ALL, 100, 0))
-      .thenReturn(new SpecificationDtoCollection().specifications(List.of(bibSpec)));
+  void applyPendingUpdates_onlyRecordsTheCodesThatArePending() {
+    appliedRows(row("TEST-ALL", FamilyProfile.BIBLIOGRAPHIC), row("TEST-ALL", FamilyProfile.AUTHORITY));
 
-    service.applyPendingUpdates(candidates);
+    serviceFor(ALL_PROFILES, BIB_ONLY).applyPendingUpdates();
 
+    assertThat(savedRows())
+      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getProfile)
+      .containsExactly(tuple("TEST-BIB", FamilyProfile.BIBLIOGRAPHIC));
+  }
+
+  private MarcSpecUpdateService serviceFor(SpecUpdate... updates) {
+    return new MarcSpecUpdateService(appliedSpecUpdateRepository, specificationService, List.of(updates));
+  }
+
+  private void appliedRows(AppliedSpecUpdate... rows) {
+    when(appliedSpecUpdateRepository.findByIdCodeIn(any())).thenReturn(List.of(rows));
+  }
+
+  private List<AppliedSpecUpdate> savedRows() {
     ArgumentCaptor<List<AppliedSpecUpdate>> captor = ArgumentCaptor.captor();
     verify(appliedSpecUpdateRepository).saveAll(captor.capture());
-    assertThat(captor.getValue())
-      .extracting(AppliedSpecUpdate::getCode, AppliedSpecUpdate::getFamily, AppliedSpecUpdate::getProfile)
-      .containsExactly(tuple("TEST-PENDING", Family.MARC, FamilyProfile.BIBLIOGRAPHIC));
+    return captor.getValue();
+  }
+
+  private AppliedSpecUpdate row(String code, FamilyProfile profile) {
+    return new AppliedSpecUpdate(code, Family.MARC, profile, specificationDto(profile),
+      Timestamp.from(Instant.now()));
+  }
+
+  private static SpecificationDto fullSnapshot(UUID id) {
+    return new SpecificationDto().id(id).title("full");
   }
 
   private static SpecificationDto specificationDto(FamilyProfile profile) {
