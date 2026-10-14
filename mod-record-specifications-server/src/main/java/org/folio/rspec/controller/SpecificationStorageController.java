@@ -27,8 +27,8 @@ public class SpecificationStorageController implements SpecificationStorageApi {
   private final SpecificationService specificationService;
 
   @Override
-  public ResponseEntity<Void> syncSpecification(UUID specificationId) {
-    specificationService.sync(specificationId);
+  public ResponseEntity<Void> syncSpecification(UUID specificationId, Boolean preserveLocal) {
+    specificationService.sync(specificationId, Boolean.TRUE.equals(preserveLocal));
     return ResponseEntity.status(HttpStatus.ACCEPTED).build();
   }
 
