@@ -91,7 +91,20 @@ class SpecificationStorageControllerTest {
     mockMvc.perform(requestBuilder)
       .andExpect(status().isAccepted());
 
-    verify(specificationService).sync(specificationId);
+    verify(specificationService).sync(specificationId, false);
+  }
+
+  @Test
+  void syncSpecification_preserveLocal() throws Exception {
+    var specificationId = UUID.randomUUID();
+
+    var requestBuilder = post(specificationSyncPath(specificationId) + "?preserveLocal=true")
+      .contentType(APPLICATION_JSON);
+
+    mockMvc.perform(requestBuilder)
+      .andExpect(status().isAccepted());
+
+    verify(specificationService).sync(specificationId, true);
   }
 
   @Test
@@ -99,7 +112,7 @@ class SpecificationStorageControllerTest {
     var specificationId = UUID.randomUUID();
 
     doThrow(new SpecificationFetchingFailedException())
-      .when(specificationService).sync(specificationId);
+      .when(specificationService).sync(specificationId, false);
 
     var requestBuilder = post(specificationSyncPath(specificationId))
       .contentType(APPLICATION_JSON);

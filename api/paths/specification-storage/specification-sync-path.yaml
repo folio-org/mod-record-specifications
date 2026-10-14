@@ -4,6 +4,7 @@ post:
   operationId: syncSpecification
   parameters:
     - $ref: '../../parameters/specificationId-param.yaml'
+    - $ref: '../../parameters/preserveLocal-param.yaml'
   tags:
     - specification-storage
   responses:

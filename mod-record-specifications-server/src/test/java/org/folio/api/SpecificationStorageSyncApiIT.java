@@ -105,7 +105,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .containsExactlyInAnyOrder(createdFieldIds);
 
     assertThat(recreatedSubfields)
-      .hasSize(2845)
+      .hasSize(2847)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdSubfieldIds);
 
@@ -115,7 +115,7 @@ class SpecificationStorageSyncApiIT extends SpecificationITBase {
       .containsExactlyInAnyOrder(createdIndicatorIds);
 
     assertThat(recreatedIndicatorCodes)
-      .hasSize(1193)
+      .hasSize(1196)
       .extracting(UuidPersistable::getId)
       .containsExactlyInAnyOrder(createdIndicatorCodeIds);
 
