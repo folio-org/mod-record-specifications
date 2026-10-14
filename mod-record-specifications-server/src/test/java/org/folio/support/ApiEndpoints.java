@@ -46,6 +46,10 @@ public class ApiEndpoints {
     return SPECIFICATION_SYNC_PATH.formatted(specId);
   }
 
+  public static String specificationSyncPath(UUID specId, QueryParams queryParams) {
+    return addQueryParams(specificationSyncPath(specId), queryParams);
+  }
+
   public static String specificationRulesPath(String specId) {
     return SPECIFICATION_RULES_PATH.formatted(specId);
   }

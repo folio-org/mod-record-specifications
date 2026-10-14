@@ -4,6 +4,7 @@ import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +63,7 @@ class SpecificationSyncServiceTest {
 
     when(metadataService.getSpecificationMetadata(specId)).thenReturn(metadata);
     when(specificationFetcher.fetch(Family.MARC, FamilyProfile.AUTHORITY)).thenReturn(fieldsArray);
-    doNothing().when(specificationFieldService).syncFields(any(), fieldsCaptor.capture());
+    doNothing().when(specificationFieldService).syncFields(any(), fieldsCaptor.capture(), eq(false), any());
 
     specificationSyncService.sync(specification);
 
@@ -91,7 +92,7 @@ class SpecificationSyncServiceTest {
 
     when(metadataService.getSpecificationMetadata(specId)).thenReturn(metadata);
     when(specificationFetcher.fetch(Family.MARC, FamilyProfile.BIBLIOGRAPHIC)).thenReturn(fieldsArray);
-    doNothing().when(specificationFieldService).syncFields(any(), fieldsCaptor.capture());
+    doNothing().when(specificationFieldService).syncFields(any(), fieldsCaptor.capture(), eq(false), any());
 
     specificationSyncService.sync(specification);
 
