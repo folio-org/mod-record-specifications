@@ -1,3 +1,11 @@
+## v3.0.1 2026-10-29
+### Dependencies
+* Bump `spring-boot` from `4.0.2` to `4.1.1`
+* Bump `folio-spring-support` from `10.0.0` to `10.0.1`
+* Bump `liquibase` from `5.0.x` to `4.33.0`
+
+---
+
 ## v3.0.0 2026-04-16
 ### Breaking changes
 * Migrate to Spring Boot 4.0.x ([MRSPECS-107](https://folio-org.atlassian.net/browse/MRSPECS-107))
