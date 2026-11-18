@@ -1,3 +1,9 @@
+## v3.0.2 2026-11-18
+### Features
+* Modify sync endpoint to preserve local changes and sync specification on tenant enable ([MRSPECS-87](https://folio-org.atlassian.net/browse/MRSPECS-87))
+
+---
+
 ## v3.0.1 2026-10-29
 ### Dependencies
 * Bump `spring-boot` from `4.0.2` to `4.1.1`
